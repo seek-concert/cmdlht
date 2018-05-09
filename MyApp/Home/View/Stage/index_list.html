@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>付款阶段</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+    <script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/ajax-submit.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+<h4>付款阶段</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li onclick="reloadPage(window)">
+            <img src="__IMG__/arrow_refresh.png"/>
+            重置
+        </li>
+        <li class="fgf" onclick="layerDiv('查询',$('#search-form-div').html(),'500px','300px')">
+            <img src="__IMG__/page_white_magnify.png"/>
+            查询
+        </li>
+    </ul>
+</div>
+<div class="tableCon">
+    <div style="visibility: hidden;display: none;">
+        <div id="search-form-div">
+            <form action="__ACTION__" method="post" id="search-form" class="layui-form">
+                <div class="layerCon bg_f">
+                    <table class="layerTable" border="0">
+                        <tr class="h50">
+                            <td><label for="s_startime">开始时间：</label></td>
+                            <td>
+                                开始时间： <input id="s_startime" type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"  name="s_startime1" value="{$sstartime1}"/>
+                                结束时间： <input id="s_startime1" type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"  name="s_startime2" value="{$sstartime2}"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="s_endtime">结束时间：</label></td>
+                            <td>
+                                开始时间： <input id="s_endtime" type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"  name="s_endtime1" value="{$sendtime1}"/>
+                                结束时间： <input id="s_endtime1" type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"  name="s_endtime2" value="{$sendtime2}"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="s_pay">支付状态：</label></td>
+                            <td>
+                                <select  id="s_pay"  name="s_pay">
+                                    <option value="">=====无=====</option>
+                                    <option value="1" <eq name="spay" value="1">selected</eq>>已支付</option>
+                                    <option value="0" <eq name="spay" value="0">selected</eq>>未支付</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="layerBtns">
+                        <button class="btn" type="submit">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <em class="xian"></em>
+    <form action="{:U('sort')}" method="post" class="js-ajax-form" id="js-ajax-form">
+        <table class="table" border="0">
+            <thead>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th width="40">ID</th>
+                <th>施工需求</th>
+                <th>阶段编号</th>
+                <th>阶段价格</th>
+                <th>开始时间</th>
+                <th>结束时间</th>
+                <th>支付状态</th>
+                <th>施工状态</th>
+                <th>查看详情</th>
+            </tr>
+            </thead>
+            <tbody>
+            <volist name="stage_info" id="info">
+                <tr>
+                    <td>
+                        <input class="va_m" type="checkbox" name="ids[]" value="{$info.s_id}" onclick="checkBoxOp(this)" />
+                    </td>
+                    <td>{$info.s_id}</td>
+                    <td>{$info.s_cid}</td>
+                    <td>{$info.s_number}</td>
+                    <td>{$info.s_price}</td>
+                    <td>{$info.s_startime}</td>
+                    <td>{$info.s_endtime}</td>
+                    <td><eq name="info.s_pay" value="1">已支付</eq><eq name="info.s_pay" value="0">未支付</eq></td>
+                    <td><eq name="info.s_pay" value="0">新数据</eq>
+                        <eq name="info.s_pay" value="10000">等待施工确认</eq><eq name="info.s_pay" value="20000">确认施工中</eq>
+                        <eq name="info.s_pay" value="30000">申请施工完成</eq><eq name="info.s_pay" value="40000">施工不合格</eq>
+                        <eq name="info.s_pay" value="50000">施工完成</eq></td>
+                    <td><a class="table_btn" title="详细" onclick="layerPage('付款阶段','{:U('detail',array('s_id'=>$info['s_id']))}','570px','580px')"><img src="__IMG__/edit.png" alt="详细" title="详细"></a> </td>
+                </tr>
+            </volist>
+            </tbody>
+        </table>
+    </form>
+</div>
+<div class="pageCon">
+    {$page_bar}       每页 20 条，共 {$count} 条
+</div>
+
+<script>
+    $(function () {
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+
+    });
+
+    /* 重载页面 */
+    function reloadPage(win) {
+        var location = win.location;
+        location.href = location.pathname + location.search;
+    }
+
+
+
+</script>
+</body>
+</html>

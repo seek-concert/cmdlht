@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>施工评价</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+    <script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/ajax-submit.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+<h4>施工评价</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li onclick="reloadPage(window)">
+            <img src="__IMG__/arrow_refresh.png"/>
+            重置
+        </li>
+        <li class="fgf" onclick="layerDiv('查询',$('#search-form-div').html(),'500px','270px')">
+            <img src="__IMG__/page_white_magnify.png"/>
+            查询
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form"
+            data-action="{:U('status_modify',array('action'=>'on'))}">
+            <img src="__IMG__/enable.png"/>
+            批量显示
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form"
+            data-action="{:U('status_modify',array('action'=>'off'))}">
+            <img src="__IMG__/unable.png"/>
+            批量隐藏
+        </li>
+    </ul>
+</div>
+<div class="tableCon">
+    <div style="visibility: hidden;display: none;">
+        <div id="search-form-div">
+            <form action="__ACTION__" method="post" id="search-form" class="layui-form">
+                <div class="layerCon bg_f">
+                    <table class="layerTable" border="0">
+                        <tr class="h50">
+                            <td><label for="cuid_name">师傅：</label></td>
+                            <td>
+                                <input id="cuid_name" type="text" name="cuid_name" value="{$cuidname}" placeholder="请输入师傅名称"/>
+                            </td>
+                        </tr>
+                <!--        <tr class="h50">
+                            <td><label for="uid_name">用户：</label></td>
+                            <td>
+                                <input id="uid_name" type="text" name="uid_name" value="{$uidname}"/>
+                            </td>
+                        </tr>-->
+                        <tr class="h50">
+                            <td><label for="ce_time">评论时间：</label></td>
+                            <td>
+                                开始时间：<input id="ce_time" type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"  name="ce_time1" value="{$cetime1}"/>
+                                结束时间：<input id="ce_time1" type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"  name="ce_time2" value="{$cetime2}"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="ce_state">状态：</label></td>
+                            <td>
+                                <select  id="ce_state"  name="ce_state">
+                                    <option value="">=====无=====</option>
+                                    <option value="1" <eq name="cestate" value="1">selected</eq>>=====显示=====</option>
+                                    <option value="0" <eq name="cestate" value="0">selected</eq>>=====隐藏=====</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="layerBtns">
+                        <button class="btn" type="submit">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="search-form-div1" style="display: none;">
+        <textarea cols="50" rows="10" class="content1" style="width: 100%;height: 100%;"  disabled></textarea>
+    </div>
+    <div class="search-form-div2" style="display: none;">
+        <div class="ceimglist1"></div>
+    </div>
+    <em class="xian"></em>
+    <form action="{:U('sort')}" method="post" class="js-ajax-form" id="js-ajax-form">
+        <table class="table" border="0">
+            <thead>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th width="40">ID</th>
+                <th>师傅</th>
+                <th>用户</th>
+                <th>服务评分</th>
+                <th>质量评分</th>
+                <th>评论</th>
+                <th>评论时间</th>
+                <th>施工图片</th>
+                <th>是否显示</th>
+                <th>是否匿名</th>
+            </tr>
+            </thead>
+            <tbody>
+            <volist name="img_ids" id="info">
+                <tr>
+                    <td>
+                        <input class="va_m" type="checkbox" name="ids[]" value="{$info.ce_id}" onclick="checkBoxOp(this)" />
+                    </td>
+                    <td>{$info.ce_id}</td>
+                    <td>{$info.cuid_name}</td>
+                    <td>{$info.uid_name}</td>
+                    <td>{$info.ce_servicescore}</td>
+                    <td>{$info.ce_qualityscore}</td>
+                    <td><input type="hidden" class="cfcontent" value="{$info.ce_content}"><input type="button"  value="点击查看" onclick="test1(this)">
+                    </td>
+                    <td>{$info.ce_time|strtotime|date='Y-m-d H:i',###}</td>
+                    <td><div style="display: none" class="ceimglist">
+                        <volist name="info['ce_imglist']" id="imgids"><img src="{$imgids}" onclick="moveImg(this)" style="margin-left: 3px;" width="150px;" height="150px;"><br/></volist>
+                    </div><input type="button"  value="点击查看" onclick="test2(this)"></td>
+                    <td><eq name="info.ce_state" value="1">显示</eq><eq name="info.ce_state" value="0">隐藏</eq></td>
+                    <td><eq name="info.ce_anonymous" value="1">是</eq><eq name="info.ce_anonymous" value="0">否</eq></td>
+                   </tr>
+            </volist>
+            </tbody>
+        </table>
+    </form>
+</div>
+<div class="pageCon">
+    {$page_bar}       每页 20 条，共 {$count} 条
+</div>
+
+<script>
+    /*图片放大与缩小*/
+    function moveImg(obj)
+    {
+        var width = $(obj).width();
+        if(width==150) {
+            $(obj).width(500);
+            $(obj).height(500);
+        }else {
+            $(obj).width(150);
+            $(obj).height(150);
+        }
+    }
+    /*弹出评论*/
+    function test1(obj) {
+        $(".search-form-div1"). find(".content1").html(" ");
+        var cfcontent = $(obj).parent("td").find(".cfcontent").val();
+        $(".search-form-div1"). find(".content1").html(cfcontent);
+        layerDiv('评论',$('.search-form-div1').html(),'500px','300px');
+    }
+    /*弹出图片*/
+    function test2(objs) {
+        $(".search-form-div2").find(".ceimglist1").html(" ");
+        var cfyanshoucontent = $(objs).parent("td").find(".ceimglist").html();
+        $(".search-form-div2").find(".ceimglist1").html(cfyanshoucontent);
+        layerDiv('施工图片',$('.search-form-div2').html(),'700px','500px');
+    }
+    $(function () {
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+
+    });
+    /* 重载页面 */
+    function reloadPage(win) {
+        var location = win.location;
+        location.href = location.pathname + location.search;
+    }
+
+
+
+
+</script>
+</body>
+</html>

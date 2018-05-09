@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户-添加</title>
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/css/button.css"/>
+    <script src="__PUBLIC__/js/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/js/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/js/iframe.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<div class="layerCon bg_f">
+    <span style="color: #ff2c37">*如省和市为同一个，请填写相同的省市！</span>
+    <table class="layerTable" border="0">
+        <tr class="h30">
+            <td>账号类型：</td>
+            <td colspan="5">
+                <select id="u_type" name="u_type" onchange="displaytypes()">
+                    <option value="1">用户</option>
+                    <option value="2">师傅</option>
+                    <option value="3">商家</option>
+                    <option value="4">评估人员</option>
+                </select>
+            </td>
+            <td>登陆账号：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="u_loginname" id="u_loginname" value="" placeholder="请输入登陆账号"/>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>登陆密码：</td>
+            <td colspan="5">
+                <input class="must" type="password" name="u_loginpassword" id="u_loginpassword" value="" placeholder="请输入登陆密码"/>
+            </td>
+            <td>电话：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="u_phone" id="u_phone" value="" placeholder="请输入电话"/>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>微信账号：</td>
+            <td colspan="5">
+                <input type="text" name="u_wxopenid" id="u_wxopenid" value="" placeholder="请输入微信账号"/>
+            </td>
+            <td>QQ账号：</td>
+            <td colspan="5">
+                <input type="text" name="u_qqopenid" id="u_qqopenid" value="" placeholder="请输入QQ账号"/>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>昵称：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="u_nickname" id="u_nickname" value="" placeholder="请输入昵称"/>
+            </td>
+            <td>账号状态：</td>
+            <td colspan="5">
+                <select id="u_state" name="u_state">
+                    <option value="1">启用</option>
+                    <option value="0">禁用</option>
+                </select>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>省：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="ua_province" id="ua_province" value="" placeholder="请输入省"/>
+            </td>
+            <td>市：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="ua_city" id="ua_city" value="" placeholder="请输入市"/>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>县：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="ua_county" id="ua_county" value="" placeholder="请输入县"/>
+            </td>
+            <td>具体地址：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="ua_address" id="ua_address" value="" placeholder="请输入具体地址"/>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>联系电话：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="ua_phone" id="ua_phone" value="" placeholder="请输入联系电话"/>
+            </td>
+            <td>收货人名称：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="ua_name" id="ua_name" value="" placeholder="请输入收货人姓名"/>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>默认地址：</td>
+            <td colspan="11">
+                <select id="ua_moren" name="ua_moren">
+                    <option value="1">是</option>
+                    <option value="0">否</option>
+                </select>
+            </td>
+        </tr>
+        <tr class="h50">
+            <td>头像：</td>
+            <td colspan="11">
+                <form enctype="multipart/form-data" method="post" class="img1" style="float: left;">
+                    <div class="imgCon " colspan="5" style="position: relative;height: 150px;width: 150px;">
+
+                        <div class="uopImg upBtn upload-btn-a" data-type="avatar" data-is_edit="1" data-inited="1">
+                            <img src="__PUBLIC__/img/addimg.png" width="150px;" height="150px;" style="float: left;">
+                            <input class="upload-input uploadFile" type="file" size="100" name="upload_file"
+                                   onchange="uploadImage(this);">
+                        </div>
+                    </div>
+                </form>
+
+                <div class="imgadd u_favicon" id="u_favicon" style="margin-top:10px;width: 520px;">
+
+                </div>
+            </td>
+        </tr>
+        <tr class="h2"></tr>
+    </table>
+    <div class="search-form-div" style="display: none;">
+        <table class="layerTable" border="0">
+            <tr class="h30">
+                <td>开户地址：</td>
+                <td colspan="11">
+                    <input type="text" name="u_bankaddress" id="u_bankaddress" value="" placeholder="请输入银行卡开户地址"/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>银行卡名称：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_bankname" id="u_bankname" value="" placeholder="请输入银行卡名称"/>
+                </td>
+                <td>银行卡：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_bankcard" id="u_bankcard" value="" placeholder="请输入银行卡号"/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>真实姓名：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_realname" id="u_realname" value="" placeholder="请输入真实姓名"/>
+                </td>
+                <td>身份证：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_carded" id="u_carded" value="" placeholder="请输入身份证"/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>联系电话：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_tel" id="u_tel" value="" placeholder="请输入联系电话"/>
+                </td>
+                <td>联系地址：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_address" id="u_address" value="" placeholder="请输入联系地址"/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>审核状态：</td>
+                <td colspan="5">
+                    <select id="u_toexamine" name="u_toexamine">
+                        <option value="0">新注册的号</option>
+                        <option value="1">通过审核</option>
+                        <option value="2">资料不合格未通过</option>
+                        <option value="3">编辑资料待审核</option>
+                    </select>
+                </td>
+                <td>经度：</td>
+                <td colspan="5">
+                    <input type="text" name="u_longitude" id="u_longitude" value="" placeholder="请输入经度"/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>纬度：</td>
+                <td colspan="5">
+                    <input type="text" name="u_latitude" id="u_latitude" value="" placeholder="请输入纬度"/>
+                </td>
+                <td>师傅类型：</td>
+                <td colspan="5">
+                    <lable><input class="must" type="radio" style="display: inline-block !important;width: 15px;height: 15px;"
+                                  name="u_appoint" id="appoint" value="1" onclick="displaysgdtype(this)"/>团体
+                    </lable>
+                    <lable><input class="must" type="radio" style="display: inline-block !important;width: 15px;height: 15px;"
+                                  name="u_appoint" id="appointtxt" value="0"  onclick="displaysgdtype(this)" checked/>个人
+                    </lable>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>是否维修中：</td>
+                <td colspan="5">
+                    <lable><input class="must" type="radio" style="display: inline-block !important;width: 15px;height: 15px;"
+                                  name="u_shanggong" id="u_shanggong" value="1"/>是
+                    </lable>
+                    <lable><input class="must" type="radio" style="display: inline-block !important;width: 15px;height: 15px;"
+                                  name="u_shanggong" id="u_shanggongtxt" value="0" checked/>否
+                    </lable>
+                </td>
+                <td>是否上班：</td>
+                <td colspan="5" >
+                    <lable><input class="must" type="radio" style="display: inline-block !important;width: 15px;height: 15px;"
+                                  name="u_shangban" id="u_shangban" value="1"/>是
+                    </lable>
+                    <lable><input class="must" type="radio" style="display: inline-block !important;width: 15px;height: 15px;"
+                                  name="u_shangban" id="u_shangbantxt" value="0" checked/>否
+                    </lable>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>身份证图片：</td>
+                <td colspan="11">
+                    <form enctype="multipart/form-data" method="post" class="img1" style="float: left;">
+                        <div class="imgCon " colspan="5" style="position: relative;height: 150px;width: 150px;">
+
+                            <div class="uopImg upBtn upload-btn-a" data-type="avatar" data-is_edit="1" data-inited="1">
+                                <img src="__PUBLIC__/img/addimg.png" width="150px;" height="150px;"
+                                     style="float: left;">
+                                <input class="upload-input uploadFile" type="file" size="100" name="upload_file"
+                                       onchange="uploadImage(this);">
+                            </div>
+                        </div>
+                    </form>
+                    <div class="imgadd u_cardedimg" id="u_cardedimg" style="margin-top:10px;width: 520px;">
+
+                    </div>
+                    <br/>
+                </td>
+            </tr>
+            <tr class="h2"></tr>
+        </table>
+    </div>
+    <div class="search-form-div3" style="display: none;">
+        <table class="layerTable" border="0">
+            <tr class="h30">
+                <td>营业执照：</td>
+                <td colspan="5">
+                    <form enctype="multipart/form-data" method="post" class="img1" style="float: left;">
+                        <div class="imgCon " colspan="5" style="position: relative;height: 150px;width: 150px;">
+
+                            <div class="uopImg upBtn upload-btn-a" data-type="avatar" data-is_edit="1" data-inited="1">
+                                <img src="__PUBLIC__/img/addimg.png" width="150px;" height="150px;"
+                                     style="float: left;">
+                                <input class="upload-input uploadFile" type="file" size="100" name="upload_file"
+                                       onchange="uploadImage(this);">
+                            </div>
+                        </div>
+                    </form>
+                    <div class="imgadd u_businesslicense" id="ubusinesslicense" style="margin-top:10px;width: 520px;">
+
+                    </div>
+                    <br/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>实体店门面图：</td>
+                <td colspan="5">
+                    <form enctype="multipart/form-data" method="post" class="img1" style="float: left;">
+                        <div class="imgCon " colspan="5" style="position: relative;height: 150px;width: 150px;">
+
+                            <div class="uopImg upBtn upload-btn-a" data-type="avatar" data-is_edit="1" data-inited="1">
+                                <img src="__PUBLIC__/img/addimg.png" width="150px;" height="150px;"
+                                     style="float: left;">
+                                <input class="upload-input uploadFile" type="file" size="100" name="upload_file"
+                                       onchange="uploadImage(this);">
+                            </div>
+                        </div>
+                    </form>
+                    <div class="imgadd u_storemap" id="ustoremap" style="margin-top:10px;width: 520px;">
+
+                    </div>
+                    <br/>
+                </td>
+            </tr>
+            <tr class="h30"></tr>
+        </table>
+    </div>
+    <div class="search-form-div2" style="display: none;">
+        <table class="layerTable" border="0">
+            <tr class="h30">
+                <td>开户地址：</td>
+                <td colspan="11">
+                    <input type="text" name="u_bankaddress" id="ubankaddress" value="" placeholder="请输入银行卡开户地址"/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>银行卡名称：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_bankname" id="ubankname" value="" placeholder="请输入银行卡名称"/>
+                </td>
+                <td>银行卡：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_bankcard" id="ubankcard" value="" placeholder="请输入银行卡号"/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>联系电话：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_tel" id="u_teltxt" value="" placeholder="请输入联系电话"/>
+                </td>
+                <td>联系地址：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_address" id="u_addresstxt" value="" placeholder="请输入联系地址"/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>审核状态：</td>
+                <td colspan="5">
+                    <select id="u_toexaminetxt" name="u_toexamine">
+                        <option value="0">新注册的号</option>
+                        <option value="1">通过审核</option>
+                        <option value="2">资料不合格未通过</option>
+                        <option value="3">编辑资料待审核</option>
+                    </select>
+                </td>
+                <td>经度：</td>
+                <td colspan="5">
+                    <input type="text" name="u_longitude" id="u_longitudetxt" value="" placeholder="请输入经度"/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>纬度：</td>
+                <td colspan="5">
+                    <input type="text" name="u_latitude" id="u_latitudetxt" value="" placeholder="请输入纬度"/>
+                </td>
+                <td>店铺名称：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_shopname" id="u_shopname" value="" placeholder="请输入店铺名称"/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>真实姓名：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_realname" id="u_realnametxt" value="" placeholder="请输入真实姓名"/>
+                </td>
+                <td>售后电话：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_aftermarketcalls" id="u_aftermarketcalls" value="" placeholder="请输入售后电话"/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>身份证图片：</td>
+                <td colspan="11">
+                    <form enctype="multipart/form-data" method="post" class="img1" style="float: left;">
+                        <div class="imgCon " colspan="5" style="position: relative;height: 150px;width: 150px;">
+                            <div class="uopImg upBtn upload-btn-a" data-type="avatar" data-is_edit="1" data-inited="1">
+                                <img src="__PUBLIC__/img/addimg.png" width="150px;" height="150px;"
+                                     style="float: left;">
+                                <input class="upload-input uploadFile" type="file" size="100" name="upload_file"
+                                       onchange="uploadImage(this);">
+                            </div>
+                        </div>
+                    </form>
+                    <div class="imgadd u_cardedimg1" id="u_cardedimg1" style="margin-top:10px;width: 520px;">
+
+                    </div>
+                    <br/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>营业执照：</td>
+                <td colspan="11">
+                    <form enctype="multipart/form-data" method="post" class="img1" style="float: left;">
+                        <div class="imgCon " colspan="5" style="position: relative;height: 150px;width: 150px;">
+
+                            <div class="uopImg upBtn upload-btn-a" data-type="avatar" data-is_edit="1" data-inited="1">
+                                <img src="__PUBLIC__/img/addimg.png" width="150px;" height="150px;"
+                                     style="float: left;">
+                                <input class="upload-input uploadFile" type="file" size="100" name="upload_file"
+                                       onchange="uploadImage(this);">
+                            </div>
+                        </div>
+                    </form>
+                    <div class="imgadd u_businesslicense" id="u_businesslicense" style="margin-top:10px;width: 520px;">
+
+                    </div>
+                    <br/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>实体店门面图：</td>
+                <td colspan="11">
+                    <form enctype="multipart/form-data" method="post" class="img1" style="float: left;">
+                        <div class="imgCon " colspan="5" style="position: relative;height: 150px;width: 150px;">
+
+                            <div class="uopImg upBtn upload-btn-a" data-type="avatar" data-is_edit="1" data-inited="1">
+                                <img src="__PUBLIC__/img/addimg.png" width="150px;" height="150px;"
+                                     style="float: left;">
+                                <input class="upload-input uploadFile" type="file" size="100" name="upload_file"
+                                       onchange="uploadImage(this);">
+                            </div>
+                        </div>
+                    </form>
+                    <div class="imgadd u_storemap" id="u_storemap" style="margin-top:10px;width: 520px;">
+
+                    </div>
+                    <br/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>产品销售环境图：</td>
+                <td colspan="11">
+                    <form enctype="multipart/form-data" method="post" class="img1">
+                        <div class="imgadd" id="u_environmental" style="margin-top:10px;width: 520px;"></div>
+                        <div class="imgCon "  style="position: relative;height: 150px;width: 150px;float: left;padding: 0px !important;">
+                            <div class="uopImg upBtn upload-btn-a" data-type="avatar" data-is_edit="1" data-inited="1">
+                                <img src="__PUBLIC__/img/addimg.png" width="150px;" height="150px;"
+                                     style="float: left;">
+                                <input class="upload-input uploadFile" type="file" size="100" name="upload_file"
+                                       onchange="uploadImage(this);">
+                            </div>
+                        </div>
+                    </form>
+                    <br/>
+                </td>
+            </tr>
+            <tr class="h30"></tr>
+        </table>
+    </div>
+    <div class="layerBtns">
+        <a class="btn" onclick="ajaxinsert()" href="javascript:void(0)">添加</a>
+    </div>
+</div>
+<script type="text/javascript">
+    /*选中账号类型---显示*/
+    function displaytypes() {
+        var utype = $("#u_type option:selected").val();
+        if (utype == 1) {
+            $(".search-form-div").hide();
+            $(".search-form-div2").hide();
+            $(".search-form-div3").hide();
+        }
+        if (utype == 2) {
+            $(".search-form-div2").hide();
+            $(".search-form-div3").hide();
+            $(".search-form-div").show();
+        }
+        if (utype == 3) {
+            $(".search-form-div").hide();
+            $(".search-form-div3").hide();
+            $(".search-form-div2").show();
+        }
+        if (utype == 4) {
+            $(".search-form-div2").hide();
+            $(".search-form-div3").hide();
+            $(".search-form-div").show();
+        }
+    }
+    /*选择师傅类型---显示隐藏*/
+    function  displaysgdtype(obj) {
+        var a = $(obj).val();
+        if(a == 0){
+            $(".search-form-div").show();
+            $(".search-form-div3").hide();
+            $(".search-form-div2").hide();
+        }else{
+            $(".search-form-div").show();
+            $(".search-form-div3").show();
+            $(".search-form-div2").hide();
+        }
+    }
+    /*图片上传-预览*/
+    function uploadImage(obj) {
+        /*判断是否有选择上传文件*/
+        var imgPath = obj.files;
+        /* console.log(imgPath);*/
+        if (!imgPath.length) {
+            layer.msg('请选择需要上传的图片!', {icon: 1, time: 1000});
+            return;
+        }
+
+        var parent_obj = $(obj).parents('td'),
+            addimgs = parent_obj.find('.imgadd');
+        /*判断头像的张数*/
+         var ufavicon = $(obj).parents('td').find(".u_favicon").find('img').length;
+         if(ufavicon>=1){
+             layer.msg('头像只能上传一张!', {icon: 1, time: 1000});
+             return;
+         }
+         /*判断身份证张数*/
+         var ucardedimg = $(obj).parents('td').find(".u_cardedimg").find('img').length;
+        if(ucardedimg>2){
+            layer.msg('身份证只能上传两张!', {icon: 1, time: 1000});
+            return;
+        }
+        /*判断身份证张数*/
+        var ucardedimg1 = $(obj).parents('td').find(".u_cardedimg1").find('img').length;
+        if(ucardedimg1>2){
+            layer.msg('身份证只能上传两张!', {icon: 1, time: 1000});
+            return;
+        }
+        /*判断店铺图片张数*/
+        var ustoremap = $(obj).parents('td').find(".u_storemap").find('img').length;
+        if(ustoremap>2){
+            layer.msg('店门面图只能上传两张!', {icon: 1, time: 1000});
+            return;
+        }
+        /*判断营业执照张数*/
+         var ubusinesslicense = $(obj).parents('td').find(".u_businesslicense").find('img').length;
+        if(ubusinesslicense>=1){
+            layer.msg('营业执照只能上传一张!', {icon: 1, time: 1000});
+            return;
+        }
+        var ccccc = new FormData();
+        ccccc.append('upload_file', imgPath[0]);
+        $.ajax({
+            type: "POST",
+            url: "{:U('banner/ajaxupload')}",
+            data: ccccc,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                addimgs.append("<img src='" + data.url + "'   width='150px;' height='150px;'  style='float:left;margin:0 0 0 0px;'><img src='/Public/img/trash.png' class='delthis' style='float:left;margin-top:0px;margin-right: 2px;'> ");
+                layer.msg(data.info, {icon: 1, time: 1000});
+            },
+            error: function (e) {
+                layer.msg(e.info, {icon: 1, time: 1000});
+            }
+        });
+    };
+    /*删除预览图片*/
+    $(".imgadd").on("click", '.delthis', function () {
+        $(this).prev().remove();
+        $(this).remove();
+    });
+    /*添加*/
+    function ajaxinsert() {
+        /*获取用户地址*/
+        var ua_province = $("#ua_province").val();
+        var ua_city = $("#ua_city").val();
+        var ua_county = $("#ua_county").val();
+        var ua_address = $("#ua_address").val();
+        var ua_phone = $("#ua_phone").val();
+        var ua_name = $("#ua_name").val();
+        var ua_moren = $("#ua_moren").find("option:selected").val();
+        /*当前为用户*/
+        var utype = $("#u_type option:selected").val();
+        /*console.log(utype);*/
+        var uloginname = $("#u_loginname").val();
+        if (uloginname.length < 11 || uloginname.length > 11 || isNaN(uloginname)) {
+            layer.msg('登陆账号请输入11位数字!', {icon: 2, time: 1500});
+            return;
+        }
+
+        var uloginpassword = $("#u_loginpassword").val();
+        if (uloginpassword.length < 6 || uloginpassword.length > 20) {
+            layer.msg('登陆密码请输入6-20位字符!', {icon: 2, time: 1500});
+            return;
+        }
+
+        var uphone = $("#u_phone").val();
+        if (isNaN(uphone)) {
+            layer.msg('电话号请输入数字!', {icon: 2, time: 1500});
+            return;
+        }
+
+        var uwxopenid = $("#u_wxopenid").val();
+        var uqqopenid = $("#u_qqopenid").val();
+        var unickname = $('#u_nickname').val();
+        var faviconimgs = "";
+        $("#u_favicon").find("img").each(function () {
+            faviconimgs += $(this).attr("src") + ",";
+        });
+        if (faviconimgs.length > 0) faviconimgs = faviconimgs.substr(0, faviconimgs.length - 1);
+        faviconimgs =  faviconimgs.replace(',/Public/img/trash.png',"");
+
+        var ustate = $("#u_state").val();
+        if (utype == 1) {
+            var data = {
+                'u_type': utype,
+                'u_loginname': uloginname,
+                'u_loginpassword': uloginpassword,
+                'u_phone': uphone,
+                'u_wxopenid': uwxopenid,
+                'u_qqopenid': uqqopenid,
+                'u_favicon': faviconimgs,
+                'u_nickname': unickname,
+                'u_state':ustate,
+                /*获取用户地址*/
+                'ua_province':ua_province,
+                'ua_city':ua_city,
+                'ua_county':ua_county,
+                'ua_address':ua_address,
+                'ua_phone':ua_phone,
+                'ua_name':ua_name,
+                'ua_moren':ua_moren
+            };
+        }
+        /*当前为师傅*/
+        var ubankcard = $("#u_bankcard").val();
+        var ucarded = $("#u_carded").val();
+        if(utype==2||utype==4){
+        if (ucarded.length < 18 || ucarded.length > 18) {
+            layer.msg('身份证请输入18位字符!', {icon: 2, time: 1500});
+            return;
+        }}
+        var u_bankaddress = $("#u_bankaddress").val();
+        var utel = $("#u_tel").val();
+        var uaddress = $("#u_address").val();
+        var utoexamine = $("#u_toexamine").val();
+        var ulongitude = $("#u_longitude").val();
+        var ulatitude = $("#u_latitude").val();
+        var urealname = $("#u_realname").val();
+        var uappoint = $('input[name=u_appoint]:checked').val();
+        var ushanggong = $('input[name=u_shanggong]:checked').val();
+        var ushangban = $('input[name=u_shangban]:checked').val();
+        var ubankname = $("#u_bankname").val();
+        var cardedimgimgs = "";
+        $("#u_cardedimg").find("img").each(function () {
+            cardedimgimgs += $(this).attr("src") + ",";
+            cardedimgimgs =  cardedimgimgs.replace(',/Public/img/trash.png',"");
+        });
+        if (cardedimgimgs.length > 0) cardedimgimgs = cardedimgimgs.substr(0, cardedimgimgs.length - 1);
+
+        var businesslicenseimgs1 = "";
+        $("#ubusinesslicense").find("img").each(function () {
+            businesslicenseimgs1 += $(this).attr("src") + ",";
+            businesslicenseimgs1 =  businesslicenseimgs1.replace(',/Public/img/trash.png',"");
+        });
+        if (businesslicenseimgs1.length > 0) businesslicenseimgs1 = businesslicenseimgs1.substr(0, businesslicenseimgs1.length - 1);
+
+        var storemapimgs1 = "";
+        $("#ustoremap").find("img").each(function () {
+            storemapimgs1 += $(this).attr("src") + ",";
+            storemapimgs1 =  storemapimgs1.replace(',/Public/img/trash.png',"");
+        });
+        if (storemapimgs1.length > 0) storemapimgs1 = storemapimgs1.substr(0, storemapimgs1.length - 1);
+
+        if (utype == 2||utype == 4) {
+            if(uappoint == 0){
+                var data = {
+                    'u_shanggong':ushanggong,
+                    'u_shangban':ushangban,
+                    'u_bankname':ubankname,
+                    'u_type': utype,
+                    'u_loginname': uloginname,
+                    'u_loginpassword': uloginpassword,
+                    'u_phone': uphone,
+                    'u_wxopenid': uwxopenid,
+                    'u_qqopenid': uqqopenid,
+                    'u_favicon': faviconimgs,
+                    'u_state':ustate,
+                    'u_nickname': unickname,
+                    'u_bankcard': ubankcard,
+                    'u_carded': ucarded,
+                    'u_tel': utel,
+                    'u_address': uaddress,
+                    'u_toexamine': utoexamine,
+                    'u_longitude': ulongitude,
+                    'u_latitude': ulatitude,
+                    'u_realname': urealname,
+                    'u_appoint': uappoint,
+                    'u_cardedimg': cardedimgimgs,
+                    'u_bankaddress': u_bankaddress,
+                    /*获取用户地址*/
+                    'ua_province':ua_province,
+                    'ua_city':ua_city,
+                    'ua_county':ua_county,
+                    'ua_address':ua_address,
+                    'ua_phone':ua_phone,
+                    'ua_name':ua_name,
+                    'ua_moren':ua_moren
+                }
+            }else{
+                var data = {
+                    'u_shanggong':ushanggong,
+                    'u_shangban':ushangban,
+                    'u_bankname':ubankname,
+                    'u_type': utype,
+                    'u_loginname': uloginname,
+                    'u_loginpassword': uloginpassword,
+                    'u_phone': uphone,
+                    'u_wxopenid': uwxopenid,
+                    'u_qqopenid': uqqopenid,
+                    'u_favicon': faviconimgs,
+                    'u_state':ustate,
+                    'u_nickname': unickname,
+                    'u_bankcard': ubankcard,
+                    'u_carded': ucarded,
+                    'u_tel': utel,
+                    'u_address': uaddress,
+                    'u_toexamine': utoexamine,
+                    'u_longitude': ulongitude,
+                    'u_latitude': ulatitude,
+                    'u_realname': urealname,
+                    'u_appoint': uappoint,
+                    'u_cardedimg': cardedimgimgs,
+                    'u_businesslicense': businesslicenseimgs1,
+                    'u_storemap': storemapimgs1,
+                    'u_bankaddress': u_bankaddress,
+                    /*获取用户地址*/
+                    'ua_province':ua_province,
+                    'ua_city':ua_city,
+                    'ua_county':ua_county,
+                    'ua_address':ua_address,
+                    'ua_phone':ua_phone,
+                    'ua_name':ua_name,
+                    'ua_moren':ua_moren
+                }
+            }
+        }
+        /*当前为商家*/
+        var uteltxt = $("#u_teltxt").val();
+        var uaddresstxt = $("#u_addresstxt").val();
+        var utoexaminetxt = $("#u_toexaminetxt").val();
+        var ulongitudetxt = $("#u_longitudetxt").val();
+        var ulatitudetxt = $("#u_latitudetxt").val();
+        var ushopname = $("#u_shopname").val();
+        var uaftermarketcalls = $("#u_aftermarketcalls").val();
+        var urealnametxt = $("#u_realnametxt").val();
+        var ubankname1 = $("#ubankname").val();
+        var ubankcard1 = $("#ubankcard").val();
+        var ubankaddress = $("#ubankaddress").val();
+        var cardedimgimgs1 = "";
+        $("#u_cardedimg1").find("img").each(function () {
+            cardedimgimgs1 += $(this).attr("src") + ",";
+            cardedimgimgs1 =  cardedimgimgs1.replace(',/Public/img/trash.png',"");
+        });
+        if (cardedimgimgs1.length > 0) cardedimgimgs1 = cardedimgimgs1.substr(0, cardedimgimgs1.length - 1);
+
+        var businesslicenseimgs = "";
+        $("#u_businesslicense").find("img").each(function () {
+            businesslicenseimgs += $(this).attr("src") + ",";
+            businesslicenseimgs =  businesslicenseimgs.replace(',/Public/img/trash.png',"");
+        });
+        if (businesslicenseimgs.length > 0) businesslicenseimgs = businesslicenseimgs.substr(0, businesslicenseimgs.length - 1);
+
+        var storemapimgs = "";
+        $("#u_storemap").find("img").each(function () {
+            storemapimgs += $(this).attr("src") + ",";
+            storemapimgs =  storemapimgs.replace(',/Public/img/trash.png',"");
+        });
+        if (storemapimgs.length > 0) storemapimgs = storemapimgs.substr(0, storemapimgs.length - 1);
+
+        var environmentalimgs = "";
+        $("#u_environmental").find("img").each(function () {
+            environmentalimgs += $(this).attr("src") + ",";
+            environmentalimgs =  environmentalimgs.replace(',/Public/img/trash.png',"");
+        });
+        if (environmentalimgs.length > 0) environmentalimgs = environmentalimgs.substr(0, environmentalimgs.length - 1);
+
+        if (utype == 3) {
+            var data = {
+                'u_type': utype,
+                'u_loginname': uloginname,
+                'u_loginpassword': uloginpassword,
+                'u_phone': uphone,
+                'u_wxopenid': uwxopenid,
+                'u_qqopenid': uqqopenid,
+                'u_favicon': faviconimgs,
+                'u_state':ustate,
+                'u_nickname': unickname,
+                'u_tel':uteltxt,
+                'u_address':uaddresstxt,
+                'u_toexamine':utoexaminetxt,
+                'u_longitude':ulongitudetxt,
+                'u_latitude':ulatitudetxt,
+                'u_shopname':ushopname,
+                'u_aftermarketcalls':uaftermarketcalls,
+                'u_appoint':uappoint,
+                'u_realname':urealnametxt,
+                'u_businesslicense': businesslicenseimgs,
+                'u_storemap': storemapimgs,
+                'u_environmental': environmentalimgs,
+                'u_bankname': ubankname1,
+                'u_bankcard': ubankcard1,
+                'u_bankaddress': ubankaddress,
+                'u_cardedimg':cardedimgimgs1,
+                /*获取用户地址*/
+                'ua_province':ua_province,
+                'ua_city':ua_city,
+                'ua_county':ua_county,
+                'ua_address':ua_address,
+                'ua_phone':ua_phone,
+                'ua_name':ua_name,
+                'ua_moren':ua_moren
+            }
+        }
+        console.log(data);
+         var index = layer.load({shade: [0.5, '#fff']});
+         $.ajax({
+             type: "post",
+             url: "{:U('userinfo/insert')}",
+             data: data,
+             dataType: "json",
+             success: function (e) {
+                 layer.close(index);
+                 if (e.status == 1) {
+                     layer.msg(e.info);
+                     window.parent.location.reload();
+                 }
+                 if (e.status == 0) {
+                     layer.msg(e.info);
+                 }
+             },
+             error: function () {
+                 layer.close(index);
+                 layer.alert('操作失败！');
+             }
+         });
+    }
+
+    /*$(function () {
+       $('.uploadFile').on('change',uploadImage(this));
+    });*/
+</script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>付款阶段详情</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+</head>
+<body>
+<div class="layerCon bg_f">
+    <table class="layerTable" border="0">
+        <tr class="h30">
+            <td>施工需求：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="s_cid" id="s_cid" value="{$info.s_cid}" disabled />
+            </td>
+            <td>施工阶段：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="s_number" id="s_number" value="{$info.s_number}" disabled />
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>阶段价格：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="s_price" id="s_price" value="{$info.s_price}" disabled />
+            </td>
+            <td>阶段描述：</td>
+            <td colspan="5">
+                <textarea name="s_content" disabled>{$info.s_content}</textarea>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>开始时间：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="s_startime" id="s_startime" value="{$info.s_startime}" disabled />
+            </td>
+            <td>结束时间：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="s_endtime" id="s_endtime" value="{$info.s_endtime}" disabled />
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>支付状态：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="s_pay" id="s_pay" value='<eq name="info.s_pay" value="1">已支付<else/>未支付</eq>' disabled />
+            </td>
+            <td>支付：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="s_payid" id="s_payid" value="{$info.s_payid}" disabled />
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>施工状态：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="s_state" id="s_state" value='<eq name="info.s_pay" value="0">新数据</eq>
+            <eq name="info.s_pay" value="10000">等待施工确认</eq><eq name="info.s_pay" value="20000">确认施工中</eq>
+            <eq name="info.s_pay" value="30000">申请施工完成</eq><eq name="info.s_pay" value="40000">施工不合格</eq>
+            <eq name="info.s_pay" value="50000">施工完成</eq>' disabled />
+            </td>
+            <td>施工不合格描述：</td>
+            <td colspan="5">
+                <textarea name="s_buxiucontent" disabled>{$info.s_buxiucontent}</textarea>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>成果描述：</td>
+            <td colspan="5">
+                <textarea name="s_chengguocontent" disabled>{$info.s_chengguocontent}</textarea>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

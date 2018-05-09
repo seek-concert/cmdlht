@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>产品订单</title>
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/css/style.css"/>
+    <script src="__PUBLIC__/js/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/js/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/js/iframe.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/js/ajax-submit.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/js/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+<h4>产品订单列表</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li onclick="reloadPage(window)">
+            <img src="__PUBLIC__/img/arrow_refresh.png"/>
+            重置
+        </li>
+        <li class="fgf" onclick="layerDiv('查询',$('#search-form-div').html(),'560px','410px')">
+            <img src="__PUBLIC__/img/page_white_magnify.png"/>
+            查询
+        </li>
+        <li class="fgf" onclick="layerPage('统计折线图','{:U('statistics')}','750px','520px')">
+            <img src="__PUBLIC__/img/chart_bar.png"/>
+            统计
+        </li>
+        <li class="fgf" onclick="modifystate(&#39;all&#39;)">
+            <img src="__PUBLIC__/img/edit.png"/>
+            批量修改
+        </li>
+        <form action="{:U('productorder/excel_order')}" method="post">
+            <input type="hidden" name="ids" id="ids1" value=""><li class="fgf" style="padding-bottom: 0">
+             <button  type="submit" style="border:none;background-color: inherit;" onclick="exceldaochu(&#39;all&#39;)">
+            <img src="__PUBLIC__/img/excel_exports.png"/>Excel导出</button></li>
+        </form>
+    </ul>
+</div>
+<div class="tableCon">
+    <div style="visibility: hidden;display: none;">
+        <div id="search-form-div">
+            <form action="__ACTION__" method="post" id="search-form" class="layui-form">
+                <div class="layerCon bg_f">
+                    <table class="layerTable" border="0">
+                        <tr class="h50">
+                            <td><label for="pd_onlyid">订单唯一编号：</label></td>
+                            <td>
+                                <input id="pd_onlyid" type="text" name="pd_onlyid" value="{$pdonlyid}" placeholder="请输入订单唯一编号"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label>下单时间：</label></td>
+                            <td>
+                                开始时间：<input  type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"  name="pd_time1" value="{$pdtime1}"/>
+                                结束时间：<input  type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"  name="pd_time2" value="{$pdtime2}"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="pd_state">订单状态：</label></td>
+                            <td>
+                                <select  id="pd_state"  name="pd_state">
+                                    <option value="">=====无=====</option>
+                                    <option value="-1" <eq name="pdstate" value="0">selected</eq>>订单取消</option>
+                                    <option value="0" <eq name="pdstate" value="0">selected</eq>>下单--->待付款</option>
+                                    <option value="1" <eq name="pdstate" value="1">selected</eq>>付款--->待发货</option>
+                                    <option value="2" <eq name="pdstate" value="2">selected</eq>>发货--->待收货</option>
+                                    <option value="3" <eq name="pdstate" value="3">selected</eq>>----已收货---</option>
+                                    <option value="4" <eq name="pdstate" value="4">selected</eq>>----已评论---</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="pd_type">支付状态：</label></td>
+                            <td>
+                                <select  id="pd_type"  name="pd_type">
+                                    <option value="" <eq name="pdtype" value="0">selected</eq>>=====无=====</option>
+                                    <option value="0" <eq name="pdtype" value="1">selected</eq>>未支付</option>
+                                    <option value="1" <eq name="pdtype" value="1">selected</eq>>线上支付</option>
+                                    <option value="2" <eq name="pdtype" value="2">selected</eq>>线下支付</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label>支付时间：</label></td>
+                            <td>
+                                开始时间：<input  type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"  name="pd_paytime1" value="{$pdpaytime1}"/>
+                                结束时间：<input  type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"  name="pd_paytime2" value="{$pdpaytime2}"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="layerBtns">
+                        <button class="btn" type="submit">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="search-form-div2">
+            <form action="{:U('status_modify')}" method="post" class="js-ajax-form" >
+                <div class="layerCon bg_f">
+                    <table class="layerTable" border="0">
+                        <input type="hidden" name="pd_id" id="pdidtxt" value="">
+                        <tr class="h50">
+                            <td><label>订单状态：</label></td>
+                            <td>
+                                <select  name="pd_state" class="pdstatetxt" onchange="kdstate(this)" >
+                                    <option value="-1">订单取消</option>
+                                    <option value="0">下单--->待付款</option>
+                                    <option value="1">付款--->待发货</option>
+                                    <option value="2">发货--->待收货</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="h50 kd" style="display: none">
+                            <td>快递名称：</td>
+                            <td><input type="text" name="pd_kuaidname" class="kuaidival" value=""></td>
+                        </tr>
+                        <tr class="h50 kd" style="display: none">
+                            <td>快递单号：</td>
+                            <td><input type="text" name="pd_kuaidinumber" class="kuaidival" value=""></td>
+                        </tr>
+                    </table>
+                    <div class="layerBtns">
+                        <button type="submit" class="btn js-ajax-form-btn layui-btn" data-layer="true">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <em class="xian"></em>
+    <form action="" method="post" class="js-ajax-form" id="js-ajax-form">
+        <table class="table" border="0">
+            <thead>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th width="40">ID</th>
+                <th>订单地址</th>
+                <th>订单唯一编号</th>
+                <th>订单状态</th>
+                <th>状态改变时间</th>
+                <th>商家</th>
+                <th>总金额</th>
+                <th>用户昵称</th>
+                <th>下单时间</th>
+                <th>支付状态</th>
+                <th>支付时间</th>
+                <th>收货人电话</th>
+                <th>收货人姓名</th>
+                <th>收货人地址</th>
+                <th>是否删除</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <volist name="productorder_info" id="info">
+                <tr>
+                    <td>
+                        <input class="va_m" type="checkbox" name="ids[]" value="{$info.pd_id}" onclick="checkBoxOp(this)" />
+                    </td>
+                    <td>{$info.pd_id}</td>
+                    <td>{$info.pd_province}{$info.pd_city}{$info.pd_county}</td>
+                    <td>{$info.pd_onlyid}</td>
+                    <td>
+                        <eq name="info.pd_state" value="-1">取消订单</eq>
+                        <eq name="info.pd_state" value="0">下单--->待付款</eq>
+                        <eq name="info.pd_state" value="1">付款--->待发货</eq>
+                        <eq name="info.pd_state" value="2">发货--->待收货</eq>
+                        <eq name="info.pd_state" value="3">已收货</eq>
+                        <eq name="info.pd_state" value="4">已评论</eq>
+                        <if condition="$info.pd_state eq 10||$info.pd_state eq 11||$info.pd_state eq 15||$info.pd_state eq 20||$info.pd_state eq 21||$info.pd_state eq 22||$info.pd_state eq 25 "> 退换货处理中</if>
+                        <if condition="$info.pd_state eq 12||$info.pd_state eq 23"> 退换货已完成</if>
+                    </td>
+                    <td>{$info.pd_changechangetime|strtotime|date='Y-m-d H:i',###}</td>
+                    <td>{$info.fuid_name}</td>
+                    <td>{$info.pd_money|number_format=2}</td>
+                    <td>{$info.uid_name}</td>
+                    <td>{$info.pd_time|strtotime|date='Y-m-d H:i',###}</td>
+                    <td><eq name="info.pd_type" value="0">未支付</eq>
+                        <eq name="info.pd_type" value="1">线上支付</eq>
+                        <eq name="info.pd_type" value="2">线下支付</eq></td>
+                    <td><eq name="info.pd_type" value="0">暂未支付<else/>{$info.pd_paytime|strtotime|date='Y-m-d H:i',###}</eq></td>
+                    <td>{$info.pd_phone}</td>
+                    <td>{$info.pd_consigneename}</td>
+                    <td>{$info.pd_province}{$info.pd_city}{$info.pd_county}{$info.pd_address}</td>
+                    <td><eq name="info.pd_del" value="0">是</eq>
+                        <eq name="info.pd_del" value="1">否</eq>
+                    </td>
+                    <td>
+                        <a class="table_btn" title="详细"
+                           onclick="layerPage('订单详情','{:U('detail',array('pd_id'=>$info['pd_id']))}','970px','475px')"><img
+                                src="__PUBLIC__/img/edit.png" alt="详细" title="详细"></a>
+                    </td>
+                </tr>
+            </volist>
+            </tbody>
+        </table>
+    </form>
+</div>
+<div class="pageCon">
+    {$page_bar}       每页 20 条，共 {$count} 条
+</div>
+
+<script>
+    /*excel导出*/
+    function exceldaochu(rs) {
+            var ids = "";
+            if (rs == "all") {
+                var checkedlist = $("input[name=\"ids[]\"]:checked");
+                for (var i = 0; i < checkedlist.length; i++) {
+                    ids += $(checkedlist[i]).val();
+                    if (i < checkedlist.length - 1) ids += ",";
+                }
+            } else {
+                ids = rs;
+            }
+            if (ids == "") {
+                layer.msg('请选择要导出的数据!', { icon: 1, time: 1000 });
+                return;
+            }
+            $("#ids1").val(ids);
+    }
+
+    function  kdstate(obj) {
+            var a = $(obj).val();
+           if(a==2){
+               $(".kd").show();
+           }else{
+               $(".kuaidival").val("");
+               $(".kd").hide();
+           }
+    }
+    $(function () {
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+
+    });
+    /* 重载页面 */
+    function reloadPage(win) {
+        var location = win.location;
+        location.href = location.pathname + location.search;
+    }
+
+    /*批量修改状态*/
+    function modifystate(rs) {
+        var ids = "";
+        if (rs == "all") {
+            var checkedlist = $("input[name=\"ids[]\"]:checked");
+            for (var i = 0; i < checkedlist.length; i++) {
+                ids += $(checkedlist[i]).val();
+                if (i < checkedlist.length - 1) ids += ",";
+            }
+        } else {
+            ids = rs;
+        }
+//            console.log(ids);
+        if (ids == "") {
+            layer.msg('请选择要修改的数据!', { icon: 1, time: 1000 });
+            return;
+        }else{
+            layer.closeAll('dialog');
+            $('#pdidtxt').val(ids);
+            layerDiv('批量修改',$('.search-form-div2').html(),'500px','260px');
+            var pdid =  $('.search-form-div2 #pdidtxt').val(ids);
+        }
+    }
+
+
+</script>
+</body>
+</html>

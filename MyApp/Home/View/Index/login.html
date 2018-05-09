@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>崇迈装饰APP代理后台管理系统</title>
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/style.css"/>
+		<link href="__PUBLIC__/favicon.ico" type="image/x-icon" rel="shortcut icon" />
+		<!--<script src="js/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/htglxt.js" type="text/javascript" charset="utf-8"></script>-->
+	</head>
+	<body class="login" style="min-width: 1000px;background-color: #2e3e4e;">
+	<div class="logo">
+		<img src="__PUBLIC__/img/logo.png"/>
+	</div>
+	<div class="con">
+		<form action="__ACTION__" method="post" id="ajax-form">
+			<div class="input">
+				<div class="item">
+					账户
+					<input type="text" name="p_loginname" id="loginnametxt" value="" />
+				</div>
+				<div class="item">
+					密码
+					<input type="password" name="p_loginpwd" id="loginpwdtxt" value="" />
+				</div>
+				<div class="item">
+					<input class="btn" type="button" id="loginbtn" onclick="verify_login()" value="">
+					<img width="30%" class="left15" height="50" alt="验证码" src="{:U('code',array())}" onclick='this.src=this.src+"?c="+Math.random()' title="点击刷新"/>
+					<input name="code" class="captcha-text" placeholder="验证码" type="text"></div>
+			</div>
+
+			<p class="top15 captcha" id="captcha-container" style="margin-right: -93px;"></p>
+
+		</form>
+	</div>
+	<p class="cr_f tc">适用浏览器：IE9以上、360、FireFox、Chrome、Safari、Opera、傲游、搜狗、世界之窗，请尽量切换极速模式！</p>
+	<div class="foot">
+		重庆步联科技有限公司出品
+		<br>官方网站：http://www.bulian.cn/</div>
+
+		<script type="text/javascript" src="__PUBLIC__/js/jquery2-1-4.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/layer/layer.js"></script>
+		<script type="text/javascript">
+            document.onkeydown = function (event) {
+                var e = event || window.event || arguments.callee.caller.arguments[0];
+                if (e && e.keyCode == 13) {
+                    $("#loginbtn").click();
+                }
+            };
+            function verify_login() {
+                var p_loginname = $('input[name="p_loginname"]').val();
+                var p_loginpwd = $('input[name="p_loginpwd"]').val();
+                var code = $('input[name="code"]').val();
+                $.ajax({
+                    type: "post",
+                    url: "{:U('dologin')}",
+                    data:{p_loginname:p_loginname,p_loginpwd:p_loginpwd,code:code},
+                    dataType: "json",
+                    success: function (e) {
+                        if(e.status == 1){
+                            layer.msg(e.info);
+                            location.href=e.url;
+                        }
+                        if(e.status == 0){
+                            layer.msg(e.info);
+                        }
+                    },
+                    error: function (e) {
+                        layer.alert('登陆失败，请清除缓存后登陆！');
+                    }
+                });
+            }
+
+            /*//过期验证*/
+            if (window.parent !== window.self) {
+                document.write = '';
+                window.parent.location.href = window.self.location.href;
+                setTimeout(function () {
+                    document.body.innerHTML = '';
+                }, 0);
+            }
+		</script>
+	</body>
+</html>

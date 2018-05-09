@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>上门评估需求</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+    <link rel="stylesheet" type="text/css" href="__CSS__/button.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/xzimg/viewer.min.css">
+</head>
+<body>
+<div class="layerCon bg_f">
+    <form action="<empty name="csdidsinfo">{:U('modifys_insert')}<else/>{:U('modifys_modify')}</empty>" method="post" class="js-ajax-form">
+        <table class="layerTable" border="0">
+            <input type="hidden" name="sd_id" value="{$info.sd_id}">
+            <tr class="h30">
+                <td colspan="2">用户提交维修名称：</td>
+                <td colspan="4">{$info.sd_weixiuname}</td>
+                <td colspan="2">上门费：</td>
+                <td colspan="4">{$info.sd_thedoor}</td>
+            </tr>
+            <tr class="h30">
+                <td colspan="2">押金：</td>
+                <td colspan="4">{$info.sd_yajin}</td>
+                <td colspan="2">是否已支付押金：</td>
+                <td colspan="4" style="color: #909090;"><eq name="info.sd_payyajin" value="1">已支付<else/>未支付</eq></td>
+            </tr>
+            <tr class="h30">
+                <td colspan="2">客户姓名：</td>
+                <td colspan="4">
+                    <input type="text" name="sd_name" id="sd_name" value="{$info.sd_name}" readonly  />
+                </td>
+                <td colspan="2">客户电话：</td>
+                <td colspan="4">
+                    <input type="text" name="c_phone" id="c_phone" value="{$info.sd_phone}" readonly  />
+                </td>
+            </tr>
+            <tr class="h30">
+                <td colspan="2">省 市 县：</td>
+                <td colspan="4">
+                    <input type="hidden" name="c_province" id="c_province" value="{$info.sd_province}">
+                    <input type="hidden" name="c_city" id="c_city" value="{$info.sd_city}">
+                    <input type="hidden" name="c_county" id="c_county" value="{$info.sd_county}">
+                    <input type="text" name="sdprovince"  value="{$info.sd_province} {$info.sd_city} {$info.sd_county}" readonly  />
+                </td>
+                <td colspan="2">客户地址：</td>
+                <td colspan="4">
+                    <input type="text" name="c_address" id="c_address" value="{$info.sd_address}" readonly  />
+                </td>
+            </tr>
+            <tr class="h30">
+                <td colspan="2">维修项名称：</td>
+                <td colspan="4">
+                    <input type="text" name="c_weixiuname" id="c_weixiuname" value="{$info.sd_weixiuname}" readonly  />
+                </td>
+                <td colspan="2">下单用户昵称：</td>
+                <td colspan="4">
+                    <input type="hidden" name="c_userid"  id="c_userid" value="{$info.sd_uid}">
+                    <input type="text" name="uid_name" id="uid_name" value="{$info.uid_name}"  readonly />
+                </td>
+            </tr>
+            <tr class="h30">
+                <td colspan="2">用户提交时间：</td>
+                <td colspan="10" style="color: #909090;">{$info.sd_time|strtotime|date='Y-m-d H:i',###}</td>
+            </tr>
+            <tr class="h30">
+                <td colspan="2">备注：</td>
+                <td colspan="10">
+                    <textarea name="sd_remarks" id="sd_remarks" style="width: 100%;" disabled>{$info.sd_remarks}</textarea>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td colspan="2">播放语音：</td>
+                <td colspan="4">
+                    <audio controls>
+                        <source src="{$info.sd_yuyin}" />
+                    </audio>
+                </td>
+                <td colspan="2">评估人员：</td>
+                <td colspan="4">
+                    <select name="sd_pguid" id="cuid">
+                             <option value="0">------------请选择---------</option>
+                        <volist name="userinfo_info" id="userinfos">
+                            <option value="{$userinfos.u_id}" <eq name="info.sd_pguid" value="$userinfos.u_id">selected</eq>>----------【{$userinfos.u_nickname}】------</option>
+                        </volist>
+                    </select>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td colspan="2">图片展示：</td>
+                <td colspan="10">
+                    <div class="doweboks">
+                        <volist name="imglist" id="imglists">
+                            <img src="{$imglists}" width="200px" height="200px;" alt="暂无图片"><br/>
+                        </volist>
+                    </div>
+                </td>
+            </tr>
+            <input type="hidden" name="c_bid" id="c_bid" value="{$info.sd_bid}">
+
+            <tr class="h30"></tr>
+        </table>
+    <br/>
+    <br/>
+    <eq name="info.sd_pguid" value="0">
+            <div class="layerBtns">
+                <a class="btn js-ajax-form-btn layui-btn" data-layer="true">提交</a>
+            </div>
+        <else/>
+    </eq>
+
+    </form>
+</div>
+<script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+<script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+<script src="__JS__/ajax-submit.js"></script>
+<script src="__PUBLIC__/xzimg/viewer-jquery.min.js" charset="utf-8"></script>
+<script>
+    $(function() {
+        $('.doweboks').viewer({
+            url: 'data-original'
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>施工维修需求详情</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+    <link rel="stylesheet" type="text/css" href="__CSS__/button.css"/>
+    <link rel="stylesheet" type="text/css" href="__CSS__/liandong2.css"/>
+</head>
+<body>
+<div class="layerCon bg_f">
+    <table class="layerTable" border="0">
+        <input type="hidden" name="c_id" id="c_id" value="{$csdidsinfo.c_id}">
+        <tr class="h30">
+            <td colspan="2">押金：</td>
+            <td colspan="4">{$info.sd_yajin}</td>
+            <td colspan="2">是否已支付押金：</td>
+            <td colspan="4" style="color: #909090;"><eq name="info.sd_payyajin" value="1">已支付<else/>未支付</eq></td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">简要说明：</td>
+            <td colspan="10">
+                <input class="must" type="text" name="c_title" id="c_title" value="{$csdidsinfo.c_title}"/>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">客户姓名：</td>
+            <td colspan="4">{$csdidsinfo.c_name}</td>
+            <td colspan="2">客户电话：</td>
+            <td colspan="4">{$csdidsinfo.c_phone}</td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">省 市 县：</td>
+            <td colspan="4">{$csdidsinfo.c_province}{$csdidsinfo.c_city}{$csdidsinfo.c_county}</td>
+            <td colspan="2">客户地址：</td>
+            <td colspan="4">{$csdidsinfo.c_address}</td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">发布时间：</td>
+            <td colspan="4">{$csdidsinfo.c_time|strtotime|date='Y-m-d H:i',###}</td>
+            <td colspan="2">承接师傅：</td>
+            <td colspan="4">
+                <select name="c_uid" id="cuid">
+                    <empty name="sguser">
+                        <option>暂无可接师傅</option>
+                    </empty>
+                    <volist name="sguser" id="userinfos">
+                        <option value="{$userinfos.u_id}">{$userinfos.u_nickname}</option>
+                    </volist>
+                 </select>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">接单时间：</td>
+            <td colspan="4"><gt name="csdidsinfo.c_state" value="1">{$csdidsinfo.c_jiedantime|strtotime|date='Y-m-d H:i',###}<else/>暂未接单或已取消</gt></td>
+            <td colspan="2">完工时间：</td>
+            <td colspan="4"><eq name="csdidsinfo.c_state" value="20">{$csdidsinfo.c_wangong|strtotime|date='Y-m-d H:i',###}<else/>未完工</eq></td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">施工维修名称：</td>
+            <td colspan="4">{$csdidsinfo.c_weixiuname}</td>
+            <td colspan="2">施工流程/当前状态：</td>
+            <td colspan="4"><eq name="csdidsinfo.c_state" value="-2">删除</eq><eq name="csdidsinfo.c_state" value="-1">取消订单</eq><eq name="csdidsinfo.c_state" value="0">新的需求</eq><eq name="csdidsinfo.c_state" value="1">已支付</eq><eq name="csdidsinfo.c_state" value="2">已接单/等待客户签字</eq><eq name="csdidsinfo.c_state" value="3">赶赴工地/等待客户支付</eq><eq name="csdidsinfo.c_state" value="4">已支付</eq><eq name="csdidsinfo.c_state" value="5">等待支付下一阶段</eq><eq name="csdidsinfo.c_state" value="9">施工中</eq><eq name="csdidsinfo.c_state" value="10">暂停中</eq><eq name="csdidsinfo.c_state" value="17">申请完工</eq><eq name="csdidsinfo.c_state" value="18">验收不合格</eq><eq name="csdidsinfo.c_state" value="19">等待评论</eq><eq name="csdidsinfo.c_state" value="20">完成</eq><eq name="csdidsinfo.c_state" value="21">拒绝</eq></td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">支付状态：</td>
+            <td colspan="4"><eq name="csdidsinfo.c_pay" value="0">未支付</eq><eq name="csdidsinfo.c_pay" value="1">已支付</eq></td>
+            <td colspan="2">下单用户：</td>
+            <td colspan="4">{$csdidsinfo.uid_name}</td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">施工总价格：</td>
+            <td colspan="4">
+                <input type="hidden" name="sd_repairtotal" id="sdrepairtotal" value="{$info.sd_repairtotal}"/>
+                <input class="must" type="text" name="c_money" id="c_money" value="{$csdidsinfo.c_money|number_format=2}"/>
+            </td>
+            <td colspan="2">师傅价格：</td>
+            <td colspan="4">
+                <input class="must" type="text" name="c_materialprice" id="c_materialprice"
+                       value="{$csdidsinfo.c_materialprice|number_format=2}"/>
+            </td>
+        </tr>
+
+            <if condition="$csdidsinfo.c_uid eq 1000000 || $csdidsinfo.c_uid eq 3000000">
+            <tr class="h30">
+                <td colspan="2">维修人员姓名：</td>
+                <td colspan="4">
+                    <input class="must" type="text" name="c_wxname" id="c_wxname" value='{$csdidsinfo.c_wxname}' placeholder="请填写维修人员姓名"/>
+                </td>
+                <td colspan="2">联系电话：</td>
+                <td colspan="4">
+                    <input class="must" type="text" name="c_wxphone" id="c_wxphone" value='{$csdidsinfo.c_wxphone}' placeholder="请填写维修人员联系电话"/>
+                </td>
+            </tr>
+            </if>
+
+        <tr class="h30">
+            <td colspan="2">是否阶段支付：</td>
+            <td colspan="10">
+                <input id="cstagepay" type="hidden" value="{$csdidsinfo.c_stagepay}">
+                <input type="text" name="c_stagepay" id="c_stagepay"
+                       value='<eq name="csdidsinfo.c_stagepay" value="0">否</eq><eq name="csdidsinfo.c_stagepay" value="1">是</eq>'
+                       disabled/>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">备注：</td>
+            <td colspan="10">
+                <textarea name="c_remarks" id="c_remarks" style="width: 100%;" disabled>{$csdidsinfo.c_remarks}</textarea>
+            </td>
+        </tr>
+        <tr class="h50">
+            <td style="display:none;"></td>
+            <td colspan="12" style="text-align: center;">施工流程</td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">添加时间：</td>
+            <td colspan="4">{$constructionflow_info.cf_time|strtotime|date='Y-m-d H:i',###}</td>
+            <td colspan="2">状态：</td>
+            <td colspan="4">
+                <eq name="constructionflow_info.cf_agree" value="0">新数据</eq>
+                <eq name="constructionflow_info.cf_agree" value="1">同意</eq>
+                <eq name="constructionflow_info.cf_agree" value="2">拒绝</eq>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">是否支付下阶段费用：</td>
+            <td colspan="4">
+                <eq name="constructionflow_info.cf_agree" value="1">已支付</eq>
+                <eq name="constructionflow_info.cf_agree" value="0">未支付</eq>
+            </td>
+            <td colspan="2">是否需要支付：</td>
+            <td colspan="4">
+                <eq name="constructionflow_info.cf_ispay" value="1">是</eq>
+                <eq name="constructionflow_info.cf_ispay" value="0">否</eq>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">备注说明：</td>
+            <td colspan="10">{$constructionflow_info.cf_content}</td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">验收结果说明：</td>
+            <td colspan="10">
+                {$constructionflow_info.cf_yanshoucontent}
+        </tr>
+        <tr class="h25"></tr>
+        <tr class="h25"></tr>
+    </table>
+
+    <div class="div_contentlist2" style="display: none;">
+        <div id="createTable">
+            <input type="button" id="addnumber" value="添加阶段">
+            <table id="process">
+                <thead>
+                <tr>
+                    <th style='text-align: center;'>阶段编号</th>
+                    <th style='text-align: center;'>阶段价格</th>
+                    <th style='text-align: center;'>开始时间</th>
+                    <th style="text-align: center;">结束时间</th>
+                    <th style="text-align: center;">阶段施工描述</th>
+                </tr>
+                </thead>
+                <tbody>
+                <volist name="stage_info" id="stageinfo">
+                    <tr>
+                        <td><input type="hidden" class="s_id" value="{$stageinfo.s_id}"><input type="hidden"
+                                                                                               class="s_pay"
+                                                                                               value="{$stageinfo.s_pay}">
+                            <input style='!important;width:100%;' name="s_number" class="l-text s_number" type="text"
+                                   value="{$stageinfo.s_number}" disabled></td>
+                        <td><input style='!important;width:100%;' name="s_price" class="l-text s_price" type="text"
+                                   value="{$stageinfo.s_price}"></td>
+                        <td><input style='!important;width:100%;' name="s_startime" class="l-text Wdate s_startime"
+                                   onFocus="WdatePicker({lang:'zh-cn'})" type="text" value="{$stageinfo.s_startime}">
+                        </td>
+                        <td><input style='!important;width:100%;' name="s_endtime" class="l-text Wdate s_endtime"
+                                   onFocus="WdatePicker({lang:'zh-cn'})" type="text" value="{$stageinfo.s_endtime}">
+                        </td>
+                        <td><textarea style='!important;width:100%;' name="s_content" class="l-text s_content">{$stageinfo.s_content}</textarea>
+                        </td>
+                    </tr>
+                </volist>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br/>
+    <div class="layerBtns">
+        <eq name="csdidsinfo.c_uid" value="1000000">
+             <a class="btn" id="ajaxzhipai">指派人员</a>
+        </eq>
+        <if condition="$csdidsinfo.c_uid neq 3000000">
+            <a class="btn btndjs" id="ajaxtuisong" onclick="tuisongs(this)">全部推送</a>
+            <a class="btn btndjs" id="ajaxmodifys" onclick="tuisong(this)">指定推送</a>
+        </if>
+    </div>
+</div>
+<script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+<script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/kindeditor-4.1.10/themes/default/default.css"/>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/kindeditor-4.1.10/kindeditor.js"></script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/kindeditor-4.1.10/lang/zh_CN.js"></script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/kindeditor-4.1.10/plugins/code/prettify.js"></script>
+<script type="text/javascript" src="__JS__/liandong2.js"></script>
+<script src="__JS__/My97DatePicker/WdatePicker.js"></script>
+<script>
+    var editor1;
+    var editor_imgs;
+    KindEditor.ready(function (K) {
+        editor1 = kd('#contenttxt', K);
+        editor_imgs = kdimg(K);
+        K('#tianjiatupian').click(function () {
+            editor_imgs.loadPlugin('image', function () {
+                editor_imgs.plugin.imageDialog({
+                    imageUrl: "",
+                    clickFn: function (url, title, width, height, border, align) {
+                        K("#tupiandiv").append("<div class=\"img\"><img class=\"w_100 h_100\" src=\"" + url + "\" /><p><span onclick=\"editormove(this,1)\">左移</span><span onclick=\"editormove(this,0)\">删除</span><span onclick=\"editormove(this,2)\">右移</span></p></div>");
+                        editor_imgs.hideDialog();
+                    }
+                });
+            });
+        });
+    });
+    /*指定推送*/
+    var wait=60;
+    function tuisong(o) {
+        var sgxqid ="{$info.sd_id}";
+        var sguid = $("#cuid").val();
+        var cstate = "{$info.sd_state}";
+        if(wait==60){
+           if(cstate=='-1'||cstate=='-2'){
+               layer.msg('推送失败，订单已被取消!');
+               return false;
+           }
+            $.ajax({
+                type: "post",
+                url: "http://api.chongmaiwang.com/Design/zhidingtuisong",
+                data: {
+                    'xuqiu':sgxqid,
+                    'uid':sguid
+                },
+                dataType: "json",
+                success: function (e) {
+                    if (e.state == true) {
+                        layer.msg(e.message);
+                    }
+                    if (e.state == false) {
+                        layer.msg(e.message);
+                    }
+                },
+                error: function () {
+                    layer.alert("操作失败！");
+                }
+            });
+        }
+        if (wait == 0) {
+            $(".layerBtns").html('<a class="btn btndjs" id="ajaxtuisong" onclick="tuisongs(this)">全部推送</a><a class="btn btndjs" id="ajaxmodifys" onclick="tuisong(this)">指定推送</a>');
+            wait = 60;
+            window.parent.location.reload();
+        } else {
+            $(".layerBtns").html('<a class="btn btndjs" id="ajaxtuisong">全部推送</a><a class="btn btndjs" id="ajaxmodifys">指定推送'+wait+'S</a>');
+            wait--;
+            setTimeout(function() {
+                tuisong(o)
+            },1000)
+        }
+    }
+    /*全部推送*/
+    var waits=60;
+    function tuisongs(o) {
+        var sgxqid ="{$info.sd_id}";
+        var cstate = "{$info.sd_state}";
+        if(waits==60){
+            if(cstate=='-1'||cstate=='-2'){
+                layer.msg('推送失败，订单已被取消!');
+                return false;
+            }
+            $.ajax({
+                type: "post",
+                url: "http://api.chongmaiwang.com/Design/houtaituisong",
+                data: {
+                    'xuqiu':sgxqid
+                },
+                dataType: "json",
+                success: function (e) {
+                    if (e.state == true) {
+                        layer.msg(e.message);
+                    }
+                    if (e.state == false) {
+                        layer.msg(e.message);
+                    }
+                },
+                error: function () {
+                    layer.alert("操作失败！");
+                }
+            });
+        }
+        if (waits == 0) {
+            $(".layerBtns").html('<a class="btn btndjs" id="ajaxtuisong" onclick="tuisongs(this)">全部推送</a><a class="btn btndjs" id="ajaxmodifys" onclick="tuisongs(this)">指定推送</a>');
+            waits = 60;
+            window.parent.location.reload();
+        } else {
+            $(".layerBtns").html('<a class="btn btndjs" id="ajaxtuisong">全部推送'+waits+'S</a><a class="btn btndjs" id="ajaxmodifys">指定推送</a>');
+            waits--;
+            setTimeout(function() {
+                tuisongs(o)
+            },1000)
+        }
+    }
+
+    /*状态改变---显示与隐藏表格*/
+    window.onload = function () {
+        $("#c_stagepay").trigger('click');
+        var aaa = $("#c_materialprice").val();
+        if (aaa == "0") {
+            $("#c_materialprice").attr("disabled", "disabled");
+        }
+        ifspay();
+    };
+    $("#c_stagepay").click(function () {
+        var a = $("#cstagepay").val();
+        if (a == "1") {
+            $(".div_contentlist2").show();
+        }
+        if (a == "0") {
+            $(".div_contentlist2").hide();
+        }
+    });
+    /*判断表格的值是否可以改变*/
+    function ifspay() {
+        $("#process tbody tr").each(function (i) {
+            var spay = $(this).find(".s_pay").val();
+            if (spay == "1") {
+                $(this).find(".s_price").attr("disabled", "disabled");
+                $(this).find(".s_startime").attr("disabled", "disabled");
+                $(this).find(".s_endtime").attr("disabled", "disabled");
+                $(this).find(".s_content").attr("disabled", "disabled");
+            } else {
+                $(this).find(".s_startime").val($(this).find(".s_startime").val().replace(" 00:00:00.000", ""));
+                $(this).find(".s_endtime").val($(this).find(".s_endtime").val().replace(" 23:59:59.000", ""));
+            }
+        });
+    }
+    /*点击生成新的一行阶段*/
+    $("#addnumber").click(function () {
+        Insert_Table();
+    });
+
+    /*ajax提交----------修改*/
+    $("#ajaxmodify").click(function () {
+        /*获取施工需求的值*/
+        var c_id = $("#c_id").val();
+        var c_title = $("#c_title").val();
+
+        var c_remarks = $("#c_remarks").val();
+        var c_money = $("#c_money").val();
+        var c_materialprice = $("#c_materialprice").val();
+        var cstagepay = $("#cstagepay").val();
+
+        var c_content = editor1.html();
+        /*获取阶段的值*/
+        var s_id = [];
+        var s_number = [];
+        var s_price = [];
+        var s_startime = [];
+        var s_endtime = [];
+        var s_content = [];
+        var sum = 0;
+        $("#process tbody tr").each(function (i) {
+            var spay = $(this).find(".s_pay").val();
+            if (spay != "1") {
+                /*阶段ID*/
+                $(this).children("td").children(".s_id").each(function (j) {
+                    s_id.push($(this).val());
+                });
+                /*阶段编号*/
+                $(this).children("td").children("input[name=s_number]").each(function (j) {
+                    s_number.push($(this).val());
+                });
+                /*阶段价格*/
+                $(this).children("td").children("input[name=s_price]").each(function (j) {
+                    s_price.push($(this).val());
+                });
+                /*开始时间*/
+                $(this).children("td").children("input[name=s_startime]").each(function (j) {
+                    if ($(this).val() != "") {
+                        s_startime.push($(this).val() + " 00:00:00");
+                    } else {
+                        s_startime.push($(this).val());
+                    }
+                });
+                /*结束时间*/
+                $(this).children("td").children("input[name=s_endtime]").each(function (j) {
+                    if ($(this).val() != "") {
+                        s_endtime.push($(this).val() + " 23:59:59");
+                    } else {
+                        s_endtime.push($(this).val());
+                    }
+                });
+                /*阶段施工描述*/
+                $(this).children("td").children(".s_content").each(function (j) {
+                    s_content.push($(this).val());
+                });
+            }
+            /*阶段价格总和*/
+            $(this).children("td").children("input[name=s_price]").each(function (j) {
+                sum += parseInt($(this).val());
+            });
+        });
+        /*判断阶段价格和是否等于施工价格*/
+        if (sum > c_money) {
+            layer.alert("阶段价格之和不能大于施工价格！");
+            return false;
+        }
+
+        /*转换*/
+        s_id = s_id.join(",,,");
+        s_number = s_number.join(",,,");
+        s_price = s_price.join(",,,");
+        s_startime = s_startime.join(",,,");
+        s_endtime = s_endtime.join(",,,");
+        s_content = s_content.join(",,,");
+        var data = {
+            /*施工需求的值*/
+            'c_id': c_id,
+            'c_title': c_title,
+            'c_remarks': c_remarks,
+            'c_materialprice': c_materialprice,
+            'c_money': c_money,
+            'c_content': c_content,
+            'c_stagepay': cstagepay,
+            /*阶段的值*/
+            's_id': s_id,
+            's_number': s_number,
+            's_price': s_price,
+            's_startime': s_startime,
+            's_endtime': s_endtime,
+            's_content': s_content
+        };
+        var index = layer.load({shade: [0.5, '#fff']});
+        $.ajax({
+            type: "post",
+            url: "{:U('servicedemand/modify')}",
+            data: data,
+            dataType: "json",
+            success: function (e) {
+                layer.close(index);
+                if (e.status == 1) {
+                    layer.msg(e.info);
+                    window.parent.location.reload();
+                }
+            },
+            error: function () {
+                layer.close(index);
+                layer.alert('操作失败！');
+            }
+        });
+    })
+
+    /*ajax提交----------指派人员*/
+    $("#ajaxzhipai").click(function(){
+        var c_id = $("#c_id").val();
+        var wxryxm = $("#c_wxname").val();
+        var wxrydh = $("#c_wxphone").val();
+        var data = {
+            'c_id': c_id,
+            'c_wxname': wxryxm,
+            'c_wxphone': wxrydh
+        };
+        $.ajax({
+            type: "post",
+            url: "{:U('servicedemand/modify_zhipai')}",
+            data: data,
+            dataType: "json",
+            success: function (e) {
+                if (e.status == 1) {
+                    layer.msg(e.info);
+                    window.parent.location.reload();
+                }
+                if(e.status == 0){
+                    layer.msg(e.info);
+                    window.parent.location.reload();
+                }
+            },
+            error: function () {
+                layer.alert('操作失败！');
+            }
+        });
+    });
+</script>
+</body>
+</html>

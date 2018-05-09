@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加产品推荐</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+    <link rel="stylesheet" type="text/css" href="__CSS__/button.css"/>
+    <script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/ajax-submit.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<div class="layerCon bg_f">
+    <span style="font-size: 15px;">当前产品：{$infos.p_name}</span><br/>
+    <form action="__ACTION__" method="post" id="search-form" class="layui-form">
+        <input type="hidden" id="pr_pid" name="p_id" value="{$infos.p_id}">
+        <input type="hidden" id="pr_name" name="p_name" value="{$infos.p_name}">
+    <input type="text" name="pnames" value="{$pnames}"><button class="btn" type="submit">搜索</button>
+    <table class="table" border="0" style="padding-top: 10px;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>产品名称</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+        <volist name="product_info" id="productinfo">
+            <tr>
+                <td class="pr_commendpid">{$productinfo.p_id}</td>
+                <td>{$productinfo.p_name}</td>
+                <td><if condition="in_array($productinfo['p_id'],$prcommendpids)">
+                    <input type="button"  value="该产品已推荐" >
+                    <else/><input type="button" class="fgf js-ajax-form-btn" value="添加产品推荐" onclick="insertrecommend(this)"></if></td>
+            </tr>
+        </volist>
+        </tbody>
+    </table>
+    </form>
+    <div class="pageCon">
+    {$page_bar}       每页 20 条，共 {$count} 条
+    </div>
+</div>
+<script>
+    function insertrecommend(obj) {
+        var pr_pid = $("#pr_pid").val();
+        var pr_commendpid =$(obj).parents("tr").find(".pr_commendpid").text();
+        var data = {
+            'pr_pid':pr_pid,
+            'pr_commendpid':pr_commendpid
+        };
+        $.ajax({
+            type: "post",
+            url: "{:U('Productrecommend/insert')}",
+            data: data,
+            dataType: "json",
+            success: function (e) {
+                if (e.status == 1) {
+                    layer.msg(e.info);
+                    window.location.reload();
+                }
+                if(e.status == 0){
+                    layer.msg(e.info);
+                }
+            },
+            error: function () {
+                layer.alert('操作失败！');
+            }
+        });
+    }
+</script>
+</body>
+</html>

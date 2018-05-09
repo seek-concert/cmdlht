@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>订单物流列表</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+    <script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/ajax-submit.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+<h4>订单物流列表</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li onclick="reloadPage(window)">
+            <img src="__IMG__/arrow_refresh.png"/>
+            重置
+        </li>
+        <li class="fgf" onclick="layerDiv('查询',$('#search-form-div').html(),'500px','220px')">
+            <img src="__IMG__/page_white_magnify.png"/>
+            查询
+        </li>
+    </ul>
+</div>
+<div class="tableCon">
+    <div style="visibility: hidden;display: none;">
+        <div id="search-form-div">
+            <form action="__ACTION__" method="post" id="search-form" class="layui-form">
+                <div class="layerCon bg_f">
+                    <table class="layerTable" border="0">
+                        <tr class="h50">
+                            <td><label for="lc_pid">订单ID：</label></td>
+                            <td>
+                                <input id="lc_pid" type="text" name="lc_pid" value="{$lc_pid}" placeholder="请输入订单ID"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label>发货时间：</label></td>
+                            <td>
+                                开始时间：<input type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"
+                                            name="pd_time1" value="{$pd_time1}"/>
+                                结束时间：<input type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"
+                                            name="pd_time2" value="{$pd_time2}"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="layerBtns">
+                        <button class="btn" type="submit">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <em class="xian"></em>
+    <form action="" method="post" class="js-ajax-form" id="js-ajax-form">
+        <table class="table" border="0">
+            <thead>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck"
+                           onclick="checkBoxOp(this)"/>
+                </th>
+                <th width="40">ID</th>
+                <th>订单ID</th>
+                <th>订单编号</th>
+                <th>内容</th>
+                <th>发货时间</th>
+                <th>快递变动时间</th>
+            </tr>
+            </thead>
+            <tbody>
+            <volist name="dingyueliucheng_info" id="info">
+                <tr   class="h25">
+                    <td>
+                        <input class="va_m" type="checkbox" name="ids[]" value="{$info.lc_id}"
+                               onclick="checkBoxOp(this)"/>
+                    </td>
+                    <td>{$info.lc_id}</td>
+                    <td>{$info.lc_pid}</td>
+                    <td>{$info.pdonlyid}</td>
+                    <td>{$info.lc_content}</td>
+                    <td>{$info.lc_time|strtotime|date='Y-m-d H:i',###}</td>
+                    <td>{$info.lc_ftime|strtotime|date='Y-m-d H:i',###}</td>
+
+                </tr>
+            </volist>
+            </tbody>
+        </table>
+    </form>
+</div>
+<div class="pageCon">
+    {$page_bar}       每页 20 条，共 {$count} 条
+</div>
+
+<script>
+    $(function () {
+        $('.pageCon').find('a').on('click', function () {
+            $('#search-form').attr('action', $(this).attr('href')).submit();
+            return false;
+        });
+    });
+    /* 重载页面 */
+    function reloadPage(win) {
+        var location = win.location;
+        location.href = location.pathname + location.search;
+    }
+
+</script>
+</body>
+</html>

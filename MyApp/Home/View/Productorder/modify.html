@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>订单详情</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+    <script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="__PUBLIC__/xzimg/viewer.min.css">
+    <script src="__PUBLIC__/xzimg/viewer-jquery.min.js" charset="utf-8"></script>
+</head>
+<body>
+    <div class="layerCon bg_f">
+        <input type="hidden" name="pd_id" class="pdid" value="{$info.pd_id}">
+        <input type="hidden" id="pd_uid" value="{$info.pd_uid}">
+        <table class="layerTable" border="0">
+            <tr class="h30">
+                <td>用户昵称：</td>
+                <td>{$info.uid_name}</td>
+                <td>收货人姓名：</td>
+                <td>{$info.pd_consigneename}</td>
+            </tr>
+            <tr class="h30">
+                <td>地址：</td>
+                <td>{$info.pd_province}{$info.pd_city}{$info.pd_county}{$info.pd_address}</td>
+                <td>电话：</td>
+                <td>{$info.pd_phone}</td>
+            </tr>
+            <tr class="h30">
+                <td>总金额：</td>
+                <td>{$info.pd_money.sd_thedoor|number_format=2}</td>
+                <td>节省金额：</td>
+                <td>{$info.pd_activitymoney.sd_thedoor|number_format=2}</td>
+            </tr>
+            <tr class="h30">
+                <td>支付金额：</td>
+                <td>{$info.pd_paymentamount.sd_thedoor|number_format=2}</td>
+                <td>下单时间：</td>
+                <td>{$info.pd_time}</td>
+            </tr>
+            <tr class="h30">
+                <td>备注：</td>
+                <td><empty name="info.pd_remarks">暂无内容</empty>{$info.pd_remarks}</td>
+                <td>支付类型：</td>
+                <td><eq name="info.pd_type" value="0">未支付</eq><eq name="info.pd_type" value="1">线上支付</eq><eq name="info.pd_type" value="2">线下支付</eq></td>
+            </tr>
+            <tr class="h30">
+                <td>状态：<br/>操作：</td>
+                <td>
+                    <if condition="$info.pd_state eq 0">
+                        下单-->待付款<hr/>
+                        <select  name="pd_state" class="pdstatetxt" >
+                            <option value="-1" <eq name="info.pd_state" value="-1">selected</eq>>订单取消</option>
+                        </select>
+                    </if>
+                    <if condition="$info.pd_state eq 1">
+                        付款-->待发货<hr/>
+                        <select  name="pd_state" class="pdstatetxt" >
+                            <option value="2" <eq name="info.pd_state" value="2">selected</eq>>发货--->待收货</option>
+                        </select>
+                    </if>
+                    <eq name="info.pd_state" value="-1">订单取消</eq><eq name="info.pd_state" value="2">发货--->待收货</eq><eq name="info.pd_state" value="3">已收货</eq><eq name="info.pd_state" value="4">已评论</eq><if condition="$info.pd_state eq 10||$info.pd_state eq 11||$info.pd_state eq 20||$info.pd_state eq 21||$info.pd_state eq 22 "> 退换货处理中</if><if condition="$info.pd_state eq 12||$info.pd_state eq 15||$info.pd_state eq 23||$info.pd_state eq 25"> 退换货已完成</if></td>
+                <td>改变时间：</td>
+                <td>{$info.pd_changechangetime}</td>
+            </tr>
+            <tr class="h30 kd">
+                <td>快递名称：</td>
+                <td id="kuaidiname">
+                    <select name="pd_kuaidname" id="pd_kuaidname">
+                        <option value="">-------请选择--------</option>
+                    </select>
+                </td>
+
+                <td>快递单号：</td>
+                <td><input type="text" name="pd_kuaidinumber" class="pd_kuaidinumber" value="{$info.pd_kuaidinumber}" placeholder="不发货时请留空"></td>
+            </tr>
+        </table>
+        <div id="search-form-div" style="display: none;">
+                <input type="hidden" name="pos_pdid" value="{$info.pd_id}">
+            <div class="doweboks" onclick="imgobj(this)">
+                <volist name="state_info" id="stateinfo">
+                    <img src="{$stateinfo}" width="100px" height="100px">&nbsp;
+                </volist>
+            </div>
+        </div>
+        <form action="{:U('modify')}" method="post" class="js-ajax-form">
+        <table class="table" border="0" style="width: 100%;">
+            <thead>
+            <tr class="noSelect">
+                <th style="text-align: center; width: 7%;">产品ID</th>
+                <th style="text-align: center; width: 40%;">产品名称</th>
+                <th style="text-align: center;width: 4%;">单价</th>
+                <th style="text-align: center; width: 4%;">数量</th>
+                <th style="text-align: center;width: 6%;">价格</th>
+                <th style="text-align: center;width: 13%">退换货快递</th>
+                <th style="text-align: center;width: 13%">退换货单号</th>
+                <th style="text-align: center; width: 7%;">当前状态</th>
+                <th style="text-align: center;width: 7%;">原因</th>
+                <th style="text-align: center; width: 10%">进行处理</th>
+            </tr>
+            </thead>
+            <tbody>
+            <volist name="orderdetails_info" id="orderdetailsinfo">
+               <tr>
+                   <input type="hidden" id="payids" value="{$orderdetailsinfo.pid}">
+                   <input type="hidden" id="odid" value="{$orderdetailsinfo.od_id}">
+                    <td style="text-align: center;">{$orderdetailsinfo.od_id}</td>
+                    <td style="text-align: center;">{$orderdetailsinfo.pid_name}</td>
+                    <td style="text-align: center;">{$orderdetailsinfo.od_price}</td>
+                    <td style="text-align: center;">{$orderdetailsinfo.od_count}</td>
+                    <td style="text-align: center;">{$orderdetailsinfo.od_totalprice}</td>
+                    <td style="text-align: center;"><input type="text" name="od_tuihuoname" class="od_tuihuoname" value="{$orderdetailsinfo.od_tuihuoname}" placeholder="换货发货时才填写"></td>
+                   <td style="text-align: center;"><input type="text" name="od_tuihuonumber" class="od_tuihuonumber" value="{$orderdetailsinfo.od_tuihuonumber}" placeholder="换货发货时才填写"></td>
+                   <td style="text-align: center;">
+                        <if condition="$orderdetailsinfo.od_state eq 0||$orderdetailsinfo.od_state eq 1||$orderdetailsinfo.od_state eq 2">
+                            交易进行中
+                        </if>
+                        <if condition="$orderdetailsinfo.od_state eq 3||$orderdetailsinfo.od_state eq 4||$orderdetailsinfo.od_state eq -1">交易完成</if>
+                        <eq name="orderdetailsinfo.od_state" value="10">申请退货</eq>
+                        <eq name="orderdetailsinfo.od_state" value="11">同意退货</eq>
+                        <eq name="orderdetailsinfo.od_state" value="12">退货完成</eq>
+                        <eq name="orderdetailsinfo.od_state" value="15">拒绝退货</eq>
+                        <eq name="orderdetailsinfo.od_state" value="20">申请换货</eq>
+                        <eq name="orderdetailsinfo.od_state" value="21">同意换货</eq>
+                        <eq name="orderdetailsinfo.od_state" value="22">换货发货</eq>
+                        <eq name="orderdetailsinfo.od_state" value="23">完成换货</eq>
+                        <eq name="orderdetailsinfo.od_state" value="25">拒绝换货</eq>
+                    </td>
+                    <td style="text-align: center;">
+                        <if condition="$orderdetailsinfo['od_state'] neq -1&&$orderdetailsinfo['od_state'] neq 0&&$orderdetailsinfo['od_state'] neq 1&&$orderdetailsinfo['od_state'] neq 2&&$orderdetailsinfo['od_state'] neq 3&&$orderdetailsinfo['od_state'] neq 4">
+                                <input type="button" value="点击查看" onclick="layerDiv('退换货原因',$('#search-form-div').html(),'100%','100%')">
+                        <else/>暂无原因</if>
+                    </td>
+                    <td style="text-align: center;">
+                        <eq name="orderdetailsinfo.od_state" value="10">
+                            <input type="hidden" name="od_state"  class="odstate" value="11"/>
+                            <input type="button" value="同意退货" onclick="statemodify(this)">
+                            <br/>
+                            <input type="hidden" name="od_state"  class="odstate" value="15"/>
+                            <input type="button" value="拒绝退货"  onclick="statemodify(this)">
+                        </eq>
+                        <eq name="orderdetailsinfo.od_state" value="20">
+                            <select name="od_state" class="odstate">
+                                <option value="21">同意换货</option>
+                                <option value="25">拒绝换货</option>
+                            </select><br/>
+                            <input type="button" value="修改状态" onclick="statemodify(this)">
+                        </eq>
+                        <eq name="orderdetailsinfo.od_state" value="21">
+                            <input type="hidden" name="od_state"  class="odstate" value="22"/>
+                            <input type="button" value="换货发货" onclick="statemodify(this)">
+                        </eq>
+                        <if condition="$orderdetailsinfo['od_state'] eq 11">
+                            <input type="hidden" name="od_state"  class="odstate" value="12"/>
+                            <input type="button" value="完成退货"  onclick="statemodifys(this)">
+                        </if>
+                        <if  condition="$orderdetailsinfo['od_state'] eq 12">
+                            <input type="hidden" name="od_state"  class="odstate" value="12"/>
+                            <empty name="orderdetailsinfo.od_tuikuanstate">
+                                <input type="button" value="完成退货"  onclick="statemodifys(this)">
+                            </empty>
+                            <eq name="orderdetailsinfo.od_tuikuanstate" value="1">
+                                <input type="button" value="再次申请"  onclick="statemodifys(this)">
+                            </eq>
+                            <eq name="orderdetailsinfo.od_tuikuanstate" value="2">暂无处理</eq>
+                        </if>
+                        <if condition="$orderdetailsinfo['od_state'] neq 10&&$orderdetailsinfo['od_state'] neq 11&&$orderdetailsinfo['od_state'] neq 12&&$orderdetailsinfo['od_state'] neq 20&&$orderdetailsinfo['od_state'] neq 21">暂无处理</if>
+                    </td>
+               </tr>
+            </volist>
+            </tbody>
+        </table>
+        </form>
+    </div>
+    <div class="layerBtns">
+        <a class="btn" onclick="ajaxform_modify()">更改状态</a>
+        <eq name="info.pd_state" value="2">
+        <a class="btn" onclick="dingyue2()">再次订阅</a>
+        </eq>
+    </div>
+<script>
+    if($(".pd_kuaidinumber").val()==""){
+        $.ajax({
+            type: "post",
+            url: "http://api.chongmaiwang.com/api/GetKuaidi",
+            data: { token:'F8006619AEA044298451469EA62177DA' },
+            dataType: "json",
+            success: function (e) {
+                var xiala = '<option value="">-------请选择--------</option>';
+                if(e.errorcode==20000){
+                    for(var i = 0;i<e.ob.length;i++){
+                        xiala += '<option value="'+e.ob[i]['value']+'">'+e.ob[i]['name']+'</option>';
+                    }
+                    $("#pd_kuaidname").html(xiala);
+                }
+            },
+            error: function () {
+                layer.alert('操作失败！');
+            }
+        });
+    }else{
+        $("#kuaidiname").html("{$info.pd_kuaidname}");
+    }
+    function imgobj(omg) {
+        $(omg).viewer({
+            url: 'data-original'
+        });
+    }
+    function dingyue2() {
+        var pdid = $(".pdid").val();
+        var pd_kuaidname = $("#pd_kuaidname").val();
+        var pd_kuaidinumber = $(".pd_kuaidinumber").val();
+        var data = {
+            'dingdanid':pdid,
+            'danhao':pd_kuaidinumber,
+            'kaidisuoxie':pd_kuaidname,
+            'token':'F8006619AEA044298451469EA62177DA'
+        };
+        $.ajax({
+            type: "post",
+            url: "http://api.chongmaiwang.com/api/zaici_kuaididingyue",
+            data: data,
+            dataType: "json",
+            success: function (datas) {
+                if(datas.errorcode==20000){
+                    layer.msg(datas.message);
+                    window.parent.location.reload();
+                }
+                if(datas.errorcode==10000){
+                    layer.msg(datas.message);
+                    window.parent.location.reload();
+                }
+            },
+            error: function () {
+                layer.alert('操作失败！');
+            }
+        });
+    }
+    function ajaxform_modify(){
+        var pdid = $(".pdid").val();
+        var pd_state = $(".pdstatetxt").val();
+        var pd_kuaidname = $("#pd_kuaidname").val();
+        var pd_kuaidinumber = $(".pd_kuaidinumber").val();
+
+            var data = {
+                'pd_id':pdid,
+                'pd_state':pd_state,
+                'pd_kuaidname':pd_kuaidname,
+                'pd_kuaidinumber':pd_kuaidinumber
+            };
+        if(pd_state!=='2') {
+            if (pd_kuaidname || pd_kuaidinumber) {
+                layer.msg('不发货时快递名称和快递单号请不要填写');
+                return false;
+            }
+        }
+            $.ajax({
+                type: "post",
+                url: "{:U('status_modify')}",
+                data: data,
+                dataType: "json",
+                success: function (e) {
+                    if (e.status == 1) {
+                        if(pd_state==2){
+                            var data = {
+                                'dingdanid':pdid,
+                                'danhao':pd_kuaidinumber,
+                                'kaidisuoxie':pd_kuaidname,
+                                'token':'F8006619AEA044298451469EA62177DA'
+                            };
+                            $.ajax({
+                                type: "post",
+                                url: "http://api.chongmaiwang.com/api/zaici_kuaididingyue",
+                                data: data,
+                                dataType: "json",
+                                success: function (datas) {
+                                    if(datas.errorcode==20000){
+                                        layer.msg(datas.message);
+                                        window.parent.location.reload();
+                                    }
+                                    if(datas.errorcode==10000){
+                                        layer.msg(datas.message);
+                                        $.ajax({
+                                            type: "post",
+                                            url: "{:U('status_modify')}",
+                                            data: { 'pd_id':pdid, 'pd_state':1},
+                                            dataType: "json",
+                                            success: function (rs) {
+
+                                            },
+                                            error: function () {
+                                                layer.alert('操作失败！');
+                                            }
+                                        });
+                                        window.parent.location.reload();
+                                    }
+                                },
+                                error: function () {
+                                    layer.alert('操作失败！');
+                                }
+                            });
+                        }else {
+                            layer.msg(e.info);
+                            window.parent.location.reload();
+                        }
+
+                    }
+                    if (e.status == 0) {
+                        layer.msg(e.info);
+                    }
+                },
+                error: function () {
+                    layer.alert('操作失败！');
+                }
+            });
+
+    }
+
+    function statemodify(obj) {
+        var odstate = $(obj).parents("td").find(".odstate").val();
+        var od_tuihuoname = $(obj).parents("tr").find(".od_tuihuoname").val();
+        var od_tuihuonumber = $(obj).parents("tr").find(".od_tuihuonumber").val();
+        var odid = $(obj).parents("tr").children("td").eq(0).text();
+        var data = {
+            'od_id':odid,
+            'od_state':odstate,
+            'od_tuihuoname':od_tuihuoname,
+            'od_tuihuonumber':od_tuihuonumber
+        };
+        $.ajax({
+            type: "post",
+            url: "{:U('productorder/state_modify')}",
+            data: data,
+            dataType: "json",
+            success: function (e) {
+                if (e.status == 1) {
+                    layer.msg(e.info);
+                    window.parent.location.reload();
+                }
+                if (e.status == 0) {
+                    layer.msg(e.info);
+                }
+            },
+            error: function () {
+                layer.alert('操作失败！');
+            }
+        });
+    }
+    function statemodifys(obj) {
+        var odstate = $(obj).parents("td").find(".odstate").val();
+        var odid = $(obj).parents("tr").children("td").eq(0).text();
+        var data = {
+            'od_id':odid,
+            'od_state':odstate
+        };
+        var payid = $("#payids").val();
+        var orerdid = $("#odid").val();
+        var userid = $("#pd_uid").val();
+        $.ajax({
+            type: "post",
+            url: "{:U('productorder/state_modifys')}",
+            data: data,
+            dataType: "json",
+            success: function (e) {
+                if (e.status == 1) {
+                    $.ajax({
+                        type: "post",
+                        url: "http://api.chongmaiwang.com/api/tuidan",
+                        data: {
+                            'payid':payid,
+                            'orerdid':orerdid,
+                            'userid':userid,
+                            'token':'F8006619AEA044298451469EA62177DA'
+                        },
+                        dataType: "json",
+                        success: function (rs) {
+                            if (rs.state == true) {
+                                layer.msg(e.message);
+                                window.parent.location.reload();
+                            }
+                            if (rs.state == false) {
+                                layer.msg(e.message);
+                                window.parent.location.reload();
+                            }
+                        },
+                        error: function () {
+                            layer.alert("操作失败1！");
+                        }
+                    });
+                }
+                if (e.status == 0) {
+                    layer.msg(e.info);
+                }
+            },
+            error: function () {
+                layer.alert('操作失败！');
+            }
+        });
+    }
+</script>
+</body>
+</html>

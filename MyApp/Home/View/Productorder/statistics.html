@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户统计</title>
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/css/style.css"/>
+    <script src="__PUBLIC__/js/jquery2-1-4.min.js"></script>
+    <script src="__PUBLIC__/js/echarts.min.js"></script>
+    <script src="__PUBLIC__/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/js/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/js/iframe.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<div>
+<div style="margin-top: 20px;margin-left: 100px;">
+    选择年份：<select id="year">
+    <option value="">全部</option>
+    <volist name="yeararray" id="yeararrays">
+        <option value="{$yeararrays.years}">{$yeararrays.years}年</option>
+    </volist>
+    </select>
+    选择月份：<select id="month">
+    <option value="">全部</option>
+    <option value="01">1月</option>
+    <option value="02">2月</option>
+    <option value="03">3月</option>
+    <option value="04">4月</option>
+    <option value="05">5月</option>
+    <option value="06">6月</option>
+    <option value="07">7月</option>
+    <option value="08">8月</option>
+    <option value="09">9月</option>
+    <option value="10">10月</option>
+    <option value="11">11月</option>
+    <option value="12">12月</option></select>
+    <span class="button1" onclick="newstatistics()">生成统计图</span>
+</div>
+<div id="main" style="width: 100%;height:400px;"></div>
+<script>
+    function newstatistics() {
+        var yeararrays = $('#year').val();
+        var month = $('#month').val();
+        var types = $('#types').val();
+        var nowdata = {
+            'yeararrays':yeararrays,
+            'month':month,
+            'types':types
+        };
+        $.ajax({
+            type: "post",
+            url: "{:U('statistics')}",
+            data: nowdata,
+            dataType: "json",
+            success: function (e) {
+                if (e.status == 1) {
+                    var myChart = echarts.init(document.getElementById('main'));
+                    var data = e.datas;
+                   /* alert(e.info);*/
+                    var dateList = data.map(function (item) {
+                        return item[0];
+                    });
+                    var valueList = data.map(function (item) {
+                        return item[1];
+                    });
+                    option = {
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        xAxis: [{
+                            data: dateList
+                        }],
+                        yAxis: [{
+                            splitLine: {show: false}
+                        }],
+                        grid: [{
+                            bottom: '5%'
+                        }, {
+                            top: '5%'
+                        }],
+                        series: [{
+                            type: 'line',
+                            showSymbol: false,
+                            data: valueList
+                        }]
+                    };
+                    myChart.setOption(option);
+                }
+                if (e.status == 0) {
+                    layer.msg(e.info);
+                }
+            },
+            error: function () {
+                layer.alert('暂无对应数据！');
+            }
+        });
+    }
+    var myChart = echarts.init(document.getElementById('main'));
+    var data = {$timedata};
+    var dateList = data.map(function (item) {
+        return item[0];
+    });
+    var valueList = data.map(function (item) {
+        return item[1];
+    });
+    console.log(dateList);
+    console.log(valueList);
+    option = {
+        tooltip: {
+            trigger: 'axis'
+        },
+        xAxis: [{
+            data: dateList
+        }],
+        yAxis: [{
+            splitLine: {show: false}
+        }],
+        grid: [{
+            bottom: '25%'
+        }, {
+            top: '5%'
+        }],
+        series: [{
+            type: 'line',
+            showSymbol: false,
+            data: valueList
+        }]
+    };
+    myChart.setOption(option);
+</script>
+</body>
+</html>

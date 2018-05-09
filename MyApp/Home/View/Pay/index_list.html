@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>支付记录列表</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+    <script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/ajax-submit.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+<h4>支付记录列表</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li onclick="reloadPage(window)">
+            <img src="__IMG__/arrow_refresh.png"/>
+            重置
+        </li>
+        <li class="fgf" onclick="layerDiv('查询',$('#search-form-div').html(),'560px','360px')">
+            <img src="__IMG__/page_white_magnify.png"/>
+            查询
+        </li>
+        <li class="fgf" onclick="modifystate(&#39;all&#39;)">
+            <img src="__PUBLIC__/img/edit.png"/>
+            结账处理
+        </li>
+        <form action="{:U('pay/excel_order')}" method="post">
+            <input type="hidden" name="ids" id="ids1" value=""><li class="fgf" style="padding-bottom: 0">
+            <button  type="submit"  style="border:none;background-color: inherit;" onclick="exceldaochu(&#39;all&#39;)">
+                <img src="__PUBLIC__/img/excel_exports.png"/>Excel导出</button></li>
+        </form>
+    </ul>
+</div>
+<div class="tableCon">
+    <div style="visibility: hidden;display: none;">
+        <div id="search-form-div">
+            <form action="__ACTION__" method="post" id="search-form" class="layui-form">
+                <div class="layerCon bg_f">
+                    <table class="layerTable" border="0">
+                        <tr class="h50">
+                            <td><label for="uid_name">用户：</label></td>
+                            <td>
+                                <input id="uid_name" type="text" name="c_name" value="{$uid_name}"  placeholder="请输入用户名称"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="p_time">创建时间：</label></td>
+                            <td>
+                                开始时间：<input id="p_time" type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"
+                                            name="p_time1" value="{$p_time1}"/>
+                                结束时间：<input id="p_time1" type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"
+                                            name="p_time2" value="{$p_time2}"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="p_state">支付类型：</label></td>
+                            <td>
+                                <select id="p_type" name="p_type" >
+                                    <option value="">=====无=====</option>
+                                    <option value="10000" <eq name="p_type" value="10000">selected</eq>>====商城====</option>
+                                    <option value="20000" <eq name="p_type" value="20000">selected</eq>>====维修====</option>
+                                    <option value="30000" <eq name="p_type" value="30000">selected</eq>>====维修保证金====</option>
+                                    <option value="50000" <eq name="p_type" value="50000">selected</eq>>====装修====</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="p_state">支付状态：</label></td>
+                            <td>
+                                <select id="p_state" name="p_state" >
+                                    <option value="">=====无=====</option>
+                                    <option value="0" <eq name="p_state" value="0">selected</eq>>====申请支付====</option>
+                                    <option value="1" <eq name="p_state" value="1">selected</eq>>====支付成功====</option>
+                                    <option value="2" <eq name="p_state" value="2">selected</eq>>====支付失败====</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="p_jiezhang">结账状态：</label></td>
+                            <td>
+                                <select id="p_jiezhang" name="p_jiezhang" >
+                                    <option value="">=====无=====</option>
+                                    <option value="0" <eq name="p_jiezhang" value="0">selected</eq>>====未结账====</option>
+                                    <option value="1" <eq name="p_jiezhang" value="1">selected</eq>>====处理中====</option>
+                                    <option value="2" <eq name="p_jiezhang" value="2">selected</eq>>====已结账====</option>
+                                    <option value="3" <eq name="p_jiezhang" value="3">selected</eq>>====拒绝结账====</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="layerBtns1">
+                        <button class="btn" type="submit">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="search-form-div2">
+            <form action="{:U('state_modify')}" method="post" class="js-ajax-form" >
+                <div class="layerCon bg_f">
+                    <table class="layerTable" border="0">
+                        <input type="hidden" name="p_id" id="pdidtxt" value="">
+                        <tr class="h50">
+                            <td><label>结账状态：</label></td>
+                            <td>
+                                <select  name="p_jiezhang" class="pdstatetxt" onchange="kdstate(this)" >
+                                    <option value="0">未结账</option>
+                                    <option value="2">已结账</option>
+                                    <option value="3">拒绝结账</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="h50 kd" style="display: none">
+                            <td>拒绝理由：</td>
+                            <td><textarea name="p_jjcontent" class="kuaidival" id="p_jjcontent" cols="10" rows="5">
+                            </textarea></td>
+                        </tr>
+                    </table>
+                    <div class="layerBtns">
+                        <button type="submit" class="btn js-ajax-form-btn layui-btn" data-layer="true">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <em class="xian"></em>
+    <form action="__ACTION__" method="post" class="js-ajax-form" id="js-ajax-form">
+        <table class="table" border="0">
+            <thead>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th width="40">ID</th>
+                <th>用户昵称</th>
+                <th>商家店铺名</th>
+                <th>创建时间</th>
+                <th>支付类型</th>
+                <th>支付类型ID</th>
+                <th>支付方式</th>
+                <th>支付金额</th>
+                <th>支付状态</th>
+                <th>支付回调时间</th>
+                <th>支付回执码</th>
+                <th>是否结账</th>
+                <th>结账状态改变时间</th>
+            </tr>
+            </thead>
+            <tbody>
+            <volist name="pay_info" id="info">
+                <tr>
+                    <td>
+                        <input class="va_m" type="checkbox" name="ids[]" value="{$info.p_id}" onclick="checkBoxOp(this)" />
+                    </td>
+                    <td>{$info.p_id}</td>
+                    <td><notempty name="info.uid_name">{$info.uid_name}<else/>无昵称或账号已被删除</notempty></td>
+                    <td><eq name="info.p_type" value="10000">{$info.uidname}<else/>暂无内容</eq></td>
+                    <td>{$info.p_time|strtotime|date='Y-m-d H:i',###}</td>
+                    <td><eq name="info.p_type" value="10000">商城</eq><eq name="info.p_type" value="20000">维修</eq>
+                        <eq name="info.p_type" value="30000">维修保证金</eq><eq name="info.p_type" value="50000">装修</eq></td>
+                    <td>{$info.p_ddid}</td>
+                    <td><eq name="info.p_paytype" value="10000">支付宝</eq><eq name="info.p_paytype" value="20000">微信</eq>
+                        <eq name="info.p_paytype" value="0">暂未支付</eq></td>
+                    <td>{$info.p_money|number_format=2}</td>
+                    <td><eq name="info.p_state" value="0">申请支付</eq><eq name="info.p_state" value="1">支付成功</eq>
+                        <eq name="info.p_state" value="2">支付失败</eq></td>
+                    <td>{$info.p_backtime|strtotime|date='Y-m-d H:i',###}</td>
+                    <td>{$info.p_backnumber}<empty name="info.p_backnumber">暂无回执码</empty></td>
+                    <td><eq name="info.p_jiezhang" value="0">未结账</eq>
+                        <eq name="info.p_jiezhang" value="1">处理中</eq>
+                        <eq name="info.p_jiezhang" value="2">已结账</eq>
+                        <eq name="info.p_jiezhang" value="3">拒绝结账</eq>
+                    </td>
+                    <td><empty name="info.p_jztime">暂无<else/><eq name="info.p_jztime" value="1900-01-01 00:00:00.000">暂无<else/>{$info.p_jztime|strtotime|date='Y-m-d H:i',###}</eq></empty></td>
+                </tr>
+            </volist>
+            </tbody>
+        </table>
+    </form>
+</div>
+<div class="pageCon">
+    {$page_bar}       每页 20 条，共 {$count} 条
+</div>
+
+<script>
+    /*拒绝理由的显示与隐藏*/
+    function  kdstate(obj) {
+        var a = $(obj).val();
+        if(a==3){
+            $(".kd").show();
+        }else{
+            $(".kuaidival").val("");
+            $(".kd").hide();
+        }
+    }
+    /*excel导出*/
+    function exceldaochu(rs) {
+        var ids = "";
+        if (rs == "all") {
+            var checkedlist = $("input[name=\"ids[]\"]:checked");
+            for (var i = 0; i < checkedlist.length; i++) {
+                ids += $(checkedlist[i]).val();
+                if (i < checkedlist.length - 1) ids += ",";
+            }
+        } else {
+            ids = rs;
+        }
+        if (ids == "") {
+            layer.msg('请选择要导出的数据!', { icon: 1, time: 1000 });
+            return;
+        }
+        $("#ids1").val(ids);
+    }
+    /*批量修改状态*/
+    function modifystate(rs) {
+        var ids = "";
+        if (rs == "all") {
+            var checkedlist = $("input[name=\"ids[]\"]:checked");
+            for (var i = 0; i < checkedlist.length; i++) {
+                ids += $(checkedlist[i]).val();
+                if (i < checkedlist.length - 1) ids += ",";
+            }
+        } else {
+            ids = rs;
+        }
+        if (ids == "") {
+            layer.msg('请选择要处理的数据!', { icon: 1, time: 1000 });
+            return;
+        }else{
+            layer.closeAll('dialog');
+            $('#pdidtxt').val(ids);
+            layerDiv('批量修改',$('.search-form-div2').html(),'500px','260px');
+            var pdid =  $('.search-form-div2 #pdidtxt').val(ids);
+        }
+    }
+
+    $(function () {
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+    });
+
+    /* 重载页面 */
+    function reloadPage(win) {
+        var location = win.location;
+        location.href = location.pathname + location.search;
+    }
+</script>
+</body>
+</html>

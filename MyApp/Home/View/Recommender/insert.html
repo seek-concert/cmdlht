@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>推荐商家</title>
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/css/button.css"/>
+    <script src="__PUBLIC__/js/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/js/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/js/iframe.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<div class="layerCon bg_f">
+    <table class="layerTable" border="0">
+        <input type="hidden" id="uid" value="{$uid}">
+        <tr class="h30">
+            <td>标题：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="r_title" id="r_title" value="" placeholder="请输入标题名称"/>
+            </td>
+            <td>副标题：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="r_futitle" id="r_futitle" value="" placeholder="请输入副标题名称"/>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>排序：</td>
+            <td colspan="11">
+                <input class="must" type="text" name="r_int" id="r_int" value="0"  placeholder="请输入排序"/>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>推广标语：</td>
+            <td colspan="11">
+                <textarea id="r_biaoyu" name="r_biaoyu"></textarea>
+            </td>
+        </tr>
+        <tr class="h50">
+            <td>图片：</td>
+            <td colspan="11">
+                <form enctype="multipart/form-data" method="post" class="img1">
+                    <div class="imgadd r_logo" id="r_logo" style="margin-top:10px;width: 520px;"></div>
+                    <div class="imgCon"  style="position: relative;height: 150px;width: 150px;float: left;padding: 0px !important;">
+                        <div class="uopImg upBtn upload-btn-a" data-type="avatar" data-is_edit="1" data-inited="1">
+                            <img src="__PUBLIC__/img/addimg.png" width="150px;" height="150px;" style="float: left;">
+                            <input class="upload-input uploadFile" type="file" size="100" name="upload_file"
+                                   onchange="uploadImage(this);">
+                        </div>
+                    </div>
+                </form>
+            </td>
+        </tr>
+        <tr class="h30"></tr>
+    </table>
+
+    <div class="layerBtns" style="position: fixed;">
+        <a class="btn" onclick="ajaxinsert()" href="javascript:void(0)" >添加</a>
+    </div>
+</div>
+<script type="text/javascript">
+    /*图片上传-预览*/
+    function uploadImage(obj) {
+        /*判断是否有选择上传文件*/
+        var imgPath = obj.files;
+        /* console.log(imgPath);*/
+        if (!imgPath.length) {
+            layer.msg('请选择需要上传的图片!', {icon: 1, time: 1000});
+            return;
+        }
+
+        var parent_obj = $(obj).parents('td'),
+            addimgs = parent_obj.find('.imgadd');
+        /*判断头像的张数*/
+         var ufavicon = $(obj).parents('td').find(".r_logo").find('img').length;
+         if(ufavicon>=1){
+             layer.msg('图片只能上传一张!', {icon: 1, time: 1000});
+             return;
+         }
+
+        var ccccc = new FormData();
+        ccccc.append('upload_file', imgPath[0]);
+        $.ajax({
+            type: "POST",
+            url: "{:U('banner/ajaxupload')}",
+            data: ccccc,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                addimgs.append("<img src='" + data.url + "'   width='150px;' height='150px;'  style='float:left;margin:0 0 0 0px;'><img src='/Public/img/trash.png' class='delthis' style='float:left;margin-top:0px;margin-right: 2px;'> ");
+                layer.msg(data.info, {icon: 1, time: 1000});
+            },
+            error: function (e) {
+                layer.msg(e.info, {icon: 1, time: 1000});
+            }
+        });
+    };
+    /*删除预览图片*/
+    $(".imgadd").on("click", '.delthis', function () {
+        $(this).prev().remove();
+        $(this).remove();
+    });
+    /*添加*/
+    function ajaxinsert() {
+        /*获取数据*/
+        var uid = $('#uid').val();
+        var r_title = $("#r_title").val();
+        var r_futitle = $("#r_futitle").val();
+        var r_int = $("#r_int").val();
+        var r_biaoyu = $("#r_biaoyu").val();
+
+        var r_logo = "";
+        $("#r_logo").find("img").each(function () {
+            r_logo += $(this).attr("src") + ",";
+        });
+        if(r_logo.length>0)r_logo=r_logo.substr(0,r_logo.length - 1);
+
+        r_logo =  r_logo.replace(',/Public/img/trash.png',"")
+        var data = {
+            'r_uid':uid,
+            'r_title': r_title,
+            'r_futitle': r_futitle,
+            'r_int': r_int,
+            'r_biaoyu': r_biaoyu,
+            'r_logo': r_logo
+        };
+
+        console.log(data);
+         var index = layer.load({shade: [0.5, '#fff']});
+         $.ajax({
+             type: "post",
+             url: "{:U('Recommender/insert')}",
+             data: data,
+             dataType: "json",
+             success: function (e) {
+                 layer.close(index);
+                 if (e.status == 1) {
+                     layer.msg(e.info);
+                     window.parent.location.reload();
+                 }
+                 if (e.status == 0) {
+                     layer.msg(e.info);
+                 }
+             },
+             error: function () {
+                 layer.close(index);
+                 layer.alert('操作失败！');
+             }
+         });
+    }
+
+</script>
+</body>
+</html>

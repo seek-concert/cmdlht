@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>修改单位</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+</head>
+<body>
+    <div class="layerCon bg_f">
+        <table class="layerTable" border="0">
+            <input type="hidden" name="c_id" id="cid" value="{$info.c_id}">
+            <tr class="h50">
+                <td>单位：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="c_name" id="c_name" value="{$info.c_name}" />
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>商家：</td>
+                <td colspan="5">
+                    <select name="c_uid" id="cuid">
+                        <volist name="userinfo_info" id="userinfoinfo">
+                            <option value="{$userinfoinfo.u_id}" <eq name="userinfoinfo.u_id" value="$info.c_uid">selected</eq>>{$userinfoinfo.u_shopname}</option>
+                        </volist>
+                    </select>
+                </td>
+            </tr>
+        </table>
+    <div class="layerBtns">
+        <a class="btn"  id="ajaxmodify">提交</a>
+    </div>
+    </div>
+<script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+<script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+<script src="__JS__/jquery.treetable.js" type="text/javascript" charset="utf-8"></script>
+<script src="__JS__/ajax-submit.js"></script>
+<script>
+    /*================ajax修改====================*/
+    $(function(){
+        $("#ajaxmodify").click(function(){
+            var c_name = $("#c_name").val();
+            var cid = $("#cid").val();
+            var c_uid = $("#cuid").val();
+            var data = {
+                'c_id':cid,
+                'c_name':c_name,
+                'c_uid':c_uid
+            };
+
+            var index = layer.load({ shade: [0.5, '#fff'] });
+            $.ajax({
+                type: "post",
+                url: "{:U('company/modify')}",
+                data: data,
+                dataType: "json",
+                success: function (e) {
+                    layer.close(index);
+                    if (e.status == 1) {
+                        layer.msg(e.info);
+                        window.parent.location.reload();
+                    }
+                    if(e.status == 0){
+                        layer.msg(e.info);
+                    }
+                },
+                error: function () {
+                    layer.close(index);
+                    layer.alert('操作失败！');
+                }
+            });
+        })
+    })
+</script>
+</body>
+</html>

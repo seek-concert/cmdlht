@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>维修类型列表</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+    <script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/ajax-submit.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+<h4>维修类型列表</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li class="sx" onclick="reloadPage(window)">
+            <img src="__IMG__/arrow_refresh.png"/>
+            重置
+        </li>
+        <li class="fgf" onclick="layerDiv('查询',$('#search-form-div').html(),'500px','320px')">
+            <img src="__IMG__/page_white_magnify.png"/>
+            查询
+        </li>
+        <li class="fgf" onclick="layerPage('添加维修类型','{:U('insert')}','700px','490px')">
+            <img src="__IMG__/add.png"/>
+            添加维修类型
+        </li>
+    </ul>
+</div>
+<div class="tableCon">
+    <div style="visibility: hidden;display: none;">
+        <div id="search-form-div">
+            <form action="__ACTION__" method="post" id="search-form" class="layui-form">
+                <div class="layerCon bg_f">
+                    <table class="layerTable" border="0">
+                        <tr class="h50">
+                            <td><label for="rt_receptionname">展示名称：</label></td>
+                            <td>
+                                <input id="rt_receptionname" type="text" name="rt_receptionname" value="{$rt_receptionname}" placeholder="请输入展示名称"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="rt_pid">上级名称：</label></td>
+                            <td>
+                                <input id="rt_pid" type="text"   name="pid_name" value="{$pidname}" placeholder="请输入上级名称"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="rt_time">添加时间：</label></td>
+                            <td>
+                                开始时间：<input id="rt_time" type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"
+                                            name="rt_time1" value="{$rttime1}"/>
+                                结束时间：<input id="rt_time1" type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"
+                                            name="rt_time2" value="{$rttime2}"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="rt_choicetype">提交类型：</label></td>
+                            <td>
+                                <select id="rt_choicetype" name="rt_choicetype">
+                                    <option value="">=======无========</option>
+                                    <option value="1" <eq name="rtchoicetype" value="1">selected</eq>>========标价购买========</option>
+                                    <option value="0" <eq name="rtchoicetype" value="0">selected</eq>>========评估维修========</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="layerBtns">
+                        <button class="btn" type="submit">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <em class="xian"></em>
+    <form action="__ACTION__" method="post" class="js-ajax-form" id="js-ajax-form">
+        <table class="table" border="0">
+            <thead>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th width="40">ID</th>
+                <th>展示名称</th>
+                <th>上级名称</th>
+                <th>添加时间</th>
+                <th>提交类型</th>
+                <th>类型</th>
+                <th width="70">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <volist name="repairtype_info" id="info">
+                <tr>
+                    <td>
+                        <input class="va_m" type="checkbox" name="ids[]" value="{$info.rt_id}" onclick="checkBoxOp(this)" />
+                    </td>
+                    <td>{$info.rt_id}</td>
+                    <td>{$info.rt_receptionname}</td>
+                    <td>
+
+                        <eq name="info.rt_pid" value="0">无上级<else/>
+                            <if condition="in_array($info['rt_pid'],$repairtype_id)">
+                                <volist name="repairtype_father" id="infos" >
+                                    <eq name="infos.rt_id" value="$info.rt_pid">{$infos.rt_receptionname}</eq>
+                                </volist>
+                                <else/>
+                                上级已被删除
+                            </if>
+                        </eq>
+                    </td>
+                    <td>{$info.rt_time|strtotime|date='Y-m-d H:i',###}</td>
+                    <td><eq name="info.rt_choicetype" value="1">标价购买</eq><eq name="info.rt_choicetype" value="0">评估维修</eq></td>
+                    <td><eq name="info.rt_type" value="10000">维修类</eq><eq name="info.rt_type" value="20000">安装类</eq></td>
+                    <td>
+                        <a class="table_btn" title="详细" onclick="layerPage('维修类型信息','{:U('detail',array('rt_id'=>$info['rt_id']))}','700px','490px')"><img src="__IMG__/edit.png" alt="详细" title="详细"></a>
+                    </td>
+                </tr>
+            </volist>
+            </tbody>
+        </table>
+    </form>
+</div>
+<div class="pageCon">
+    {$page_bar}       每页 20 条，共 {$count} 条
+</div>
+
+<script>
+    $(function () {
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+    });
+
+    /* 重载页面 */
+    function reloadPage(win) {
+        var location = win.location;
+        location.href = location.pathname + location.search;
+    }
+
+
+</script>
+</body>
+</html>

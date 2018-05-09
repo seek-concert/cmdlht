@@ -1,0 +1,12 @@
+﻿@charset "utf-8";
+/*基本框架CSS*/
+
+/*基本框架CSS结束，应用特效时，以上样式可删除*/
+/* 效果CSS开始 */
+.msKeimgBox { margin: 0px auto; width: 500px; overflow: hidden; position: relative; padding-top: 10px; height: 113px; }
+.msKeimgBox ul { width: 400px; }
+.msKeimgBox ul li { float: left; height: 113px; margin: 0 10px 10px 0; width: 95px; cursor: pointer; }
+.mskeTogBtn { background: url(/public/img/images/mke_moreImg.jpg) no-repeat; height: 90px; width: 175px; position: absolute; z-index: 1; right: 0px; cursor: pointer; bottom: 0px; }
+.mskeTogBtn2 { background: url(/public/img/images/mke_moreImg2.jpg) no-repeat; bottom: 10px; }
+.msKeimgBox2 { height: auto; }
+/* 效果CSS结束 */

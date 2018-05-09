@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>添加系统通知</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+</head>
+<body>
+<div class="search-form-div1" >
+    <div class="layerCon bg_f">
+        <table class="layerTable" border="0">
+            <input type="hidden" class="uidtxt" value="">
+            <tr class="h25">
+                <td>标题：</td>
+                <td colspan="5">
+                    <input class="must n_title" type="text" name="n_title"  value="" placeholder="请输入标题"/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>内容：</td>
+                <td colspan="5">
+                    <textarea name="n_content" class="n_content"  cols="10" rows="6"></textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="layerBtns">
+        <a class="btn ajaxinsert"  id="ajaxinsert">发送</a>
+    </div>
+</div>
+<script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+<script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+<script src="__JS__/jquery.treetable.js" type="text/javascript" charset="utf-8"></script>
+<script src="__JS__/ajax-submit.js"></script>
+<script>
+   $(document).ready(function(){
+       $("#ajaxinsert").click(function(){
+           //alert($(".n_title").val()+'--'+$(".n_content").val());
+           var index=layer.closeAll();
+           var ntitle = $(".n_title").val();
+           var ncontent = $(".n_content").val();
+           if(ncontent.length==""){
+               layer.msg('内容不能为空!', { icon: 2, time: 1500 });
+               return;
+           }
+           parent.ajaxinsert(ntitle,ncontent);
+       });
+   });
+</script>
+
+</body>
+</html>

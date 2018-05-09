@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>申请人信息</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+    <script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/ajax-submit.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="__PUBLIC__/xzimg/viewer.min.css">
+    <script src="__PUBLIC__/xzimg/viewer-jquery.min.js" charset="utf-8"></script>
+
+</head>
+<body>
+<div class="layerCon bg_f">
+    <form action="{:U('modify')}" method="post" class="js-ajax-form">
+        <table class="layerTable" border="0">
+            <input type="hidden" name="th_uid" value="{$infos.th_uid}">
+            <input type="hidden" name="rh_ctrid" value="{$infos.rh_ctrid}">
+            <input type="hidden" name="th_type" value="{$infos.th_type}">
+            <input type="hidden" name="thstate" value="{$infos.thstate}">
+            <tr class="h50">
+                <td>唯一编号：</td>
+                <td colspan="5">{$info.u_number}</td>
+                <td>账号类型：</td>
+                <td colspan="5"><eq name="info.u_type" value="2">师傅<eq name="info.u_appoint" value="0">（个人）<else/>（团队）</eq></eq><eq name="info.u_type" value="3">商家</eq></td>
+            </tr>
+            <tr class="h50">
+                <td>登陆账号：</td>
+                <td colspan="5">{$info.u_loginname}</td>
+                <td>电话：</td>
+                <td colspan="5">{$info.u_phone}</td>
+            </tr>
+            <tr class="h50">
+                <td>昵称：</td>
+                <td colspan="5">{$info.u_nickname}</td>
+                <td>注册时间：</td>
+                <td colspan="5">{$info.u_time}</td>
+            </tr>
+            <tr class="h50">
+                <td>银行名称：</td>
+                <td colspan="5">{$info.u_bankname}</td>
+                <td>银行卡号：</td>
+                <td colspan="5">{$info.u_bankcard}</td>
+            </tr>
+            <tr class="h50">
+                <td>联系电话：</td>
+                <td colspan="5">{$info.u_tel}</td>
+                <td>联系地址：</td>
+                <td colspan="5">{$info.u_address}</td>
+            </tr>
+
+            <eq name="infos.th_type" value="1">
+            <tr class="h50">
+                <td>店铺名称：</td>
+                <td colspan="5">{$info.u_shopname}</td>
+                <td>售后电话：</td>
+                <td colspan="5">{$info.u_aftermarketcalls}</td>
+                <tr class="h50">
+                    <td>产品销售环境图：</td>
+                    <td colspan="11">
+                        <div class="doweboks">
+                        <volist name="uenvironmental_imglist" id="uenvironmentalimglist">
+                            <img data-original="{$uenvironmentalimglist}" src="{$uenvironmentalimglist}" width="220px;" height="200px;"  alt="产品销售环境图">&nbsp;
+                        </volist>
+                        </div>
+                    </td>
+                </tr>
+            </tr>
+            </eq>
+            <eq name="infos.th_type" value="2">
+                <tr class="h50">
+                    <td>真实姓名：</td>
+                    <td colspan="5">{$info.u_realname}</td>
+                    <td>身份证：</td>
+                    <td colspan="5">{$info.u_carded}</td>
+                </tr>
+                <tr class="h50">
+                    <td>申请类型：</td>
+                    <td colspan="11">
+                        <div class="doweboks">
+                        <volist name="ctname" id="ctnames">
+                                <notempty name="ctnames.0">
+                                    <div style="height: 200px;">
+                                         <div style="height: 200px; width:50px;padding:100px auto; float: left;">{$ctnames.1}&nbsp;</div>
+                                         <img src="{$ctnames.0}" data-original="{$ctnames.0}" alt="资源未加载" width="200px;" height="200px;"  style="float: left;" >
+                                    </div><hr/>
+                                </notempty>
+                                <empty name="ctnames.0">
+                                    <div style="height: 30px;">
+                                         <div style="height: 30px; width:50px;padding:auto; float: left;">{$ctnames.1}&nbsp;</div>
+                                    </div>
+                                </empty>
+                        </volist>
+                        </div>
+                    </td>
+                </tr>
+            </eq>
+            <tr>
+                <td>身份证图片：</td>
+                <td colspan="11">
+                    <div class="doweboks">
+                        <empty name="ucardedimg">暂无身份证图片</empty>
+                    <volist name="ucardedimg" id="ucardedimgs">
+                        <img src="{$ucardedimgs}" data-original="{$ucardedimgs}" width="220px;" height="220px;"   alt="暂无身份证图片">&nbsp;
+                    </volist>
+                    </div>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>营业执照图片：</td>
+                <td colspan="11">
+                    <div class="doweboks">
+                        <empty name="ubusinesslicense_imglist">暂无营业执照图片</empty>
+                    <volist name="ubusinesslicense_imglist" id="ubusinesslicenseimglist">
+
+                            <img src="{$ubusinesslicenseimglist}" data-original="{$ubusinesslicenseimglist}"  width="220px;" height="220px;"   alt="暂无营业执照图片" >&nbsp;
+                    </volist>
+                    </div>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>实体店门面图：</td>
+                <td colspan="11">
+                    <div class="doweboks">
+                        <empty name="ustoremap_imglist">暂无实体店门面图</empty>
+                    <volist name="ustoremap_imglist" id="ustoremapimglist">
+                        <img src="{$ustoremapimglist}"  data-original="{$ustoremapimglist}" width="220px;" height="220px;" alt="暂无实体店门面图">&nbsp;
+                    </volist>
+                    </div>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>账号状态：</td>
+                <td colspan="5"><eq name="info.u_toexamine" value="0">新注册的号</eq>
+                    <eq name="info.u_toexamine" value="1">通过审核</eq>
+                    <eq name="info.u_toexamine" value="2">资料不合格未通过</eq>
+                    <eq name="info.u_toexamine" value="3">编辑资料待审核</eq></td>
+                <td>审核状态：</td>
+                <td colspan="5">
+                    <select name="th_state" id="th_state" onchange="thstates()">
+                        <option value="3" <eq name="state_content.th_state" value="3">selected</eq>>=====通过=====</option>
+                        <option value="4" <eq name="state_content.th_state" value="4">selected</eq>>=====拒绝=====</option>
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50" id="thcontent" style="display: none;">
+                <td>拒绝理由：</td>
+                <td colspan="11">
+                    <textarea name="th_content" id="th_content" cols="30" rows="6">{$state_content.th_content}</textarea>
+                </td>
+            </tr>
+            <tr class="h30"></tr>
+        </table>
+        <div class="layerBtns">
+            <a class="btn js-ajax-form-btn layui-btn" data-layer="true" >审核</a>
+        </div>
+    </form>
+</div>
+<script>
+    $(function() {
+        $('.doweboks').viewer({
+            url: 'data-original'
+        });
+    });
+    var thstate = $("#th_state").val();
+        if(thstate=="3"){
+            $("#thcontent").hide()
+        }
+        if(thstate=="4"){
+            $("#thcontent").show()
+        }
+
+        function thstates() {
+            var thstate = $("#th_state").val();
+            if(thstate=="3"){
+                $("#thcontent").hide()
+            }
+            if(thstate=="4"){
+                $("#thcontent").show()
+            }
+        }
+
+</script>
+</body>
+</html>

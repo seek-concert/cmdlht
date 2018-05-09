@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户-修改</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+    <link rel="stylesheet" type="text/css" href="__CSS__/button.css"/>
+    <script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<div class="layerCon bg_f">
+    <input type="hidden" name="u_id" value="{$userinfo_info.u_id}" id="uidtxt">
+    <table class="layerTable" border="0">
+        <tr class="h30">
+            <td>账号类型：</td>
+            <td colspan="5">
+                <select id="u_type" name="u_type" onclick="displaytypes()">
+                    <option value="1"
+                    <eq name="userinfo_info.u_type" value="1">selected</eq>
+                    >用户</option>
+                    <option value="2"
+                    <eq name="userinfo_info.u_type" value="2">selected</eq>
+                    >师傅</option>
+                    <option value="3"
+                    <eq name="userinfo_info.u_type" value="3">selected</eq>
+                    >商家</option>
+                    <option value="4"
+                    <eq name="userinfo_info.u_type" value="4">selected</eq>
+                    >评估人员</option>
+                </select>
+            </td>
+            <td>登陆账号：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="u_loginname" id="u_loginname"
+                       value="{$userinfo_info.u_loginname}"/>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>登陆密码：</td>
+            <td colspan="5">
+                <input class="must" type="password" name="u_loginpassword" id="u_loginpassword"
+                       value="{$userinfo_info.u_loginpassword}"/>
+            </td>
+            <td>电话：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="u_phone" id="u_phone" value="{$userinfo_info.u_phone}"/>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>微信账号：</td>
+            <td colspan="5">
+                <input type="text" name="u_wxopenid" id="u_wxopenid" value="{$userinfo_info.u_wxopenid}"/>
+            </td>
+            <td>QQ账号：</td>
+            <td colspan="5">
+                <input type="text" name="u_qqopenid" id="u_qqopenid" value="{$userinfo_info.u_qqopenid}"/>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>昵称：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="u_nickname" id="u_nickname" value="{$userinfo_info.u_nickname}"/>
+            </td>
+            <td>账号状态：</td>
+            <td colspan="5">
+                <select id="u_state" name="u_state">
+                    <option value="1"
+                    <eq name="userinfo_info.u_state" value="1">selected</eq>
+                    >启用</option>
+                    <option value="0"
+                    <eq name="userinfo_info.u_state" value="0">selected</eq>
+                    >禁用</option>
+                </select>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>省：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="ua_province" id="ua_province" value="{$useraddress_info.ua_province}"/>
+            </td>
+            <td>市：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="ua_city" id="ua_city" value="{$useraddress_info.ua_city}"/>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>县：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="ua_county" id="ua_county" value="{$useraddress_info.ua_county}"/>
+            </td>
+            <td>具体地址：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="ua_address" id="ua_address" value="{$useraddress_info.ua_address}"/>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>联系电话：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="ua_phone" id="ua_phone" value="{$useraddress_info.ua_phone}"/>
+            </td>
+            <td>收货人名称：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="ua_name" id="ua_name" value="{$useraddress_info.ua_name}"/>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>默认地址：</td>
+            <td colspan="11">
+                <select id="ua_moren" name="ua_moren">
+                    <option value="1" <eq name="useraddress_info.ua_moren" value="1">selected</eq>>是</option>
+                    <option value="0" <eq name="useraddress_info.ua_moren" value="0">selected</eq>>否</option>
+                </select>
+            </td>
+        </tr>
+        <tr class="h50">
+            <td>头像：</td>
+            <td colspan="11">
+                <form enctype="multipart/form-data" method="post" class="img1" style="float: left;">
+                    <div class="imgCon " colspan="5" style="position: relative;height: 150px;width: 150px;">
+                        <div class="uopImg upBtn upload-btn-a" data-type="avatar" data-is_edit="1" data-inited="1">
+                            <img src="__PUBLIC__/img/addimg.png" width="150px;" height="150px;"
+                                 style="float: left;">
+                            <input class="upload-input uploadFile" type="file" size="100" name="upload_file"
+                                   onchange="uploadImage(this);">
+                        </div>
+                    </div>
+                </form>
+
+                <div class="imgadd" id="u_favicon" class="u_favicon" style="margin-top:10px;margin-left:160px;width: 520px;">
+                    <notempty name="ufaviconimg.0">
+                    <img src='{$ufaviconimg[0]}' width='150px;' height='150px;' style='float:left;margin:0 0 0 20px;'>
+                    <img src='/Public/img/trash.png' class='delthis' style='float:left;margin-top:0px;margin-right: 2px;'>
+                    </notempty>
+                </div>
+            </td>
+        </tr>
+        <tr class="h2"></tr>
+    </table>
+    <div class="search-form-div" style="display: none;">
+        <table class="layerTable" border="0">
+            <tr class="h30">
+                <td>开户地址：</td>
+                <td colspan="11">
+                    <input type="text" name="u_bankaddress" id="u_bankaddress" value="{$userinfo_info.u_bankaddress}"/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>银行卡名称：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_bankname" id="u_bankname" value="{$userinfo_info.u_bankname}"/>
+                </td>
+                <td>银行卡：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_bankcard" id="u_bankcard"
+                           value="{$userinfo_info.u_bankcard}"/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>真实姓名：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_realname" id="u_realname"
+                           value="{$userinfo_info.u_realname}"/>
+                </td>
+                <td>身份证：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_carded" id="u_carded" value="{$userinfo_info.u_carded}"/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>联系电话：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_tel" id="u_tel" value="{$userinfo_info.u_tel}"/>
+                </td>
+                <td>联系地址：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_address" id="u_address" value="{$userinfo_info.u_address}"/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>审核状态：</td>
+                <td colspan="5">
+                    <select id="u_toexamine" name="u_toexamine">
+                        <option value="0"
+                        <eq name="userinfo_info.u_toexamine" value="0">selected</eq>
+                        >新注册的号</option>
+                        <option value="1"
+                        <eq name="userinfo_info.u_toexamine" value="1">selected</eq>
+                        >通过审核</option>
+                        <option value="2"
+                        <eq name="userinfo_info.u_toexamine" value="2">selected</eq>
+                        >资料不合格未通过</option>
+                        <option value="3"
+                        <eq name="userinfo_info.u_toexamine" value="3">selected</eq>
+                        >编辑资料待审核</option>
+                    </select>
+                </td>
+                <td>经度：</td>
+                <td colspan="5">
+                    <input type="text" name="u_longitude" id="u_longitude"
+                           value="{$userinfo_info.u_longitude}"/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>纬度：</td>
+                <td colspan="5">
+                    <input type="text" name="u_latitude" id="u_latitude"
+                           value="{$userinfo_info.u_latitude}"/>
+                </td>
+                <td>师傅类型：</td>
+                <td colspan="5" >
+                    <lable><input class="must appoint" type="radio" style="display: inline-block !important;width: 15px;height: 15px;"
+                                  name="u_appoint" id="appoint" value="1" onclick="displaysgdtype(this)"
+                        <eq name="userinfo_info.u_appoint" value="1">checked</eq>
+                        />团队
+                    </lable>
+                    <lable><input class="must appoint" type="radio" style="display: inline-block !important;width: 15px;height: 15px;"
+                                  name="u_appoint" id="appointtxt" value="0" onclick="displaysgdtype(this)"
+                        <eq name="userinfo_info.u_appoint" value="0">checked</eq>
+                        />个人
+                    </lable>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>是否维修中：</td>
+                <td colspan="5">
+                    <lable><input class="must" type="radio" style="display: inline-block !important;width: 15px;height: 15px;"
+                                  name="u_shanggong" id="u_shanggong" value="1"
+                        <eq name="userinfo_info.u_shanggong" value="1">checked</eq>
+                    />是
+                    </lable>
+                    <lable><input class="must" type="radio" style="display: inline-block !important;width: 15px;height: 15px;"
+                                  name="u_shanggong" id="u_shanggongtxt" value="0"
+                        <eq name="userinfo_info.u_shanggong" value="0">checked</eq>
+                    />否
+                    </lable>
+                </td>
+                <td>是否上班：</td>
+                <td colspan="5" >
+                    <lable><input class="must" type="radio" style="display: inline-block !important;width: 15px;height: 15px;"
+                                  name="u_shangban" id="u_shangban" value="1"
+                        <eq name="userinfo_info.u_shangban" value="1">checked</eq>
+                    />是
+                    </lable>
+                    <lable><input class="must" type="radio" style="display: inline-block !important;width: 15px;height: 15px;"
+                                  name="u_shangban" id="u_shangbantxt" value="0"
+                        <eq name="userinfo_info.u_shangban" value="0">checked</eq>
+                    />否
+                    </lable>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>身份证图片：</td>
+                <td>
+                    <form enctype="multipart/form-data" method="post" class="img1" style="float: left;">
+                        <div class="imgCon " colspan="5" style="position: relative;height: 150px;width: 150px;">
+
+                            <div class="uopImg upBtn upload-btn-a" data-type="avatar" data-is_edit="1" data-inited="1">
+                                <img src="__PUBLIC__/img/addimg.png" width="150px;" height="150px;"
+                                     style="float: left;">
+                                <input class="upload-input uploadFile" type="file" size="100" name="upload_file"
+                                       onchange="uploadImage(this);" >
+                            </div>
+                        </div>
+                    </form>
+                    <div class="imgadd u_cardedimg" id="u_cardedimg" style="margin-top:10px; margin-left:160px;width: 520px;">
+                        <volist name="ucardedimg" id="ucardedimgs">
+                        <img src='{$ucardedimgs}' width='150px;' height='150px;'
+                             style='float:left;margin:0 0 0 2px;'>
+                        <img src='/Public/img/trash.png' class='delthis' style='float:left;margin-top:0px;margin-right: 2px;'>
+                        </volist>
+                    </div>
+                    <br/>
+                </td>
+            </tr>
+            <tr class="h2"></tr>
+        </table>
+    </div>
+    <div class="search-form-div3" style="display: none;">
+        <table class="layerTable" border="0">
+            <tr class="h30">
+                <td>营业执照：</td>
+                <td colspan="5">
+                    <form enctype="multipart/form-data" method="post" class="img1" style="float: left;">
+                        <div class="imgCon " colspan="5" style="position: relative;height: 150px;width: 150px;">
+
+                            <div class="uopImg upBtn upload-btn-a" data-type="avatar" data-is_edit="1" data-inited="1">
+                                <img src="__PUBLIC__/img/addimg.png" width="150px;" height="150px;"
+                                     style="float: left;">
+                                <input class="upload-input uploadFile" type="file" size="100" name="upload_file"
+                                       onchange="uploadImage(this);">
+                            </div>
+                        </div>
+                    </form>
+                    <div class="imgadd u_businesslicense" id="ubusinesslicense" style="margin-top:10px;width: 520px;">
+                       <notempty name="ubusinesslicenseimg.0">
+                        <img src='{$ubusinesslicenseimg[0]}' width='150px;' height='150px;'
+                             style='float:left;margin:0 0 0 0px;' >
+                        <img src='/Public/img/trash.png' class='delthis' style='float:left;margin-top:0px;margin-right: 2px;'>
+                       </notempty>
+                    </div>
+                    <br/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>实体店门面图：</td>
+                <td colspan="5">
+                    <form enctype="multipart/form-data" method="post" class="img1" style="float: left;">
+                        <div class="imgCon " colspan="5" style="position: relative;height: 150px;width: 150px;">
+
+                            <div class="uopImg upBtn upload-btn-a" data-type="avatar" data-is_edit="1" data-inited="1">
+                                <img src="__PUBLIC__/img/addimg.png" width="150px;" height="150px;"
+                                     style="float: left;">
+                                <input class="upload-input uploadFile" type="file" size="100" name="upload_file"
+                                       onchange="uploadImage(this);">
+                            </div>
+                        </div>
+                    </form>
+                    <div class="imgadd u_storemap" id="ustoremap" style="margin-top:10px;width: 520px;">
+                        <volist name="ustoremapimg" id="ustoremapimgs1">
+                            <img src='{$ustoremapimgs1}' width='150px;' height='150px;'
+                                 style='float:left;margin:0 0 0 0px;'>
+                            <img src='/Public/img/trash.png' class='delthis' style='float:left;margin-top:0px;margin-right: 2px;'>
+                        </volist>
+                    </div>
+                    <br/>
+                </td>
+            </tr>
+            <tr class="h30"></tr>
+        </table>
+    </div>
+    <div class="search-form-div2" style="display: none;">
+        <table class="layerTable" border="0">
+            <tr class="h30">
+                <td>开户地址：</td>
+                <td colspan="11">
+                    <input type="text" name="u_bankaddress" id="ubankaddress" value="{$userinfo_info.u_bankname}"/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>银行卡名称：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_bankname" id="ubankname" value="{$userinfo_info.u_bankname}"/>
+                </td>
+                <td>银行卡：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_bankcard" id="ubankcard"
+                           value="{$userinfo_info.u_bankcard}"/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>联系电话：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_tel" id="u_teltxt" value="{$userinfo_info.u_tel}"/>
+                </td>
+                <td>联系地址：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_address" id="u_addresstxt" value="{$userinfo_info.u_address}"/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>审核状态：</td>
+                <td colspan="5">
+                    <select id="u_toexaminetxt" name="u_toexamine">
+                        <option value="0"
+                        <eq name="userinfo_info.u_toexamine" value="0">selected</eq>
+                        >新注册的号</option>
+                        <option value="1"
+                        <eq name="userinfo_info.u_toexamine" value="1">selected</eq>
+                        >通过审核</option>
+                        <option value="2"
+                        <eq name="userinfo_info.u_toexamine" value="2">selected</eq>
+                        >资料不合格未通过</option>
+                        <option value="3"
+                        <eq name="userinfo_info.u_toexamine" value="3">selected</eq>
+                        >编辑资料待审核</option>
+                    </select>
+                </td>
+                <td>经度：</td>
+                <td colspan="5">
+                    <input type="text" name="u_longitude" id="u_longitudetxt" value="{$userinfo_info.u_longitude}"/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>纬度：</td>
+                <td colspan="5">
+                    <input type="text" name="u_latitude" id="u_latitudetxt" value="{$userinfo_info.u_latitude}"/>
+                </td>
+                <td>店铺名称：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_shopname" id="u_shopname" value="{$userinfo_info.u_shopname}"/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>售后电话：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_aftermarketcalls" id="u_aftermarketcalls" value="{$userinfo_info.u_aftermarketcalls}"/>
+                </td>
+                <td>真实姓名：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="u_realname" id="u_realnametxt" value="{$userinfo_info.u_realname}"/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>身份证图片：</td>
+                <td colspan="11">
+                    <form enctype="multipart/form-data" method="post" class="img1" style="float: left;">
+                        <div class="imgCon " colspan="5" style="position: relative;height: 150px;width: 150px;">
+
+                            <div class="uopImg upBtn upload-btn-a" data-type="avatar" data-is_edit="1" data-inited="1">
+                                <img src="__PUBLIC__/img/addimg.png" width="150px;" height="150px;"
+                                     style="float: left;">
+                                <input class="upload-input uploadFile" type="file" size="100" name="upload_file"
+                                       onchange="uploadImage(this);" >
+                            </div>
+                        </div>
+                    </form>
+                    <div class="imgadd u_cardedimg1" id="u_cardedimg1" style="margin-top:10px; margin-left:160px;width: 520px;">
+                        <notempty name="ucardedimg">
+                            <img src='{$ucardedimg.0}' width='150px;' height='150px;'
+                                 style='float:left;margin:0 0 0 2px;'>
+                            <img src='/Public/img/trash.png' class='delthis' style='float:left;margin-top:0px;margin-right: 2px;'>
+                            <img src='{$ucardedimg.1}' width='150px;' height='150px;'
+                                 style='float:left;margin:0 0 0 2px;'>
+                            <img src='/Public/img/trash.png' class='delthis' style='float:left;margin-top:0px;margin-right: 2px;'></notempty>
+                    </div>
+                    <br/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>营业执照：</td>
+                <td colspan="11">
+                    <form enctype="multipart/form-data" method="post" class="img1" style="float: left;">
+                        <div class="imgCon " colspan="5" style="position: relative;height: 150px;width: 150px;">
+
+                            <div class="uopImg upBtn upload-btn-a" data-type="avatar" data-is_edit="1" data-inited="1">
+                                <img src="__PUBLIC__/img/addimg.png" width="150px;" height="150px;"
+                                     style="float: left; ">
+                                <input class="upload-input uploadFile" type="file" size="100" name="upload_file"
+                                       onchange="uploadImage(this);">
+                            </div>
+                        </div>
+                    </form>
+                    <div class="imgadd u_businesslicense"  id="u_businesslicense"  style="margin-top:10px;margin-left:160px;width: 520px;">
+                        <notempty name="ubusinesslicenseimg.0">
+                        <img src='{$ubusinesslicenseimg[0]}' width='150px;' height='150px;'
+                             style='float:left;margin:0 0 0 2px;' >
+                        <img src='/Public/img/trash.png' class='delthis' style='float:left;margin-top:0px;margin-right: 2px;'>
+                        </notempty>
+                    </div>
+                    <br/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>实体店门面图：</td>
+                <td colspan="11">
+                    <form enctype="multipart/form-data" method="post" class="img1" style="float: left;">
+                        <div class="imgCon " colspan="5" style="position: relative;height: 150px;width: 150px;">
+
+                            <div class="uopImg upBtn upload-btn-a" data-type="avatar" data-is_edit="1" data-inited="1">
+                                <img src="__PUBLIC__/img/addimg.png" width="150px;" height="150px;"
+                                     style="float: left; ">
+                                <input class="upload-input uploadFile" type="file" size="100" name="upload_file"
+                                       onchange="uploadImage(this);" >
+                            </div>
+                        </div>
+                    </form>
+                    <div class="imgadd u_storemap"  id="u_storemap" style="margin-top:10px;margin-left: 160px; padding-left:0px;width: 520px;">
+                        <volist name="ustoremapimg" id="ustoremapimgs">
+                        <img src='{$ustoremapimgs}' width='150px;' height='150px;'
+                             style='float:left;margin:0 0 0 2px;'>
+                        <img src='/Public/img/trash.png' class='delthis' style='float:left;margin-top:0px;margin-right: 2px;'>
+                        </volist>
+                    </div>
+                    <br/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>产品销售环境图：</td>
+                <td colspan="11">
+                    <form enctype="multipart/form-data" method="post" class="img1">
+                        <div class="imgadd u_environmental" id="u_environmental"  style="margin-top:10px;width: 520px;">
+                            <volist name="uenvironmentalimg" id="uenvironmentalimgs">
+                                <img src='{$uenvironmentalimgs}' width='150px;' height='150px;'
+                                     style='float:left;margin:0 0 0 0px;' >
+                                <img src='/Public/img/trash.png' class='delthis' style='float:left;margin-top:0px;margin-right: 2px;'>
+                            </volist>
+                        </div>
+                        <div class="imgCon " style="position: relative;height: 150px;width: 150px;float: left;padding: 0px !important;">
+                            <div class="uopImg upBtn upload-btn-a" data-type="avatar" data-is_edit="1" data-inited="1">
+                                <img src="__PUBLIC__/img/addimg.png" width="150px;" height="150px;"
+                                     style="float: left;">
+                                <input class="upload-input uploadFile" type="file" size="100" name="upload_file"
+                                       onchange="uploadImage(this);" >
+                            </div>
+                        </div>
+                    </form>
+                    <br/>
+                </td>
+            </tr>
+            <tr class="h30"></tr>
+        </table>
+    </div>
+    <div class="layerBtns">
+        <a class="btn" onclick="ajaxmodify()" href="javascript:void(0)">修改</a>
+    </div>
+</div>
+<script type="text/javascript">
+    /*页面加载后执行displaytypes()*/
+    window.onload = function(){
+        displaytypes();
+        $('input[name=u_appoint]:checked').trigger('click');
+        displaysgdtype(this);
+
+    };
+    /*选中账号类型---显示*/
+    function displaytypes() {
+        var utype = $("#u_type option:selected").val();
+        if (utype == 1) {
+            $(".search-form-div").hide();
+            $(".search-form-div2").hide();
+        }
+        if (utype == 2) {
+            $(".search-form-div2").hide();
+            $(".search-form-div").show();
+        }
+        if (utype == 3) {
+            $(".search-form-div").hide();
+            $(".search-form-div2").show();
+        }
+        if (utype == 4) {
+            $(".search-form-div2").hide();
+            $(".search-form-div").show();
+        }
+    }
+    /*选择师傅类型---显示隐藏*/
+    function  displaysgdtype(obj) {
+        var a = $(obj).val();
+        if(a == 0){
+            $(".search-form-div3").hide();
+        }else{
+            $(".search-form-div3").show();
+        }
+    }
+    /*图片上传-预览*/
+    function uploadImage(obj) {
+        /*判断是否有选择上传文件*/
+        var imgPath = obj.files;
+        /* console.log(imgPath);*/
+        if (!imgPath.length) {
+            layer.msg('请选择需要上传的图片!', {icon: 1, time: 1000});
+            return;
+        }
+        /*判断上传文件的后缀名*/
+        /* var strExtension = imgPath.substr(imgPath.lastIndexOf('.') + 1);
+         if (strExtension != 'jpg' && strExtension != 'gif'
+             && strExtension != 'png' && strExtension != 'bmp') {
+             layer.msg('请选择需要上传的图片!', {icon: 1, time: 1000});
+             return;
+         }*/
+        var parent_obj = $(obj).parents('td'),
+            addimgs = parent_obj.find('.imgadd');
+        /*判断头像的张数*/
+        var ufavicon = $(obj).parents('td').find(".u_favicon").find('img').length;
+        if(ufavicon>=1){
+            layer.msg('头像只能上传一张!', {icon: 1, time: 1000});
+            return;
+        }
+        /*判断身份证张数*/
+        var ucardedimg = $(obj).parents('td').find(".u_cardedimg").find('img').length;
+        if(ucardedimg>2){
+            layer.msg('身份证只能上传两张!', {icon: 1, time: 1000});
+            return;
+        }
+        /*判断身份证张数*/
+        var ucardedimg1 = $(obj).parents('td').find(".u_cardedimg1").find('img').length;
+        if(ucardedimg1>2){
+            layer.msg('身份证只能上传两张!', {icon: 1, time: 1000});
+            return;
+        }
+        /*判断店铺图片张数*/
+        var ustoremap = $(obj).parents('td').find(".u_storemap").find('img').length;
+        if(ustoremap>2){
+            layer.msg('店门面图只能上传两张!', {icon: 1, time: 1000});
+            return;
+        }
+        /*判断营业执照张数*/
+        var ubusinesslicense = $(obj).parents('td').find(".u_businesslicense").find('img').length;
+        if(ubusinesslicense>=1){
+            layer.msg('营业执照只能上传一张!', {icon: 1, time: 1000});
+            return;
+        }
+        var ccccc = new FormData();
+        ccccc.append('upload_file', imgPath[0]);
+        $.ajax({
+            type: "POST",
+            url: "{:U('banner/ajaxupload')}",
+            data: ccccc,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                addimgs.append("<img src='" + data.url + "'   width='150px;' height='150px;'  style='float:left;margin:0 0 0 0px;'><img src='/Public/img/trash.png' class='delthis' style='float:left;margin-top:0px;margin-right: 2px;'> ");
+                layer.msg(data.info, {icon: 1, time: 1000});
+            },
+            error: function (e) {
+                layer.msg(e.info, {icon: 1, time: 1000});
+            }
+        });
+    }
+    /*删除预览图片*/
+    $(".imgadd").on("click", '.delthis', function () {
+        $(this).prev().remove();
+        $(this).remove();
+    });
+    /*修改*/
+    function ajaxmodify() {
+        /*获取用户地址*/
+        var ua_province = $("#ua_province").val();
+        var ua_city = $("#ua_city").val();
+        var ua_county = $("#ua_county").val();
+        var ua_address = $("#ua_address").val();
+        var ua_phone = $("#ua_phone").val();
+        var ua_name = $("#ua_name").val();
+        var ua_moren = $("#ua_moren").find("option:selected").val();
+        var uidtxt = $("#uidtxt").val();
+        /*当前为用户*/
+        var utype = $("#u_type option:selected").val();
+        var uloginname = $("#u_loginname").val();
+        if (uloginname.length < 11 || uloginname.length > 11 || isNaN(uloginname)) {
+            layer.msg('登陆账号请输入11位数字!', {icon: 2, time: 1500});
+            return;
+        }
+
+        var uloginpassword = $("#u_loginpassword").val();
+        if (uloginpassword==null) {
+            layer.msg('登陆密码请输入6-20位字符!', {icon: 2, time: 1500});
+            return;
+        }
+
+        var uphone = $("#u_phone").val();
+        if (isNaN(uphone)) {
+            layer.msg('电话号请输入数字!', {icon: 2, time: 1500});
+            return;
+        }
+
+        var uwxopenid = $("#u_wxopenid").val();
+        var uqqopenid = $("#u_qqopenid").val();
+
+        var unickname = $('#u_nickname').val();
+        var faviconimgs = "";
+        $("#u_favicon").find("img").each(function () {
+            faviconimgs += $(this).attr("src") + ",";
+        });
+        if (faviconimgs.length > 0) faviconimgs = faviconimgs.substr(0, faviconimgs.length - 1);
+        faviconimgs =  faviconimgs.replace(',/Public/img/trash.png',"");
+
+
+        var ustate = $("#u_state").val();
+        if (utype == 1) {
+            var data = {
+                'u_id':uidtxt,
+                'u_type': utype,
+                'u_loginname': uloginname,
+                'u_loginpassword': uloginpassword,
+                'u_phone': uphone,
+                'u_wxopenid': uwxopenid,
+                'u_qqopenid': uqqopenid,
+                'u_favicon': faviconimgs,
+                'u_nickname': unickname,
+                'u_state': ustate,
+                /*获取用户地址*/
+                'ua_province':ua_province,
+                'ua_city':ua_city,
+                'ua_county':ua_county,
+                'ua_address':ua_address,
+                'ua_phone':ua_phone,
+                'ua_name':ua_name,
+                'ua_moren':ua_moren
+            };
+        }
+
+        /*当前为师傅*/
+        var ubankcard = $("#u_bankcard").val();
+        var ucarded = $("#u_carded").val();
+        if(utype==2||utype==4){
+            if (ucarded.length < 18 || ucarded.length > 18) {
+                layer.msg('身份证请输入18位字符!', {icon: 2, time: 1500});
+                return;
+            }
+        }
+        var u_bankaddress = $("#u_bankaddress").val();
+        var utel = $("#u_tel").val();
+        var uaddress = $("#u_address").val();
+        var utoexamine = $("#u_toexamine").val();
+        var ulongitude = $("#u_longitude").val();
+        var ulatitude = $("#u_latitude").val();
+        var urealname = $("#u_realname").val();
+        var usuperior = $("#u_superior").val();
+        var uappoint = $('input[name=u_appoint]:checked').val();
+        var ushanggong = $('input[name=u_shanggong]:checked').val();
+        var ushangban = $('input[name=u_shangban]:checked').val();
+        var ubankname = $("#u_bankname").val();
+        var cardedimgimgs = "";
+        $("#u_cardedimg").find("img").each(function () {
+            cardedimgimgs += $(this).attr("src") + ",";
+            cardedimgimgs =  cardedimgimgs.replace(',/Public/img/trash.png',"");
+        });
+        if (cardedimgimgs.length > 0) cardedimgimgs = cardedimgimgs.substr(0, cardedimgimgs.length - 1);
+
+        var businesslicenseimgs1 = "";
+        $("#ubusinesslicense").find("img").each(function () {
+            businesslicenseimgs1 += $(this).attr("src") + ",";
+            businesslicenseimgs1 =  businesslicenseimgs1.replace(',/Public/img/trash.png',"");
+        });
+        if (businesslicenseimgs1.length > 0) businesslicenseimgs1 = businesslicenseimgs1.substr(0, businesslicenseimgs1.length - 1);
+
+        var storemapimgs1 = "";
+        $("#ustoremap").find("img").each(function () {
+            storemapimgs1 += $(this).attr("src") + ",";
+            storemapimgs1 =  storemapimgs1.replace(',/Public/img/trash.png',"");
+        });
+        if (storemapimgs1.length > 0) storemapimgs1 = storemapimgs1.substr(0, storemapimgs1.length - 1);
+
+        if (utype==2||utype==4) {
+            if(uappoint == 0){
+                var data = {
+                    'u_id':uidtxt,
+                    'u_shanggong':ushanggong,
+                    'u_shangban':ushangban,
+                    'u_bankname':ubankname,
+                    'u_type': utype,
+                    'u_loginname': uloginname,
+                    'u_loginpassword': uloginpassword,
+                    'u_phone': uphone,
+                    'u_wxopenid': uwxopenid,
+                    'u_qqopenid': uqqopenid,
+                    'u_favicon': faviconimgs,
+                    'u_state':ustate,
+                    'u_nickname': unickname,
+                    'u_bankcard': ubankcard,
+                    'u_carded': ucarded,
+                    'u_tel': utel,
+                    'u_address': uaddress,
+                    'u_toexamine': utoexamine,
+                    'u_longitude': ulongitude,
+                    'u_latitude': ulatitude,
+                    'u_realname': urealname,
+                    'u_appoint': uappoint,
+                    'u_cardedimg': cardedimgimgs,
+                    'u_bankaddress': u_bankaddress,
+                    /*获取用户地址*/
+                    'ua_province':ua_province,
+                    'ua_city':ua_city,
+                    'ua_county':ua_county,
+                    'ua_address':ua_address,
+                    'ua_phone':ua_phone,
+                    'ua_name':ua_name,
+                    'ua_moren':ua_moren
+                }
+            }else{
+                var data = {
+                    'u_id':uidtxt,
+                    'u_shanggong':ushanggong,
+                    'u_shangban':ushangban,
+                    'u_bankname':ubankname,
+                    'u_type': utype,
+                    'u_loginname': uloginname,
+                    'u_loginpassword': uloginpassword,
+                    'u_phone': uphone,
+                    'u_wxopenid': uwxopenid,
+                    'u_qqopenid': uqqopenid,
+                    'u_favicon': faviconimgs,
+                    'u_state':ustate,
+                    'u_nickname': unickname,
+                    'u_bankcard': ubankcard,
+                    'u_carded': ucarded,
+                    'u_tel': utel,
+                    'u_address': uaddress,
+                    'u_toexamine': utoexamine,
+                    'u_longitude': ulongitude,
+                    'u_latitude': ulatitude,
+                    'u_realname': urealname,
+                    'u_appoint': uappoint,
+                    'u_cardedimg': cardedimgimgs,
+                    'u_businesslicense': businesslicenseimgs1,
+                    'u_storemap': storemapimgs1,
+                    'u_bankaddress': u_bankaddress,
+                    /*获取用户地址*/
+                    'ua_province':ua_province,
+                    'ua_city':ua_city,
+                    'ua_county':ua_county,
+                    'ua_address':ua_address,
+                    'ua_phone':ua_phone,
+                    'ua_name':ua_name,
+                    'ua_moren':ua_moren
+                }
+            }
+        }
+
+        /*当前为商家*/
+        var uteltxt = $("#u_teltxt").val();
+        var uaddresstxt = $("#u_addresstxt").val();
+        var utoexaminetxt = $("#u_toexaminetxt").val();
+        var ulongitudetxt = $("#u_longitudetxt").val();
+        var ulatitudetxt = $("#u_latitudetxt").val();
+        var ushopname = $("#u_shopname").val();
+        var usuperiortxt = $("#u_superiortxt").val();
+        var uaftermarketcalls = $("#u_aftermarketcalls").val();
+        var urealnametxt = $("#u_realnametxt").val();
+        var uappoint1 = $('input[name=u_appoint1]:checked').val();
+        var ubankname1 = $("#ubankname").val();
+        var ubankcard1 = $("#ubankcard").val();
+        var ubankaddress = $("#ubankaddress").val();
+        var cardedimgimgs1 = "";
+        $("#u_cardedimg1").find("img").each(function () {
+            cardedimgimgs1 += $(this).attr("src") + ",";
+            cardedimgimgs1 =  cardedimgimgs1.replace(',/Public/img/trash.png',"");
+        });
+        if (cardedimgimgs1.length > 0) cardedimgimgs1 = cardedimgimgs1.substr(0, cardedimgimgs1.length - 1);
+
+        var businesslicenseimgs = "";
+        $("#u_businesslicense").find("img").each(function () {
+            businesslicenseimgs += $(this).attr("src") + ",";
+            businesslicenseimgs =  businesslicenseimgs.replace(',/Public/img/trash.png',"");
+        });
+        if (businesslicenseimgs.length > 0) businesslicenseimgs = businesslicenseimgs.substr(0, businesslicenseimgs.length - 1);
+
+        var storemapimgs = "";
+        $("#u_storemap").find("img").each(function () {
+            storemapimgs += $(this).attr("src") + ",";
+            storemapimgs =  storemapimgs.replace(',/Public/img/trash.png',"");
+        });
+        if (storemapimgs.length > 0) storemapimgs = storemapimgs.substr(0, storemapimgs.length - 1);
+
+        var environmentalimgs = "";
+        $("#u_environmental").find("img").each(function () {
+            environmentalimgs += $(this).attr("src") + ",";
+            environmentalimgs =  environmentalimgs.replace(',/Public/img/trash.png',"");
+        });
+        if (environmentalimgs.length > 0) environmentalimgs = environmentalimgs.substr(0, environmentalimgs.length - 1);
+
+        if (utype == 3) {
+            var data = {
+                'u_id':uidtxt,
+                'u_type': utype,
+                'u_loginname': uloginname,
+                'u_loginpassword': uloginpassword,
+                'u_phone': uphone,
+                'u_wxopenid': uwxopenid,
+                'u_qqopenid': uqqopenid,
+                'u_favicon': faviconimgs,
+                'u_state': ustate,
+                'u_nickname': unickname,
+                'u_tel': uteltxt,
+                'u_address': uaddresstxt,
+                'u_toexamine': utoexaminetxt,
+                'u_longitude': ulongitudetxt,
+                'u_latitude': ulatitudetxt,
+                'u_shopname': ushopname,
+                'u_superior': usuperiortxt,
+                'u_aftermarketcalls': uaftermarketcalls,
+                'u_appoint': uappoint1,
+                'u_realname': urealnametxt,
+                'u_businesslicense': businesslicenseimgs,
+                'u_storemap': storemapimgs,
+                'u_environmental': environmentalimgs,
+                'u_bankname': ubankname1,
+                'u_bankcard': ubankcard1,
+                'u_bankaddress': ubankaddress,
+                'u_cardedimg':cardedimgimgs1,
+                /*获取用户地址*/
+                'ua_province':ua_province,
+                'ua_city':ua_city,
+                'ua_county':ua_county,
+                'ua_address':ua_address,
+                'ua_phone':ua_phone,
+                'ua_name':ua_name,
+                'ua_moren':ua_moren
+            }
+        }
+        var index = layer.load({shade: [0.5, '#fff']});
+        $.ajax({
+            type: "post",
+            url: "{:U('userinfo/modify')}",
+            data: data,
+            dataType: "json",
+            success: function (e) {
+                layer.close(index);
+                if (e.status == 1) {
+                    layer.msg(e.info);
+                    window.parent.location.reload();
+                }
+                if (e.status == 0) {
+                    layer.msg(e.info);
+                }
+            },
+            error: function () {
+                layer.close(index);
+                layer.alert('操作失败！');
+            }
+        });
+    }
+
+    /*$(function () {
+       $('.uploadFile').on('change',uploadImage(this));
+    });*/
+</script>
+</body>
+</html>

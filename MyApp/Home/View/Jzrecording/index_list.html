@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>结账列表</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+    <script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/ajax-submit.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+<h4>结账记录列表</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li onclick="reloadPage(window)">
+            <img src="__IMG__/arrow_refresh.png"/>
+            重置
+        </li>
+        <li class="fgf" onclick="layerDiv('查询',$('#search-form-div').html(),'500px','220px')">
+            <img src="__IMG__/page_white_magnify.png"/>
+            查询
+        </li>
+    </ul>
+</div>
+<div class="tableCon">
+    <div style="visibility: hidden;display: none;">
+        <div id="search-form-div">
+            <form action="__ACTION__" method="post" id="search-form" class="layui-form">
+                <div class="layerCon bg_f">
+                    <table class="layerTable" border="0">
+                        <tr class="h50">
+                            <td><label for="shopname">店铺名称：</label></td>
+                            <td>
+                                <input id="shopname" type="text" name="shopname" value="{$shopname}" placeholder="请输入店铺名称"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="jz_time">结账时间：</label></td>
+                            <td>
+                                开始时间：<input id="jz_time" type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"
+                                            name="jz_time1" value="{$jz_time1}"/>
+                                结束时间：<input id="jz_time1" type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"
+                                            name="jz_time2" value="{$jz_time2}"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="layerBtns">
+                        <button class="btn" type="submit">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <em class="xian"></em>
+    <form action="" method="post" class="js-ajax-form" id="js-ajax-form">
+        <table class="table" border="0">
+            <thead>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck"
+                           onclick="checkBoxOp(this)"/>
+                </th>
+                <th width="40">ID</th>
+                <th>商家昵称</th>
+                <th>商家店铺名称</th>
+                <th>结账金额</th>
+                <th>结账时间</th>
+            </tr>
+            </thead>
+            <tbody>
+            <volist name="jzrecording_info" id="info">
+                <tr   class="h25">
+                    <td>
+                        <input class="va_m" type="checkbox" name="ids[]" value="{$info.jz_id}"
+                               onclick="checkBoxOp(this)"/>
+                    </td>
+                    <td>{$info.jz_id}</td>
+                    <td>{$info.nickname}</td>
+                    <td>{$info.shopname}</td>
+                    <td>{$info.jz_money|number_format=2}</td>
+                    <td>{$info.jz_time|strtotime|date='Y-m-d H:i',###}</td>
+                </tr>
+            </volist>
+            </tbody>
+        </table>
+    </form>
+</div>
+<div class="pageCon">
+    {$page_bar}       每页 20 条，共 {$count} 条
+</div>
+
+<script>
+    $(function () {
+        $('.pageCon').find('a').on('click', function () {
+            $('#search-form').attr('action', $(this).attr('href')).submit();
+            return false;
+        });
+    });
+    /* 重载页面 */
+    function reloadPage(win) {
+        var location = win.location;
+        location.href = location.pathname + location.search;
+    }
+
+</script>
+</body>
+</html>

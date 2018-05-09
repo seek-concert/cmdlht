@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>提现记录列表</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+    <script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/ajax-submit.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+<h4>提现记录列表</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li onclick="reloadPage(window)">
+            <img src="__IMG__/arrow_refresh.png"/>
+            重置
+        </li>
+        <li class="fgf" onclick="layerDiv('查询',$('#search-form-div').html(),'520px','320px')">
+            <img src="__IMG__/page_white_magnify.png"/>
+            查询
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form"
+            data-action="{:U('status_modify',array('action'=>'on'))}">
+            <img src="__IMG__/enable.png"/>
+            批量通过
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form"
+            data-action="{:U('status_modify',array('action'=>'off'))}">
+            <img src="__IMG__/unable.png"/>
+            批量退回
+        </li>
+        <form action="{:U('tixian/excel_order')}" method="post">
+            <input type="hidden" name="ids" id="ids1" value=""><li class="fgf" style="padding-bottom: 0">
+            <button  type="submit"  style="border:none;background-color: inherit;" onclick="exceldaochu(&#39;all&#39;)">
+                <img src="__PUBLIC__/img/excel_exports.png"/>Excel导出</button></li>
+        </form>
+    </ul>
+</div>
+<div class="tableCon">
+    <div style="visibility: hidden;display: none;">
+        <div id="search-form-div">
+            <form action="__ACTION__" method="post" id="search-form" class="layui-form">
+                <div class="layerCon bg_f">
+                    <table class="layerTable" border="0">
+                        <tr class="h50">
+                            <td><label for="uid_name">用户：</label></td>
+                            <td>
+                                <input id="uid_name" type="text" name="uid_name" value="{$uid_name}" placeholder="请输入用户名称"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="ttype">用户类型：</label></td>
+                            <td>
+                                <select id="ttype" name="ttype" >
+                                    <option value="">=====无=====</option>
+                                    <option value="1" <eq name="ttype" value="1">selected</eq>>====用户====</option>
+                                    <option value="2" <eq name="ttype" value="2">selected</eq>>====师傅====</option>
+                                    <option value="3" <eq name="ttype" value="3">selected</eq>>====商家====</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="t_time">申请时间：</label></td>
+                            <td>
+                                开始时间：<input id="t_time" type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"
+                                            name="t_time1" value="{$t_time1}"/>
+                                结束时间：<input id="t_time1" type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"
+                                            name="t_time2" value="{$t_time2}"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="t_state">提现状态：</label></td>
+                            <td>
+                                <select id="t_state" name="t_state" >
+                                    <option value="">=====无=====</option>
+                                    <option value="0" <eq name="t_state" value="0">selected</eq>>====申请====</option>
+                                    <option value="1" <eq name="t_state" value="1">selected</eq>>====通过====</option>
+                                    <option value="2" <eq name="t_state" value="2">selected</eq>>====退回====</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="layerBtns">
+                        <button class="btn" type="submit">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="search-form-div1" style="display: none;">
+        <textarea cols="50" rows="10" class="content1" style="width: 100%;height: 100%;padding: 2px 2px;"  disabled></textarea>
+    </div>
+    <em class="xian"></em>
+    <form action="__ACTION__" method="post" class="js-ajax-form" id="js-ajax-form">
+        <table class="table" border="0">
+            <thead>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th width="40">ID</th>
+                <th>用户昵称</th>
+                <th>用户类型</th>
+                <th>申请时间</th>
+                <th>金额类型</th>
+                <th>提现金额</th>
+                <th>提现状态</th>
+                <th>提现说明</th>
+                <th>收款类型</th>
+                <th>收款账号</th>
+            </tr>
+            </thead>
+            <tbody>
+            <volist name="tixian_info" id="info">
+                <tr>
+                    <td>
+                        <input class="va_m" type="checkbox" name="ids[]" value="{$info.t_id}" onclick="checkBoxOp(this)" />
+                    </td>
+                    <td>{$info.t_id}</td>
+                    <td><empty name="info.ttype">账号已被删除</empty>{$info.uid_name}</td>
+                    <td>
+                        <eq name="info.ttype" value="1">用户</eq>
+                        <eq name="info.ttype" value="2">师傅</eq>
+                        <eq name="info.ttype" value="3">商家</eq></td>
+                    <td>{$info.t_time|strtotime|date='Y-m-d H:i',###}</td>
+                    <td><eq name="info.t_moneytype" value="1">账户余额</eq><eq name="info.t_moneytype" value="2">分销金额</eq></td>
+                    <td>{$info.t_money|number_format=2}</td>
+                    <td><eq name="info.t_state" value="0">申请</eq><eq name="info.t_state" value="1">通过</eq><eq name="info.t_state" value="2">退回</eq></td>
+                    <td><input type="hidden" class="ncontent" value="&nbsp;{$info.t_content}"><input type="button" value="点击查看" onclick="test1(this)"></td>
+                    <td><eq name="info.t_type" value="0">没有账号</eq><eq name="info.t_type" value="1">支付宝</eq><eq name="info.t_type" value="2">微信</eq></td>
+                    <td>{$info.t_zhanghao}</td>
+                </tr>
+            </volist>
+            </tbody>
+        </table>
+    </form>
+</div>
+<div class="pageCon">
+    {$page_bar}       每页 20 条，共 {$count} 条
+</div>
+
+<script>
+    /*excel导出*/
+    function exceldaochu(rs) {
+        var ids = "";
+        if (rs == "all") {
+            var checkedlist = $("input[name=\"ids[]\"]:checked");
+            for (var i = 0; i < checkedlist.length; i++) {
+                ids += $(checkedlist[i]).val();
+                if (i < checkedlist.length - 1) ids += ",";
+            }
+        } else {
+            ids = rs;
+        }
+        if (ids == "") {
+            layer.msg('请选择要导出的数据!', { icon: 1, time: 1000 });
+            return;
+        }
+        $("#ids1").val(ids);
+    }
+
+    /*弹出备注说明*/
+    function test1(obj) {
+        $(".search-form-div1"). find(".content1").html(" ");
+        var cfcontent = $(obj).parent("td").find(".ncontent").val();
+        $(".search-form-div1"). find(".content1").html(cfcontent);
+        layerDiv('提现说明',$('.search-form-div1').html(),'500px','300px');
+    }
+    $(function () {
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+    });
+
+    /* 重载页面 */
+    function reloadPage(win) {
+        var location = win.location;
+        location.href = location.pathname + location.search;
+    }
+</script>
+</body>
+</html>

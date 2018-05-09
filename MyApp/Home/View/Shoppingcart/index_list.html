@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+    <script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/ajax-submit.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+<h4>购物车列表</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li onclick="reloadPage(window)">
+            <img src="__IMG__/arrow_refresh.png"/>
+            重置
+        </li>
+        <li class="fgf" onclick="layerDiv('查询',$('#search-form-div').html(),'500px','300px')">
+            <img src="__IMG__/page_white_magnify.png"/>
+            查询
+        </li>
+    </ul>
+</div>
+<div class="tableCon">
+    <div style="visibility: hidden;display: none;">
+        <div id="search-form-div">
+            <form action="__ACTION__" method="post" id="search-form" class="layui-form">
+                <div class="layerCon bg_f">
+                    <table class="layerTable" border="0">
+                        <tr class="h50">
+                            <td><label for="sc_pid">商品ID（维修位置ID）：</label></td>
+                            <td>
+                                <input id="sc_pid" type="text" name="sc_pid" value="{$scpid}"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="sc_uid">用户ID：</label></td>
+                            <td>
+                                <input id="sc_uid" type="text" name="sc_uid" value="{$scuid}"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="sc_time">添加时间：</label></td>
+                            <td>
+                               开始时间： <input id="sc_time" type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"  name="sc_time1" value="{$sctime1}"/>
+                                结束时间： <input id="sc_time1" type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"  name="sc_time2" value="{$sctime2}"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="sc_type">产品类型：</label></td>
+                            <td>
+                                <select  id="sc_type"  name="sc_type">
+                                    <option value="0">=====无=====</option>
+                                    <option value="1" <eq name="sctype" value="1">selected</eq>>建材商城</option>
+                                    <option value="2" <eq name="sctype" value="2">selected</eq>>维修系统</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="layerBtns">
+                        <button class="btn" type="submit">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <em class="xian"></em>
+    <form action="{:U('sort')}" method="post" class="js-ajax-form" id="js-ajax-form">
+        <table class="table" border="0">
+            <thead>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th width="40">ID</th>
+                <th>商品(维修位置)</th>
+                <th>产品属性(维修位置属性)</th>
+                <th>用户id</th>
+                <th>添加时间</th>
+                <th>数量</th>
+                <th>产品类型</th>
+            </tr>
+            </thead>
+            <tbody>
+            <volist name="shoppingcart_info" id="info">
+                <tr>
+                    <td>
+                        <input class="va_m" type="checkbox" name="ids[]" value="{$info.sc_id}" onclick="checkBoxOp(this)" />
+                    </td>
+                    <td>{$info.sc_id}</td>
+                    <td>{$info.sc_pid}</td>
+                    <td>{$info.sc_atvid}</td>
+                    <td>{$info.sc_uid}</td>
+                    <td>{$info.sc_time}</td>
+                    <td>{$info.sc_count}</td>
+                    <td><eq name="info.sc_type" value="1">建材商城</eq>
+                        <eq name="info.sc_type" value="2">维修系统</eq></td>
+                </tr>
+            </volist>
+            </tbody>
+        </table>
+    </form>
+</div>
+<div class="pageCon">
+    {$page_bar}       每页 20 条，共 {$count} 条
+</div>
+
+<script>
+    $(function () {
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+
+    });
+
+    /* 重载页面 */
+    function reloadPage(win) {
+        var location = win.location;
+        location.href = location.pathname + location.search;
+    }
+
+
+
+</script>
+</body>
+</html>

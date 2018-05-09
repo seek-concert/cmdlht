@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加施工维修需求</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+    <link rel="stylesheet" type="text/css" href="__CSS__/button.css"/>
+    <link rel="stylesheet" type="text/css" href="__CSS__/liandong2.css"/>
+</head>
+<body>
+<div class="layerCon bg_f">
+    <table class="layerTable" border="0">
+        <input type="hidden" name="sd_id" value="{$info.sd_id}">
+        <tr class="h50">
+            <td style="display:none;"></td>
+            <td colspan="12" style="text-align: center;">用户维修需求</td>
+        </tr>
+        <tr class="h30">
+            <input type="hidden" name="sd_id" id="c_sdid" value="{$info.sd_id}">
+            <td colspan="2">用户提交维修名称：</td>
+            <td colspan="4" style="color: #909090;">{$info.sd_weixiuname}</td>
+            <td colspan="2">上门费：</td>
+            <td colspan="4" style="color: #909090;">{$info.sd_thedoor}</td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">押金：</td>
+            <td colspan="4" style="color: #909090;">{$info.sd_yajin}</td>
+            <td colspan="2">是否已支付押金：</td>
+            <td colspan="4" style="color: #909090;"><eq name="info.sd_payyajin" value="1">已支付<else/>未支付</eq></td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">评估人员：</td>
+            <td colspan="4" style="color: #909090;">{$info.sd_pguid}</td>
+            <td colspan="2">用户提交时间：</td>
+            <td colspan="4" style="color: #909090;">{$info.sd_time|strtotime|date='Y-m-d H:i',###}</td>
+        </tr>
+        <tr class="h50">
+            <td style="display:none;"></td>
+            <td colspan="12" style="text-align: center;">施工维修详情</td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">维修项名称：</td>
+            <td colspan="10">
+                <input type="text"  class="must"  name="c_weixiuname" id="c_weixiuname" value="{$info.sd_weixiuname}"/>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">客户姓名：</td>
+            <td colspan="4">
+                <input type="text" name="c_name" id="c_name" value="{$info.sd_name}" disabled  />
+            </td>
+            <td colspan="2">客户电话：</td>
+            <td colspan="4">
+                <input type="text" name="c_phone" id="c_phone" value="{$info.sd_phone}" disabled  />
+            </td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">省 市 县：</td>
+            <td colspan="4">
+                <input type="hidden" name="c_province" id="c_province" value="{$info.sd_province}">
+                <input type="hidden" name="c_city" id="c_city" value="{$info.sd_city}">
+                <input type="hidden" name="c_county" id="c_county" value="{$info.sd_county}">
+                <input type="text" name="sdprovince"  value="{$info.sd_province} {$info.sd_city} {$info.sd_county}" disabled  />
+            </td>
+            <td colspan="2">客户地址：</td>
+            <td colspan="4">
+                <input type="text" name="c_address" id="c_address" value="{$info.sd_address}" disabled  />
+            </td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">施工简要说明：</td>
+            <td colspan="4">
+                <input type="text" name="c_title" id="c_title" value="{$info.sd_weixiuname}"  />
+            </td>
+            <td colspan="2">下单用户昵称：</td>
+            <td colspan="4">
+                <input type="hidden" id="c_userid" value="{$info.sd_uid}">
+                <input type="text" name="uid_name" id="uid_name" value="{$info.uid_name}"  disabled />
+            </td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">承接师傅：</td>
+            <td colspan="4">
+                <select name="c_uid" id="cuid">
+                    <option value="0">无需填写</option>
+                </select>
+            </td>
+            <td colspan="2">施工总价格：</td>
+            <td colspan="4">
+                <input class="must" type="text" name="c_money" id="c_money" value=""  />
+            </td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">师傅价格：</td>
+            <td colspan="4">
+                <input class="must" type="text" name="c_materialprice" id="c_materialprice" value='<eq name="info.sd_material" value="1">0</eq>'  />
+            </td>
+            <td colspan="2">接单方式：</td>
+            <td colspan="4">
+                <select name="c_tuisong" id="c_tuisong">
+                    <option value="2">系统推送</option>
+                    <option value="1">平台接单</option>
+                </select>
+            </td>
+        </tr>
+        <tr class="h30 wxxx" style="display: none;">
+            <td colspan="2">维修人员姓名：</td>
+            <td colspan="4">
+                <input class="must" type="text" name="c_wxname" id="c_wxname" value=''/>
+            </td>
+            <td colspan="2">联系电话：</td>
+            <td colspan="4">
+                <input class="must" type="text" name="c_wxphone" id="c_wxphone" value=''/>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">支付状态：</td>
+            <td colspan="4">
+                <select name="c_pay" id="c_pay" disabled>
+                    <option value="0" <eq name="info.sd_payyajin" value="0">selected</eq>>未支付</option>
+                    <option value="1" <eq name="info.sd_payyajin" value="1">selected</eq>>已支付</option>
+                </select>
+            </td>
+            <td colspan="2">是否阶段支付：</td>
+            <td colspan="4">
+                <select name="c_stagepay" id="c_stagepay" disabled>
+                    <option value="0">否</option>
+                    <option value="1">是</option>
+                </select>
+            </td>
+        </tr>
+        <input type="hidden" name="c_bid" id="c_bid" value="{$info.sd_bid}">
+        <tr class="h30">
+            <td colspan="2">备注：</td>
+            <td colspan="10">
+                <textarea name="c_remarks" id="c_remarks" style="width: 100%;">{$info.sd_remarks}</textarea>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">合同条款：</td>
+            <td colspan="10">
+                <textarea name="c_content" id="contenttxt" style="width: 100%;">
+                    <p style="margin-left:21.0pt;text-align:center;" align="center">
+	<b><span style="font-size:18.0pt;line-height:150%;font-family:宋体;">室内装饰维修电子合同</span></b><b><span style="font-size:18.0pt;line-height:150%;"></span></b>
+</p>
+<p style="margin-left:21.0pt;text-indent:21.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">为规范室内</span><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">装饰</span><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">维修的施工，保护双方的合法权益，</span><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">依照《中华人民共和国合同法》、《商务、住宅室内装饰装修管理办法》及其他有关法律、法规的规定，结合本工程的实际情况，甲、乙双方在平等、自愿的基础上协商一致，达成如下协议：</span>
+</p>
+<p style="margin-left:0cm;text-indent:1.0cm;">
+	<b><span style="font-size:12.0pt;line-height:150%;font-family:宋体;"><span>一、<span> </span></span></span></b><b><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">工程概况</span></b>
+</p>
+<p style="margin-left:21.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（一）工程地点：<u><span> </span></u><span> </span><span> </span></span>
+</p>
+<p style="margin-left:21.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（三）维修项目：详见报价表。 </span>
+</p>
+<p style="margin-left:21.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（四）维修工程承包方式：详见报价表</span>
+</p>
+<p style="margin-left:21.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（五）工程期限<u><span> </span></u></span><u><span style="font-size:12.0pt;line-height:150%;font-family:宋体;"><span> </span></span></u><u><span style="font-size:12.0pt;line-height:150%;font-family:宋体;"><span> </span></span></u><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">日。</span>
+</p>
+<p class="MsoNormal">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;"><span> </span>（六）维修工程价款：</span>
+</p>
+<p style="text-indent:24.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">本电子合同工程造价为（人民币）<u><span> </span></u>元；</span>
+</p>
+<p style="text-indent:21.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">金额大写：<u><span> </span></u>。</span>
+</p>
+<p style="text-indent:21.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">在甲方、乙方双方签订维修合同之日，甲方付给乙方维修总金额预付款</span><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">60%</span><u><span style="font-size:12.0pt;line-height:150%;font-family:宋体;"><span> </span></span></u><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">元,完工验收合格后甲方将剩余款</span><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">40%</span><u><span style="font-size:12.0pt;line-height:150%;font-family:宋体;"><span> </span></span></u><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">元一次性交付给乙方(增加的项目费用另计)。</span>
+</p>
+<p style="margin-left:0cm;text-indent:18.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;"><span>（七）</span></span><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">电子合同签订生效后，若要变更施工内容、材料或实际工程量增减，工程款按实结算。</span>
+</p>
+<p class="MsoNormal">
+	<b><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">二、付款方式</span></b><span style="font-size:12.0pt;line-height:150%;font-family:宋体;"></span>
+</p>
+<p style="text-indent:21.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（一）在甲乙双方签订装饰维修电子合同之时，甲方付给乙方装饰维修总金额的预付款</span><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">60%</span><u><span style="font-size:12.0pt;line-height:150%;font-family:宋体;"><span> </span></span></u><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">元,完工验收合格后甲方将剩余款</span><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">40%</span><u><span style="font-size:12.0pt;line-height:150%;font-family:宋体;"><span> </span></span></u><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">元一次性交付给乙方，并且在平台上进行对施工的一个整体评论。(增加的项目费用另计)。</span>
+</p>
+<p class="MsoNormal">
+	<b><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">三、甲方工作</span></b>
+</p>
+<p style="text-indent:18.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（一）为乙方入场施工创造条件，包括：搬清室内家具、陈设，或将室内不易搬动的家具、陈设归堆、遮盖，以不影响施工为原则。</span>
+</p>
+<p style="text-indent:18.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（二）负责提供水源、电源为乙方施工使用，并承担其费用。</span>
+</p>
+<p style="text-indent:18.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（三）负责协调师傅与邻里关系（或物业管理处）。</span>
+</p>
+<p style="text-indent:18.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（四）施工期间甲方仍需部分使用该居室的，负责做好施工现场的保护。</span>
+</p>
+<p style="text-indent:18.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（五）参与工程质量和施工进度的监督、材料进场、工程竣工验收工作及评论。</span>
+</p>
+<p style="text-indent:18.0pt;">
+	<b><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">四、乙方工作</span></b>
+</p>
+<p style="text-indent:18.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（一）施工中严格执行安全施工操作规范、防火规定、施工规范及质量标准、按期保证完成工程。</span>
+</p>
+<p style="text-indent:18.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（二）保护好原居室内的家具和陈设，保证居室内上、下水管道的畅通，处理好由于施工带来的扰民问题及与周围住户（单位）的关系。</span>
+</p>
+<p style="text-indent:18.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（三）如乙方包材料则按《工程预算表》中的价位进行材料组织、做到保质保量。</span>
+</p>
+<p style="text-indent:18.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（四）负责把</span><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">握该维修</span><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">的整改方案、并按甲方的维修意图及要求进行施工。</span>
+</p>
+<p style="text-indent:18.0pt;">
+	<b><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">五、工期延误</span></b>
+</p>
+<p style="text-indent:18.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（一）对以下原因造成竣工日期延误、经甲方确认后工期相应顺延：</span>
+</p>
+<p style="text-indent:18.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（1）工程量变化或设计变更。 </span>
+</p>
+<p style="text-indent:18.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（2）不可抗力。</span>
+</p>
+<p style="text-indent:18.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（3）甲方同意工期顺延的其它情况。</span>
+</p>
+<p style="text-indent:18.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（二）因甲方未按合约规定完成其相应负责的工作而影响工期的、工期顺延；因甲方提供的材料、设备质量不合格而影响工程质量的返工费用由甲方承担、工期顺延。</span>
+</p>
+<p style="text-indent:18.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（三）甲方未按期支付工程款、合同工期相应顺延。</span>
+</p>
+<p style="text-indent:18.05pt;">
+	<b><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">六、违约责任</span></b>
+</p>
+<p style="text-indent:32.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（一）本合同生效后，甲乙双方应严格履行合同所约定的各项条款。若任何一方需变更合同内容的，应双方协商一致后，签订补充协议。合同签订后施工前，一方无法定事由要求终止合同的，应以书面形式提出，并按合同总价款日的3</span><span style="font-size:12.0pt;line-height:150%;font-family:宋体;"> </span><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">‰支付违约金，办理终止合同手续。<span> </span></span>
+</p>
+<p style="text-indent:32.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（二）施工过程中任何一方无法定事由要求终止合同的，须向另一方以书面形式提出，经双方同意后办理清算手续，订立终止合同协议，并由责任方按合同总价款日的3</span><span style="font-size:12.0pt;line-height:150%;font-family:宋体;"> </span><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">‰赔偿，解除本合同。</span>
+</p>
+<p style="text-indent:32.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（三）因施工质量不合格，乙方不予整改、未在约定期限内整改，或经整改后仍不合格的，甲方经书面通知后乙方仍不予整改的，甲方有权另请他人整改，与整改有关的一切费用由乙方承担。</span>
+</p>
+<p style="text-indent:32.0pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">（四）任何一方因违反法律、法规等规定而受到罚款或给对方造成损失的，由责任方承担责任，并赔偿对方损失。</span>
+</p>
+<p style="text-indent:21.0pt;">
+	<b><span style="font-size:12.0pt;line-height:150%;font-family:宋体;">七、附则</span></b>
+</p>
+<p style="margin-left:31.5pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">1、本合同经甲、乙双方签字后生效。</span>
+</p>
+<p style="margin-left:31.5pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">2、本合同签定后工程按约定时间入场。</span>
+</p>
+<p style="margin-left:31.5pt;">
+	<span style="font-size:12.0pt;line-height:150%;font-family:宋体;">4、本合同履行完后自动终止。</span>
+</p>
+<p style="margin-left:31.5pt;">
+	<img src="http://chongmai.oss-cn-shanghai.aliyuncs.com/imgall/20171113/5a0958845ec36.png" alt="" /><img src="imgs-qianmingimg" class="qianmingimg"  alt="" width="100" height="121" title="" align="" />
+</p>
+<p style="margin-left:31.5pt;">
+	<span><img src="http://chongmai.oss-cn-shanghai.aliyuncs.com/imgall/20171113/5a095772eb888.png" alt="" /><br />
+</span>
+</p>
+                </textarea>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">报价表(用户)：</td>
+            <td colspan="10">
+                <textarea name="c_biaojiabiao" id="c_biaojiabiao" style="width: 100%;"></textarea>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td colspan="2">报价表(师傅)：</td>
+            <td colspan="10">
+                <textarea name="c_biaojiabiao1" id="c_biaojiabiao1" style="width: 100%;"></textarea>
+            </td>
+        </tr>
+        <tr class="h30"></tr>
+    </table>
+    <div class="div_contentlist2" style="display: none;">
+                <div id="createTable">
+                    <input type="button" id="addnumber" value="添加阶段">
+                    <input type="button" id="delnumber" value="删除阶段">
+                    <table id="process">
+                        <thead>
+                        <tr>
+                            <th style='text-align: center;'>阶段编号</th>
+                            <th style='text-align: center;'>阶段价格</th>
+                            <th style='text-align: center;'>开始时间</th>
+                            <th style="text-align: center;">结束时间</th>
+                            <th style="text-align: center;">阶段施工描述</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                                <tr>
+                                    <td ><input style='!important;width:100%;' name="s_number" class="l-text s_number" type="text" value=""></td>
+                                    <td ><input style='!important;width:100%;' name="s_price" class="l-text s_price" type="text" value=""></td>
+                                    <td ><input style='!important;width:100%;' name="s_startime" class="l-text Wdate s_startime"  onFocus="WdatePicker({lang:'zh-cn'})" type="text" value=""></td>
+                                    <td ><input style='!important;width:100%;' name="s_endtime" class="l-text Wdate s_endtime"  onFocus="WdatePicker({lang:'zh-cn'})" type="text" value=""></td>
+                                    <td ><textarea style='!important;width:100%;' name="s_content" class="l-text s_content" ></textarea></td>
+                                </tr>
+                        </tbody>
+                    </table>
+                </div>
+    </div>
+    <br/>
+    <br/>
+    <div class="layerBtns">
+        <a class="btn"  id="ajaxinsert">提交</a>
+    </div>
+</div>
+<script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+<script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/kindeditor-4.1.10/themes/default/default.css"/>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/kindeditor-4.1.10/kindeditor.js"></script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/kindeditor-4.1.10/lang/zh_CN.js"></script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/kindeditor-4.1.10/plugins/code/prettify.js"></script>
+<script type="text/javascript" src="__JS__/liandong2.js"></script>
+<script src="__JS__/My97DatePicker/WdatePicker.js"></script>
+<script>
+    var editor1;
+    var editor2;
+    var editor3;
+    var editor_imgs;
+    var editor_imgs1;
+    var editor_imgs2;
+    KindEditor.ready(function (K) {
+        editor1 =kd('#contenttxt',K);
+        editor_imgs = kdimg(K);
+        K('#tianjiatupian').click(function () {
+            editor_imgs.loadPlugin('image', function () {
+                editor_imgs.plugin.imageDialog({
+                    imageUrl: "",
+                    clickFn: function (url, title, width, height, border, align) {
+                        K("#tupiandiv").append("<div class=\"img\"><img class=\"w_100 h_100\" src=\"" + url + "\" /><p><span onclick=\"editormove(this,1)\">左移</span><span onclick=\"editormove(this,0)\">删除</span><span onclick=\"editormove(this,2)\">右移</span></p></div>");
+                        editor_imgs.hideDialog();
+                    }
+                });
+            });
+        });
+    });
+    KindEditor.ready(function (K) {
+        editor2 =kd('#c_biaojiabiao',K);
+        editor_imgs1 = kdimg(K);
+        K('#tianjiatupian').click(function () {
+            editor_imgs1.loadPlugin('image', function () {
+                editor_imgs1.plugin.imageDialog({
+                    imageUrl: "",
+                    clickFn: function (url, title, width, height, border, align) {
+                        K("#tupiandiv").append("<div class=\"img\"><img class=\"w_100 h_100\" src=\"" + url + "\" /><p><span onclick=\"editormove(this,1)\">左移</span><span onclick=\"editormove(this,0)\">删除</span><span onclick=\"editormove(this,2)\">右移</span></p></div>");
+                        editor_imgs1.hideDialog();
+                    }
+                });
+            });
+        });
+    });
+    KindEditor.ready(function (K) {
+        editor3 =kd('#c_biaojiabiao1',K);
+        editor_imgs2 = kdimg(K);
+        K('#tianjiatupian').click(function () {
+            editor_imgs2.loadPlugin('image', function () {
+                editor_imgs2.plugin.imageDialog({
+                    imageUrl: "",
+                    clickFn: function (url, title, width, height, border, align) {
+                        K("#tupiandiv").append("<div class=\"img\"><img class=\"w_100 h_100\" src=\"" + url + "\" /><p><span onclick=\"editormove(this,1)\">左移</span><span onclick=\"editormove(this,0)\">删除</span><span onclick=\"editormove(this,2)\">右移</span></p></div>");
+                        editor_imgs2.hideDialog();
+                    }
+                });
+            });
+        });
+    });
+    /*---------------推送方式--------------------*/
+    $("#c_tuisong").change(function(){
+        var tuisong = $(this).val();
+        if(tuisong==1){
+            $(".wxxx").show();
+        }
+        if(tuisong==2){
+            $("#c_wxname").val("");
+            $("#c_wxphone").val("");
+            $(".wxxx").hide();
+        }
+    });
+    /*状态改变---显示与隐藏表格*/
+    window.onload=function () {
+        $("#c_stagepay").trigger('click');
+        var aaa = $("#c_materialprice").val();
+        if(aaa == "0"){
+            $("#c_materialprice").attr("disabled","disabled");
+        }
+    };
+    $("#c_stagepay").click(function () {
+       var a =  $("#c_stagepay").find("option:selected").val();
+       if(a=="1"){
+           $(".div_contentlist2").show();
+       }
+       if(a=="0"){
+           $(".div_contentlist2").hide();
+       }
+    });
+    /*点击生成新的一行阶段*/
+    $("#addnumber").click(function () {
+        Insert_Table();
+    });
+    /*点击删除最后一行阶段*/
+    $("#delnumber").click(function () {
+         $("#process tbody tr:last").remove();
+    });
+
+    /*ajax提交----------添加*/
+    $("#ajaxinsert").click(function() {
+        var sd_state= "{$info.sd_state}";
+        /*获取施工需求的值*/
+        var c_title = $("#c_title").val();
+        var c_phone = $("#c_phone").val();
+        var c_name = $("#c_name").val();
+        var c_address = $("#c_address").val();
+        /*省市县*/
+        var c_province = $("#c_province").val();
+        var c_city = $("#c_city").val();
+        var c_county = $("#c_county").val();
+
+        var c_content = editor1.html();
+        var c_biaojiabiao = editor2.html();
+        var c_biaojiabiao1 = editor3.html();
+
+        var c_money = $("#c_money").val();
+        var c_pay = $("#c_pay").find("option:selected").val();
+        var c_remarks = $("#c_remarks").val();
+        var c_sdid = $("#c_sdid").val();
+        var c_materialprice = $("#c_materialprice").val();
+        var c_did = "";
+        var c_userid = $("#c_userid").val();
+        var c_weixiuname = $("#c_weixiuname").val();
+        var c_stagepay = $("#c_stagepay").val();
+        var c_bid = $("#c_bid").val();
+        var c_onlyid = "{$info.sd_onlyid}";
+
+        if (c_money == "") {
+            layer.msg('施工总价格不能为空!', { icon: 1, time: 1000 });
+            return false;
+        }
+        if (c_materialprice == "") {
+            layer.msg('师傅价格不能为空!', { icon: 1, time: 1000 });
+            return false;
+        }
+        if (sd_state == -1||sd_state == -2) {
+            layer.msg('订单已取消，无法添加!', { icon: 1, time: 1000 });
+            return false;
+        }
+
+        var c_tuisong = $("#c_tuisong").val();
+        var c_wxname = $("#c_wxname").val();
+        var c_wxphone = $("#c_wxphone").val();
+        var c_onemoney = "";
+        var c_twomoney = "";
+        var c_jieduanpay = "";
+        if(c_tuisong==1){
+           var cuid = 1000000;
+            if (c_wxname == "") {
+                layer.msg('维修人员姓名不能为空!', { icon: 1, time: 1000 });
+                return false;
+            }
+            if (c_wxphone == "") {
+                layer.msg('联系电话不能为空!', { icon: 1, time: 1000 });
+                return false;
+            }
+        }else{
+            var cuid = $("#cuid").val();
+        }
+        /*获取阶段的值*/
+        var s_number = [];
+        var s_price = [];
+        var s_startime = [];
+        var s_endtime = [];
+        var s_content = [];
+        var sum = 0;
+        $("#process tbody tr").each(function (i) {
+            /*阶段编号*/
+                $(this).children("td").children("input[name=s_number]").each(function(j){
+                    s_number.push($(this).val());
+                });
+            /*阶段价格*/
+            $(this).children("td").children("input[name=s_price]").each(function(j){
+                s_price.push($(this).val());
+                sum += parseInt($(this).val());
+            });
+            /*开始时间*/
+            $(this).children("td").children("input[name=s_startime]").each(function(j){
+                if($(this).val()!=""){
+                    s_startime.push($(this).val()+" 00:00:00");
+                }else{
+                    s_startime.push($(this).val());
+                }
+            });
+            /*结束时间*/
+            $(this).children("td").children("input[name=s_endtime]").each(function(j){
+                if($(this).val()!=""){
+                    s_endtime.push($(this).val()+" 23:59:59");
+                }else{
+                    s_endtime.push($(this).val());
+                }
+            });
+            /*阶段施工描述*/
+            $(this).children("td").children(".s_content").each(function(j){
+                s_content.push($(this).val());
+            });
+        });
+        if(sum>c_money){
+            layer.alert("阶段价格之和不能大于施工价格！");
+            return false;
+        }
+        /*转换*/
+        s_number = s_number.join(",,,");
+        s_price = s_price.join(",,,");
+        s_startime = s_startime.join(",,,");
+        s_endtime = s_endtime.join(",,,");
+        s_content = s_content.join(",,,");
+        var data = {
+            'sd_id':"{$info.sd_id}",
+            /*施工需求的值*/
+           'c_title':c_title,
+           'c_phone':c_phone,
+           'c_name':c_name,
+           'c_province':c_province,
+           'c_city':c_city,
+           'c_county':c_county,
+           'c_content':c_content,
+           'c_biaojiabiao':c_biaojiabiao,
+           'c_biaojiabiao1':c_biaojiabiao1,
+           'c_address':c_address,
+           'c_uid':cuid,
+           'c_weixiuname':c_weixiuname,
+           'c_money':c_money,
+           'c_userid':c_userid,
+           'c_remarks':c_remarks,
+           'c_sdid':c_sdid,
+           'c_materialprice':c_materialprice,
+           'c_did':c_did,
+           'c_pay':c_pay,
+           'c_bid':c_bid,
+           'c_stagepay':c_stagepay,
+           'c_tuisong':c_tuisong,
+           'c_wxname':c_wxname,
+           'c_wxphone':c_wxphone,
+           'c_onemoney':c_onemoney,
+           'c_twomoney':c_twomoney,
+           'c_jieduanpay':c_jieduanpay,
+           'c_onlyid':c_onlyid,
+            /*阶段的值*/
+            's_number':s_number,
+            's_price':s_price,
+            's_startime':s_startime,
+            's_endtime':s_endtime,
+            's_content':s_content
+        };
+        var index = layer.load({ shade: [0.5, '#fff'] });
+        $.ajax({
+            type: "post",
+            url: "{:U('servicedemand/insert')}",
+            data: data,
+            dataType: "json",
+            success: function (e) {
+                layer.close(index);
+                if (e.status == 1) {
+                    layer.msg(e.info);
+                    window.parent.location.reload();
+                }
+                if(e.status == 0){
+                    layer.msg(e.info);
+                }
+            },
+            error: function () {
+                layer.close(index);
+                layer.alert('操作失败！');
+            }
+        });
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+</head>
+<body>
+<form action="<empty name="info">{:U('insert')}<else/>{:U('modify')}</empty>" method="post" class="js-ajax-form">
+    <div class="layerCon bg_f">
+        <input type="hidden" name="rt_id" value="{$info.rt_id}">
+        <table class="layerTable" border="0">
+            <tr class="h50">
+                <td>上级名称：</td>
+                <td colspan="5">
+                    <select class="select" id="ptidtxt" name="rt_pid">
+                        <option value="0">----------请选择父级-----------</option>
+                        <foreach name='renovationtype_father' item='v'>
+                            <option value="{$v.rt_id}" <eq name='v.rt_id' value='$info.rt_pid'>selected</eq>>{$v.rt_name}</option>
+                        </foreach>
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>名称：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="rt_name" id="" value="{$info.rt_name}" placeholder="请输入名称" />
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>排序：</td>
+                <td colspan="5">
+                    <input class="must" type="text" name="rt_order" id="" value='<empty name="info.rt_order">0<else/>{$info.rt_order}</empty>' placeholder="请输入排序" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="layerBtns">
+        <a class="btn js-ajax-form-btn layui-btn" data-layer="true" >提交</a>
+    </div>
+</form>
+<script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+<script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+<script src="__JS__/jquery.treetable.js" type="text/javascript" charset="utf-8"></script>
+<script src="__JS__/ajax-submit.js"></script>
+<script>
+    var layerNav = $(".layerNav a");
+    var lytbCon = $(".lytbCon");
+    $(layerNav).each(function(index, e) {
+        $(e).click(function() {
+            $(this).addClass("on").siblings().removeClass("on");
+            $(lytbCon).eq(index).addClass("on").siblings().removeClass("on");
+        });
+    });
+    $("#example-advanced").treetable({
+        expandable : true
+    });
+    $('input').on('change',function () {
+        checkbox_change($(this));
+    }) ;
+    $("#ptidtxt").change(function (){
+        var pt_id = $("#ptidtxt").val();
+        $.ajax({
+            type:"post",
+            url:"{:U('index/search_pid')}",
+            data:{pt_id:pt_id},
+            dataType:"json",
+            success:function(data){
+                $('#pidtxt').html(data);
+            }
+        });
+    });
+</script>
+</body>
+</html>

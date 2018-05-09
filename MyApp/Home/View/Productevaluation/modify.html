@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>订单评价</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+    <link href="__CSS__/imgcss/style.css" rel="stylesheet" type="text/css" />
+    <script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script language="javascript" type="text/javascript" src="__JS__/imgjs/public.js"></script>
+    <script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/jquery.treetable.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/ajax-submit.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/xzimg/viewer.min.css">
+    <script src="__PUBLIC__/xzimg/viewer-jquery.min.js" charset="utf-8"></script>
+</head>
+<body>
+<form action="{:U('modify')}" method="post" class="js-ajax-form">
+    <div class="layerCon bg_f">
+        <input type="hidden" name="pe_id" value="{$info.pe_id}">
+        <table class="layerTable" border="0">
+            <tr class="h30">
+                <td>订单ID：</td>
+                <td>
+                    <input  type="text" name="pe_pdid" id="" value="{$info.pe_pdid}" disabled/>
+                </td>
+                <td>评价用户：</td>
+                <td><empty name="info.uid_name">
+                    账号无昵称或账号已被删除，用户ID【{$info.pe_uid}】
+                    <input  type="hidden" name="pe_uid" id="" value="{$info.pe_uid}" disabled/>
+                    <else/>
+                    {$info.uid_name}
+                    <input  type="hidden" name="pe_uid" id="" value="{$info.pe_uid}" disabled/>
+                </empty>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>评价内容：</td>
+                <td colspan="3">
+                    <textarea name="pe_content" style="font-size: 15px;" disabled>{$info.pe_content}</textarea>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>商品评分：</td>
+                <td>
+                    <input  type="text" name="pe_score" id="" value='<eq name="info.pe_score" value="1">差评</eq><eq name="info.pe_score" value="2">中评</eq><eq name="info.pe_score" value="3">中评</eq><eq name="info.pe_score" value="4">好评</eq><eq name="info.pe_score" value="5">好评</eq>' disabled/>
+                </td>
+                <td>评价时间：</td>
+                <td>
+                    <input  type="text" name="pe_time" id="" value="{$info.pe_time|strtotime|date='Y-m-d H:i',###}" disabled/>
+                </td>
+            </tr>
+            <tr class="h70">
+                <td>评价图片<br/>(点击放大)</td>
+                <td colspan="3">
+                    <div class="doweboks">
+                    <div class="msKeimgBox">
+                            <ul>
+                                <volist name="imglist" id="imglist">
+                                    <li>
+                                        <img src="{$imglist}" width="100px" height="100px" class="imglists" />
+                                    </li>
+                               </volist>
+                            </ul>
+                        <div class="mskeTogBtn"></div>
+                    </div>
+                    </div>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>系统回复内容：</td>
+                <td colspan="3">
+                    <textarea name="pe_systemcontent" style="font-size: 15px;">{$info.pe_systemcontent}</textarea>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>回复时间：</td>
+                <td><eq name="info.pe_systemtime" value="2017-01-01 00:00:00.000">暂无<else/><empty name="info.pe_systemcontent">暂无<else/>{$info.pe_systemtime|strtotime|date='Y-m-d H:i',###}</empty></eq>
+                </td>
+                <td>匿名评价：</td>
+                <td>
+                    <input  type="text" name="pe_systemtime" id="" value=' <eq name="info.pe_state" value="1">是</eq>
+                    <eq name="info.pe_state" value="0">否</eq>' disabled/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>订单详情ID：</td>
+                <td>
+                    <input type="text" name="pe_systemtime" id="" value="{$info.pe_odid}" disabled/>
+                </td>
+                <td>状态：</td>
+                <td>
+                    <input type="text" name="pe_systemtime" id="" value='<eq name="info.pe_state" value="1">显示</eq>
+                    <eq name="info.pe_state" value="0">隐藏</eq>' disabled/>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>追评内容：</td>
+                <td  colspan="3"><textarea name="pe_chaseratings" style="font-size: 15px;" disabled>{$info.pe_chaseratings}</textarea></td>
+            </tr>
+            <tr class="h30">
+                <td>追评时间：</td>
+                <td><eq name="info.pe_ctime" value="2017-01-01 00:00:00.000">暂无<else/><empty name="info.pe_chaseratings">暂无<else/>{$info.pe_ctime|strtotime|date='Y-m-d H:i',###}</empty></eq></td>
+                <td>回复追评时间：</td>
+                <td><eq name="info.pe_csystemtime" value="2017-01-01 00:00:00.000">暂无<else/><empty name="info.pe_csystemcontent">暂无<else/>{$info.pe_csystemtime|strtotime|date='Y-m-d H:i',###}</empty></eq></td>
+            </tr>
+            <tr class="h30">
+                <td>系统追评回复：</td>
+                <td  colspan="3"><textarea name="pe_csystemcontent" style="font-size: 15px;">{$info.pe_csystemcontent}</textarea></td>
+            </tr>
+        </table>
+    </div>
+    <div class="layerBtns1">
+        <a class="btn js-ajax-form-btn layui-btn" data-layer="true">提交</a>
+    </div>
+</form>
+<script>
+    $(function() {
+        $('.doweboks').viewer({
+            url: 'data-original'
+        });
+    });
+</script>
+</body>
+</html>

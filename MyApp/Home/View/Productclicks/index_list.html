@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+    <script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/ajax-submit.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+<h4>产品点击记录列表</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li onclick="reloadPage(window)">
+            <img src="__IMG__/arrow_refresh.png"/>
+            重置
+        </li>
+        <li class="fgf" onclick="layerDiv('查询',$('#search-form-div').html(),'500px','300px')">
+            <img src="__IMG__/page_white_magnify.png"/>
+            查询
+        </li>
+    </ul>
+</div>
+<div class="tableCon">
+    <div style="visibility: hidden;display: none;">
+        <div id="search-form-div">
+            <form action="__ACTION__" method="post" id="search-form" class="layui-form">
+                <div class="layerCon bg_f">
+                    <table class="layerTable" border="0">
+                        <tr class="h50">
+                            <td><label for="pid_name">产品：</label></td>
+                            <td>
+                                <input id="pid_name" type="text" name="pid_name" value="{$pid_name}" placeholder="请输入产品"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="pt_time">点击时间：</label></td>
+                            <td>
+                               开始时间： <input id="pt_time" type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"  name="pt_time1" value="{$pttime1}"/>
+                                结束时间： <input id="pt_time1" type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"  name="pt_time2" value="{$pttime2}"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="uid_name">用户：</label></td>
+                            <td>
+                                <input id="uid_name" type="text" name="uid_name" value="{$uid_name}" placeholder="请输入用户"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="layerBtns">
+                        <button class="btn" type="submit">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <em class="xian"></em>
+    <form action="{:U('sort')}" method="post" class="js-ajax-form" id="js-ajax-form">
+        <table class="table" border="0">
+            <thead>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th width="40">ID</th>
+                <th>产品</th>
+                <th>点击时间</th>
+                <th>IP</th>
+                <th>是否纳入点击统计</th>
+                <th>用户</th>
+            </tr>
+            </thead>
+            <tbody>
+            <volist name="productclicks_info" id="info">
+                <tr>
+                    <td>
+                        <input class="va_m" type="checkbox" name="ids[]" value="{$info.pt_id}" onclick="checkBoxOp(this)" />
+                    </td>
+                    <td>{$info.pt_id}</td>
+                    <td>{$info.pid_name}</td>
+                    <td>{$info.pt_time}</td>
+                    <td>{$info.pt_ip}</td>
+                    <td><eq name="info.pt_state" value="1">是</eq>
+                        <eq name="info.pt_state" value="0">否</eq></td>
+                    <td><eq name="info.pt_uid" value="0">游客<else/>{$info.uid_name}</eq></td>
+                </tr>
+            </volist>
+            </tbody>
+        </table>
+    </form>
+</div>
+<div class="pageCon">
+    {$page_bar}       每页 20 条，共 {$count} 条
+</div>
+
+<script>
+    $(function () {
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+
+    });
+
+    /* 重载页面 */
+    function reloadPage(win) {
+        var location = win.location;
+        location.href = location.pathname + location.search;
+    }
+
+
+
+</script>
+</body>
+</html>

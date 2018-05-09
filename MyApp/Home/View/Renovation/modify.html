@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>案例-修改</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+    <link rel="stylesheet" type="text/css" href="__CSS__/button.css"/>
+    <script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<div class="layerCon bg_f">
+    <form action="{:U('detail')}" method="get">
+        <div><span>选择设计师：</span><br/>
+            <input type="text" name="d_name" id="d_name" value="{$dname}" placeholder="请输入设计师姓名"><button class="btn" type="submit">搜索</button><hr/>
+        </div>
+        <table class="table" border="0" width="100%">
+            <thead>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="radio" name="" value=""/>
+                </th>
+                <th width="10%">ID</th>
+                <th>设计师姓名</th>
+                <th>头像</th>
+            </tr>
+            </thead>
+            <tbody>
+            <volist name="pcdesigner" id="info">
+                <tr>
+                    <td>
+                        <input class="va_m d_id" type="radio" name="d_id" value="{$info.d_id}" <eq name="info.d_id" value="$renovation_info.r_did">checked</eq>/>
+                    </td>
+                    <td>{$info.d_id}</td>
+                    <td>{$info.d_name}</td>
+                    <td>{$info.d_name}</td>
+                </tr>
+            </volist>
+            </tbody>
+        </table>
+        <div class="pageCon">
+            {$page_bar}       每页 20 条，共 {$count} 条
+        </div>
+        <hr/>
+    <br/>
+    <table class="layerTable" border="0">
+        <input type="hidden" name="r_id" id="ridtxt" value="{$renovation_info.r_id}">
+        <input type="hidden" name="r_time" id="timetxt" value="{$renovation_info.r_time}">
+        <tr class="h30">
+            <td>标题：</td>
+            <td colspan="5">
+                <input class="must" type="text" name="r_title" id="titletxt" value="{$renovation_info.r_title}" />
+            </td>
+            <td>是否显示：</td>
+            <td colspan="5">
+                <select class="select"  id="statetxt" name="r_state">
+                    <option value="true" <eq name="renovation_info.r_state" value="1">selected</eq> >显示</option>
+                    <option value="false" <eq name="renovation_info.r_state" value="0">selected</eq>>隐藏</option>
+                </select>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>楼盘：</td>
+            <td colspan="5">
+                <input type="text" name="r_estate" id="estatetxt" value="{$renovation_info.r_estate}" />
+            </td>
+            <td>面积：</td>
+            <td colspan="5">
+                <input type="text" name="r_has" id="hastxt" value="{$renovation_info.r_has}" />m²
+            </td>
+        </tr>
+        <tr  class="h50">
+            <td>案例类型：</td>
+            <td style="margin:0px; padding: 0px;" colspan="11">
+                            <volist name="renovationtype_father" id="father_info">
+                                    <label style=" display:block;"><input type="checkbox" value="{$father_info.rt_id}" id="rtidtxt" class="rtids parent"   name="parent" data-pid="{$father_info.rt_id}" checked  style="display: inline-block;width: 15px;height: 15px;" /><a style="display: inline-block;">{$father_info.rt_name}</a></label>
+                                <volist name="renovationtype_child" id="child_info">
+                                    <eq name="child_info.rt_pid" value="$father_info.rt_id">
+                                        <label style="display:inline-block;">
+                                            <input type="radio" value="{$child_info.rt_id}" id="rtpidtxt" class="rtids"  style="display: inline-block !important;width: 15px;height: 15px;" name="child-{$father_info.rt_id}"
+                                                   data-pid="{$child_info.rt_pid}" <php> if(strpos($renovation_info['r_rtid'],$child_info['rt_id'])!==false){echo "checked";} </php> />
+                                            <a  style="display: inline-block !important;">{$child_info.rt_name}</a></label>
+                                    </eq>
+                                </volist>
+                          </volist>
+            </td>
+        </tr>
+        <tr class="h50">
+            <td>视频地址：</td>
+            <td colspan="11">
+                <input type="text" name="r_shipin" id="r_shipin" value="{$renovation_info.r_shipin}" />
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>介绍：</td>
+            <td colspan="11" style="padding: 0;">
+                    <textarea id="labeltxt" name="r_label"  cols="10" rows="3">{$renovation_info.r_label}</textarea>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>内容：</td>
+            <td colspan="11" style="padding: 0;">
+                    <textarea  id="contenttxt" name="r_content" style="width: 100%; height: 300px;">{$renovation_info.r_content}</textarea>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>缩略图：</td>
+            <td colspan="11">
+                <form  enctype="multipart/form-data" method="post" id="img1">
+                    <div id="imgadd"   style="margin-top:20px;width: 520px;">
+                        <volist name="imglist" id="imglists">
+                            <img src='{$imglists}'   width='150px;' height='150px;'  style='float:left;margin:0 0 0 0px;'>
+                            <img src='__IMG__/trash.png' class='delthis' style='float:left;margin-top:0px;margin-right: 2px;'>
+                        </volist>
+                    </div>
+                    <div class="imgCon" style="position: relative;height: 150px;width: 150px;float: left;padding: 0px !important;">
+                        <div class="uopImg upBtn upload-btn-a" data-type="avatar" data-is_edit="1" data-inited="1" >
+                            <img src="__IMG__/addimg.png"   width="150px;" height="150px;" style="float: left; ">
+                            <input class="upload-input" type="file" size="100" name="upload_file" id="uploadFile" onchange="uploadImage(this);" >
+                        </div>
+                    </div>
+                </form>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>左边为400*400，<br/>右边为800*800：</td>
+            <td colspan="11">
+                <form  enctype="multipart/form-data" method="post">
+                    <div id="abbreviatedimg" style="width: 320px;">
+                            <for start="0" end="$imglength">
+                            <img src='{$renovationimg_ids1.$i}'   width='150px;' height='150px;'  style='float:left;margin:0 0 0 0px;'>
+                            <img src='/Public/img/trash.png' class='delthis2' style='float:left;margin-top:0px;margin-right: 2px;'>
+                            <img src='{$renovationimg_ids2.$i}'   width='150px;' height='150px;'  style='float:left;margin:0 180 0 150px;'>
+                            </for>
+                    </div>
+                </form>
+            </td>
+        </tr>
+        <tr class="h30">
+            <td>图片集合：</td>
+            <td colspan="11">
+                <form  enctype="multipart/form-data" method="post" id="img2">
+                    <div id="imgadd1"  style="margin-top:10px;width: 520px;">
+                        <volist name="quanxilist" id="quanxilists">
+                            <img src='{$quanxilists}'   width='150px;' height='150px;'  style='float:left;margin:0 0 0 0px;'>
+                            <img src='__IMG__/trash.png' class='delthis' style='float:left;margin-top:0px;margin-right: 2px;'>
+                        </volist>
+                    </div>
+                    <div class="imgCon " style="position: relative;height: 150px;width: 150px;float: left;padding: 0px !important;">
+                        <div class="uopImg upBtn upload-btn-a" data-type="avatar" data-is_edit="1" data-inited="1" >
+                            <img src="__PUBLIC__/img/addimg.png"   width="150px;" height="150px;" style="float: left;">
+                            <input class="upload-input" type="file" size="100" name="upload_file" id="uploadFile1" onchange="uploadImages(this);">
+                        </div>
+                    </div>
+                </form>
+            </td>
+        </tr>
+        <tr class="h25"></tr>
+    </table>
+    </form>
+</div>
+<div class="layerBtns">
+    <a class="btn" onclick="ajaxinsert(this)">修改</a>
+</div>
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/kindeditor-4.1.10/themes/default/default.css"/>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/kindeditor-4.1.10/kindeditor.js"></script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/kindeditor-4.1.10/lang/zh_CN.js"></script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/kindeditor-4.1.10/plugins/code/prettify.js"></script>
+<script type="text/javascript">
+    var editor1;
+    var editor_imgs;
+    KindEditor.ready(function (K) {
+        editor1 =kd('#contenttxt',K);
+        editor_imgs = kdimg(K);
+        K('#tianjiatupian').click(function () {
+            editor_imgs.loadPlugin('image', function () {
+                editor_imgs.plugin.imageDialog({
+                    imageUrl: "",
+                    clickFn: function (url, title, width, height, border, align) {
+                        K("#tupiandiv").append("<div class=\"img\"><img class=\"w_100 h_100\" src=\"" + url + "\" /><p><span onclick=\"editormove(this,1)\">左移</span><span onclick=\"editormove(this,0)\">删除</span><span onclick=\"editormove(this,2)\">右移</span></p></div>");
+                        editor_imgs.hideDialog();
+                    }
+                });
+            });
+        });
+    });
+    function uploadImages(obj) {
+        //判断是否有选择上传文件
+        var imgPath = $("#uploadFile1").val();
+
+        if (imgPath == "") {
+            layer.msg('请选择需要上传的图片!', { icon: 1, time: 1000 });
+            return;
+        }
+        //判断上传文件的后缀名
+        var strExtension = imgPath.substr(imgPath.lastIndexOf('.') + 1);
+        if (strExtension != 'jpg' && strExtension != 'gif'
+            && strExtension != 'png' && strExtension != 'bmp') {
+            layer.msg('请选择需要上传的图片!', { icon: 1, time: 1000 });
+            return;
+        }
+
+        var formData = new FormData($("#img2")[0]);
+        $.ajax({
+            type: "POST",
+            url: "{:U('banner/ajaxupload')}",
+            data:  formData,
+            processData:false,
+            contentType:false,
+            success:function(data){
+                $("#imgadd1").append("<img src='"+data.url+"'   width='150px;' height='150px;'  style='float:left;margin:0 0 0 0px;'><img src='/Public/img/trash.png' class='delthis'  style='float:left;margin-top:0px;margin-right: 2px;'> ");
+                layer.msg(data.info, { icon: 1, time: 1000 });
+
+            },
+            error:function(e){
+                layer.msg(e.info, { icon: 1, time: 1000 });
+            }
+        });
+    }
+    $("#imgadd1").on("click",'.delthis',function(){
+        $(this).prev().remove(); $(this).remove();
+    });
+    function uploadImage(obj) {
+        /*判断是否有选择上传文件*/
+        var imgPath = obj.files;
+        /* console.log(imgPath);*/
+        if (!imgPath.length) {
+            layer.msg('请选择需要上传的图片!', {icon: 1, time: 1000});
+            return;
+        }
+
+        var parent_obj = $(obj).parents('td'),
+            addimgs = parent_obj.find('.imgadd');
+
+        /*判断缩略图张数*/
+        var ubusinesslicense = $(obj).parents('td').find("#imgadd").find('img').length;
+        if(ubusinesslicense>=1){
+            layer.msg('缩略图只能上传一张!', {icon: 1, time: 1000});
+            return;
+        }
+
+        var ccccc = new FormData();
+        ccccc.append('upload_file', imgPath[0]);
+        $.ajax({
+            type: "POST",
+            url: "{:U('banner/ajaxuploads')}",
+            data:  ccccc,
+            processData:false,
+            contentType:false,
+            success:function(data){
+                $("#imgadd").append("<img src='"+data.url[0]+"'   width='150px;' height='150px;'    style='float:left;margin:0 0 0 0px;'><img src='/Public/img/trash.png' class='delthis' style='float:left;margin-top:0px;margin-right: 2px;'> ");
+                $("#abbreviatedimg").append("<img src='"+data.url[1]+"'   width='150px;' height='150px;'  style='float:left;margin:0 0 0 0px;'><img src='/Public/img/trash.png' class='delthis2' style='float:left;margin-top:0px;margin-right: 2px;'> " +
+                    "<img src='"+data.url[2]+"'   width='150px;' height='150px;'  style='float:left;margin:0 180 0 150px;'>");
+                layer.msg(data.info, { icon: 1, time: 1000 });
+
+            },
+            error:function(e){
+                layer.msg(e.info, { icon: 1, time: 1000 });
+            }
+        });
+    }
+    $("input[type=checkbox]").change(function () {
+        if ($(this).get(0).checked) {
+            $("input[data-pid=" + $(this).val() + "]").prop("checked", true);
+        } else {
+            $("input[data-pid=" + $(this).val() + "]").prop("checked", false);
+        }
+    });
+    $("input[type=radio]").change(function () {
+        if ($(this).get(0).parent().checked) {
+            $("input[data-pid=" + $("#rtidtxt").val() + "]").prop("checked", true);
+        }
+    });
+
+    $("#imgadd").on("click",'.delthis',function(){
+        $(this).prev().remove(); $(this).remove();$("#abbreviatedimg").find("img").remove();
+    });
+    $("#abbreviatedimg").on("click",'.delthis2',function(){
+        $(this).prev().remove(); $(this).next().remove();$(this).remove();
+    });
+    function ajaxinsert(obj) {
+        var didtxt = $("input[name=d_id]:checked").val();
+        if(didtxt == 'undefined'){
+            layer.msg('请选择设计师!', { icon: 2, time: 1500 });
+            return;
+        }
+        if(didtxt == null){
+            layer.msg('请选择设计师!', { icon: 2, time: 1500 });
+            return;
+        }
+        if(didtxt == ""){
+            layer.msg('请选择设计师!', { icon: 2, time: 1500 });
+            return;
+        }
+        var titeltxt = $("#titletxt").val();
+        if (titeltxt.length < 2 || titeltxt.length > 20) {
+            layer.msg('标题名称请输入2-20位字符!', { icon: 2, time: 1500 });
+            return;
+        }
+        var estatetxt = $("#estatetxt").val();
+        var hastxt = $("#hastxt").val();
+        var r_shipin = $("#r_shipin").val();
+
+        var imgs = "";
+        $("#imgadd").find("img").each(function () {
+            imgs += $(this).attr("src") + ",";
+            imgs =  imgs.replace(',/Public/img/trash.png',"");
+        });
+        if (imgs.length > 0) imgs = imgs.substr(0, imgs.length - 1);
+
+        var rstate = $("#statetxt").val();
+
+        var parentobj = $('.parent');//复选框获取
+        var parentsrtid=[],t_id=[];//定义父级空数组 以及最后结果的空数组
+        for(var i=0; i<parentobj.length; i++){
+            if(parentobj.get(i).checked) {
+                parentsrtid.push(parentobj.get(i).value);//父级数组传值
+              /*  t_id.push(parentobj.get(i).value);*///在最后结果数组里面添加值
+            }
+        }
+       for(i=0;i<parentsrtid.length;i++){
+           t_id.push($('input[name=child-'+parentsrtid[i]+']:checked').val());//通过父级数组查单选的值传到最后的结果数组
+       }
+        var rtidtxt = t_id.join(',');
+
+        var conttxt = editor1.html();
+        var labeltxt = $("#labeltxt").val();
+        var abbreviatedimgs = "";
+        $("#abbreviatedimg").find("img").each(function () {
+            abbreviatedimgs += $(this).attr("src") + ",";
+            abbreviatedimgs =  abbreviatedimgs.replace(',/Public/img/trash.png',"");
+        });
+        if (abbreviatedimgs.length > 0) abbreviatedimgs = abbreviatedimgs.substr(0, abbreviatedimgs.length - 1);
+        var timetxt =　$("#timetxt").val();
+        var ridtxt = $("#ridtxt").val();
+
+        var imgs1 = "";
+        $("#imgadd1").find("img").each(function () {
+            imgs1 += $(this).attr("src") + ",";
+            imgs1 =  imgs1.replace(',/Public/img/trash.png',"");
+        });
+        if (imgs1.length > 0) imgs1 = imgs1.substr(0, imgs1.length - 1);
+        var data = {
+            'r_did':didtxt,
+            'r_id':ridtxt,
+            'r_time':timetxt,
+            'r_title':titeltxt,
+            'r_state':rstate,
+            'r_estate': estatetxt,
+            'r_content':conttxt,
+            'r_has':hastxt,
+            'r_rtid':rtidtxt,
+            'r_label':labeltxt,
+            'r_img':imgs,
+            'r_imglist':abbreviatedimgs,
+            'r_quanxi':imgs1,
+            'r_shipin':r_shipin
+           };
+        $.ajax({
+            type: "post",
+            url: "{:U('renovation/modify')}",
+            data: data,
+            dataType: "json",
+            success: function (e) {
+                if (e.status == 1) {
+                    layer.msg(e.info);
+                    window.parent.location.reload();
+                }
+                if(e.status == 0){
+                    layer.msg(e.info);
+                }
+            },
+            error: function () {
+                layer.alert('操作失败！');
+            }
+        });
+    }
+
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>订单评价</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+    <script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/ajax-submit.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+<h4>订单评价列表</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li onclick="reloadPage(window)">
+            <img src="__IMG__/arrow_refresh.png"/>
+            重置
+        </li>
+        <li class="fgf" onclick="layerDiv('查询',$('#search-form-div').html(),'500px','300px')">
+            <img src="__IMG__/page_white_magnify.png"/>
+            查询
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form"
+            data-action="{:U('status_modify',array('action'=>'on'))}">
+            <img src="__IMG__/enable.png"/>
+            批量显示
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form"
+            data-action="{:U('status_modify',array('action'=>'off'))}">
+            <img src="__IMG__/unable.png"/>
+            批量隐藏
+    </ul>
+</div>
+<div class="tableCon">
+    <div style="visibility: hidden;display: none;">
+        <div id="search-form-div">
+            <form action="__ACTION__" method="post" id="search-form" class="layui-form">
+                <div class="layerCon bg_f">
+                    <table class="layerTable" border="0">
+                        <tr class="h50">
+                            <td><label for="pe_pdid">订单ID：</label></td>
+                            <td>
+                                <input id="pe_pdid" type="text" name="pe_pdid" value="{$pepdid}" placeholder="请输入订单ID"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="uid_name">用户昵称：</label></td>
+                            <td>
+                                <input id="uid_name" type="text" name="uid_name" value="{$uid_name}" placeholder="请输入用户昵称"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="pe_time">评价时间：</label></td>
+                            <td>
+                                开始时间： <input id="pe_time" type="text" class="Wdate"
+                                             onFocus="WdatePicker({lang:'zh-cn'})" name="pe_time1" value="{$petime1}"/>
+                                结束时间： <input id="pe_time1" type="text" class="Wdate"
+                                             onFocus="WdatePicker({lang:'zh-cn'})" name="pe_time2" value="{$petime2}"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="pe_ctime">追评时间：</label></td>
+                            <td>
+                                开始时间： <input id="pe_ctime" type="text" class="Wdate"
+                                             onFocus="WdatePicker({lang:'zh-cn'})" name="pe_ctime1" value="{$pectime1}"/>
+                                结束时间： <input id="pe_ctime1" type="text" class="Wdate"
+                                             onFocus="WdatePicker({lang:'zh-cn'})" name="pe_ctime2" value="{$pectime2}"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="pe_odid">订单详情ID：</label></td>
+                            <td>
+                                <input id="pe_odid" type="text" name="pe_odid" value="{$peodid}" placeholder="请输入订单详情ID"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="pe_state">是否显示：</label></td>
+                            <td>
+                                <select name="pe_state" id="pe_state">
+                                    <option value="">---无---</option>
+                                    <option value="1" <eq name="pestate" value="1">selected</eq>>---显示---</option>
+                                    <option value="0" <eq name="pestate" value="0">selected</eq>>---隐藏---</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="layerBtns1">
+                        <button class="btn" type="submit">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <em class="xian"></em>
+    <form action="{:U('sort')}" method="post" class="js-ajax-form" id="js-ajax-form">
+        <table class="table" border="0">
+            <thead>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck"
+                           onclick="checkBoxOp(this)"/>
+                </th>
+                <th width="40">ID</th>
+                <th>订单ID</th>
+                <th>评价用户</th>
+                <th>商品评分</th>
+                <th>评价时间</th>
+                <th>回复时间</th>
+                <th>匿名评价</th>
+                <th>是否显示</th>
+                <th>追评时间</th>
+                <th>回复追评时间</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <volist name="productevaluation_info" id="info">
+                <tr>
+                    <td>
+                        <input class="va_m" type="checkbox" name="ids[]" value="{$info.pe_id}"
+                               onclick="checkBoxOp(this)"/>
+                    </td>
+                    <td>{$info.pe_id}</td>
+                    <td>{$info.pe_pdid}</td>
+                    <td><empty name="info.uid_name">账号无昵称或账号已被删除，用户ID【{$info.pe_uid}】</empty>{$info.uid_name}</td>
+                    <td>
+                        <eq name="info.pe_score" value="1">差评</eq>
+                        <eq name="info.pe_score" value="2">中评</eq>
+                        <eq name="info.pe_score" value="3">中评</eq>
+                        <eq name="info.pe_score" value="4">好评</eq>
+                        <eq name="info.pe_score" value="5">好评</eq>
+                    </td>
+                    <td>{$info.pe_time|strtotime|date='Y-m-d H:i',###}</td>
+                    <td><eq name="info.pe_systemtime" value="2017-01-01 00:00:00.000">暂无<else/><empty name="info.pe_systemcontent">暂无<else/>{$info.pe_systemtime|strtotime|date='Y-m-d H:i',###}</empty></eq></td>
+                    <td>
+                        <eq name="info.pe_state" value="1">是</eq>
+                        <eq name="info.pe_state" value="0">否</eq>
+                    </td>
+                    <td>
+                        <eq name="info.pe_state" value="1">显示</eq>
+                        <eq name="info.pe_state" value="0">隐藏</eq>
+                    </td>
+                    <td><eq name="info.pe_ctime" value="2017-01-01 00:00:00.000">暂无<else/><empty name="info.pe_chaseratings">暂无<else/>{$info.pe_ctime|strtotime|date='Y-m-d H:i',###}</empty></eq></td>
+                    <td><eq name="info.pe_csystemtime" value="2017-01-01 00:00:00.000">暂无<else/><empty name="info.pe_chaseratings">暂无<else/>{$info.pe_csystemtime|strtotime|date='Y-m-d H:i',###}</empty></eq></td>
+                    <td>
+                        <a class="table_btn" title="详细"
+                           onclick="layerPage('订单评价信息','{:U('detail',array('pe_id'=>$info['pe_id']))}','720px','500px')"><img
+                                src="__IMG__/edit.png" alt="详细" title="详细"></a>
+                    </td>
+                </tr>
+            </volist>
+            </tbody>
+        </table>
+    </form>
+</div>
+<div class="pageCon">
+    {$page_bar}       每页 20 条，共 {$count} 条
+</div>
+
+<script>
+    $(function () {
+        $('.pageCon').find('a').on('click', function () {
+            $('#search-form').attr('action', $(this).attr('href')).submit();
+            return false;
+        });
+    });
+
+    /* 重载页面 */
+    function reloadPage(win) {
+        var location = win.location;
+        location.href = location.pathname + location.search;
+    }
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>作品点击量管理</title>
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/css/button.css"/>
+    <script src="__PUBLIC__/js/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/js/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/js/iframe.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__PUBLIC__/js/ajax-submit.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<h4>作品点击量列表</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li onclick="reloadPage(window)">
+            <img src="__PUBLIC__/img/arrow_refresh.png"/>
+            重置
+        </li>
+    </ul>
+</div>
+<div class="layerCon bg_f mt10">
+    <table class="table" border="0">
+        <thead>
+        <tr class="h25">
+            <th class="tc" width="35px">
+                <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck"
+                       onclick="checkBoxOp(this)"/>
+            </th>
+            <th>ID</th>
+            <th>作品名称</th>
+            <th>点击IP</th>
+            <th>点击时间</th>
+        </tr>
+        </thead>
+        <tbody>
+        <volist name="designclick" id="designclicks">
+            <tr class="h25">
+                <td>
+                    <input class="va_m" type="checkbox" name="ids[]" value="{$singlepages.dc_id}" onclick="checkBoxOp(this)"/>
+                </td>
+                <td>{$designclicks.dc_id}</td>
+                <td>{$designclicks.dwid_name}</td>
+                <td>{$designclicks.dc_ip}</td>
+                <td>{$designclicks.dc_time}</td>
+            </tr>
+        </volist>
+        </tbody>
+    </table>
+</div>
+<div class="pageCon">
+    {$page_bar}       每页 20 条，共 {$count} 条
+</div>
+<script>
+    /* 重载页面 */
+    function reloadPage(win) {
+        var location = win.location;
+        location.href = location.pathname + location.search;
+    }
+</script>
+</body>
+</html>

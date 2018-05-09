@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>下级人数查询</title>
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/css/style.css"/>
+</head>
+<body>
+<table class="layerTable" border="0">
+    <input type="hidden" name="uid" id="uid" value="{$uid}">
+    <tr class="h50">
+        <td><label>开始时间：</label></td>
+        <td>
+            <input type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"
+                        name="u_time1" id="utime1" value="{$utime1}"/>
+        </td>
+    </tr>
+    <tr class="h50">
+        <td><label>结束时间：</label></td>
+        <td>
+            <input type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"
+                        name="u_time2" id="utime2" value="{$utime2}"/>
+        </td>
+    </tr>
+    <tr class="h50">
+        <td><label>查询方式：</label></td>
+        <td>
+            <select id="utype" name="utype">
+                <option value="1">所有下级人数</option>
+                <option value="2">下级人数</option>
+            </select>
+        </td>
+    </tr>
+</table>
+<div id="count_xiaji"></div>
+<div class="layerBtns">
+    <button class="btn" style="margin:5px 130px;" type="submit">查询</button>
+</div>
+<script src="__PUBLIC__/js/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="__PUBLIC__/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+<script src="__PUBLIC__/js/htglxt.js" type="text/javascript" charset="utf-8"></script>
+<script src="__PUBLIC__/js/iframe.js" type="text/javascript" charset="utf-8"></script>
+<script src="__PUBLIC__/js/My97DatePicker/WdatePicker.js"></script>
+<script>
+$(".btn").click(function(){
+    var uid = $("#uid").val();
+    var utype = $("#utype").val();
+    var utime1 = $("#utime1").val();
+    var utime2 = $("#utime2").val();
+    var data = {
+        'uid':uid,
+        'utype':utype,
+        'u_time1':utime1,
+        'u_time2':utime2
+    };
+    $.ajax({
+            type: "post",
+            url: "{:U('userinfo/next_count')}",
+            data: data,
+            dataType: "json",
+            success: function (e) {
+                if(e.status == 1){
+                    console.log(e.time_count);
+                    $("#count_xiaji").html("<h3 style='padding-left: 100px;'>查询人数为："+e.time_count+"人</h3>");
+                    layer.msg(e.info);
+                }
+                if(e.status == 0){
+                    layer.msg(e.info);
+                }
+            },
+            error: function (e) {
+                layer.alert('操作失败！');
+            }
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>装修报价类型</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+    <script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/ajax-submit.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+<h4>装修报价类型列表</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li onclick="reloadPage(window)">
+            <img src="__IMG__/arrow_refresh.png"/>
+            重置
+        </li>
+        <li class="fgf" onclick="layerDiv('查询',$('#search-form-div').html(),'500px','280px')">
+            <img src="__IMG__/page_white_magnify.png"/>
+            查询
+        </li>
+        <li class="fgf" onclick="layerPage('添加类型','{:U('insert')}','700px','200px')">
+            <img src="__IMG__/add.png"/>
+            添加类型
+        </li>
+    </ul>
+</div>
+<div class="tableCon">
+    <div style="visibility: hidden;display: none;">
+        <div id="search-form-div">
+            <form action="__ACTION__" method="post" id="search-form" class="layui-form">
+                <div class="layerCon bg_f">
+                    <table class="layerTable" border="0">
+                        <tr class="h50">
+                            <td><label for="qc_title">报价名称：</label></td>
+                            <td>
+                                <input id="qc_title" type="text" name="qc_title" value="{$qc_title}" placeholder="请输入报价名称"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                        <td><label for="qc_type">类型：</label></td>
+                        <td>
+                            <select id="qc_type" name="qc_type">
+                                <option value="">=======无========</option>
+                                <option value="10000" <eq name="qc_type" value="10000">selected</eq>>========[地区]========</option>
+                                <option value="20000" <eq name="qc_type" value="20000">selected</eq>>========[面积]========</option>
+                                <option value="30000" <eq name="qc_type" value="30000">selected</eq>>========[厅]========</option>
+                                <option value="40000" <eq name="qc_type" value="40000">selected</eq>>========[室]========</option>
+                                <option value="50000" <eq name="qc_type" value="50000">selected</eq>>========[卫]========</option>
+                                <option value="60000" <eq name="qc_type" value="60000">selected</eq>>========[风格]========</option>
+                            </select>
+                        </td>
+                    </tr>
+                        <tr class="h50">
+                            <td><label for="qc_state">状态：</label></td>
+                            <td>
+                                <select id="qc_state" name="qc_state">
+                                    <option value="">=======无========</option>
+                                    <option value="1" <eq name="qc_state" value="1">selected</eq>>========[启用]========</option>
+                                    <option value="0" <eq name="qc_state" value="0">selected</eq>>========[停用]========</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="layerBtns">
+                        <button class="btn" type="submit">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <em class="xian"></em>
+    <form action="__ACTION__" method="post" class="js-ajax-form" id="js-ajax-form">
+        <table class="table" border="0">
+            <thead>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th width="40">ID</th>
+                <th>报价名称</th>
+                <th>价格</th>
+                <th>类型</th>
+                <th>状态</th>
+            </tr>
+            </thead>
+            <tbody>
+            <volist name="quotationcontent_list" id="info">
+                <tr>
+                    <td>
+                        <input class="va_m" type="checkbox" name="ids[]" value="{$info.qc_id}" onclick="checkBoxOp(this)" />
+                    </td>
+                    <td>{$info.qc_id}</td>
+                    <td>{$info.qc_title}</td>
+                    <td>{$info.qc_price}</td>
+                    <td>
+                        <eq name="info.qc_type" value="10000">地区</eq>
+                        <eq name="info.qc_type" value="20000">面积</eq>
+                        <eq name="info.qc_type" value="30000">厅</eq>
+                        <eq name="info.qc_type" value="40000">室</eq>
+                        <eq name="info.qc_type" value="50000">卫</eq>
+                        <eq name="info.qc_type" value="60000">风格</eq>
+                    </td>
+                    <td><eq name="info.qc_state" value="1">启用</eq><eq name="info.qc_state" value="0">停用</eq></td>
+                </tr>
+            </volist>
+            </tbody>
+        </table>
+    </form>
+</div>
+<div class="pageCon">
+    {$page_bar}       每页 20 条，共 {$count} 条
+</div>
+
+<script>
+    $(function () {
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+    });
+
+    /* 重载页面 */
+    function reloadPage(win) {
+        var location = win.location;
+        location.href = location.pathname + location.search;
+    }
+
+
+
+
+</script>
+</body>
+</html>

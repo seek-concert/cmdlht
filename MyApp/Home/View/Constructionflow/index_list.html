@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>施工流程</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+    <script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/ajax-submit.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<h4>施工流程</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li onclick="reloadPage(window)">
+            <img src="__IMG__/arrow_refresh.png"/>
+            重置
+        </li>
+        <li class="fgf" onclick="layerDiv('查询',$('#search-form-div').html(),'500px','300px')">
+            <img src="__IMG__/page_white_magnify.png"/>
+            查询
+        </li>
+    </ul>
+</div>
+<div class="tableCon">
+    <div style="visibility: hidden;display: none;">
+        <div id="search-form-div">
+            <form action="__ACTION__" method="post" id="search-form" class="layui-form">
+                <div class="layerCon bg_f">
+                    <table class="layerTable" border="0">
+                        <tr class="h50">
+                            <td><label for="ct_name">类型名称：</label></td>
+                            <td>
+                                <input id="ct_name" type="text" name="ct_name" value="{$ctname}"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="ct_state">状态：</label></td>
+                            <td>
+                                <select  id="ct_state"  name="ct_state">
+                                    <option value="">=====无=====</option>
+                                    <option value="1" <eq name="ctstate" value="1">selected</eq>>启用</option>
+                                    <option value="0" <eq name="ctstate" value="0">selected</eq>>停用</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="layerBtns">
+                        <button class="btn" type="submit">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="search-form-div1" style="display: none;">
+            <textarea cols="50" rows="10" class="content1"  disabled></textarea>
+    </div>
+    <div class="search-form-div2" style="display: none;">
+            <textarea cols="50" rows="10" class="yanshoucontent"  disabled></textarea>
+    </div>
+    <em class="xian"></em>
+    <form action="{:U('sort')}" method="post" class="js-ajax-form" id="js-ajax-form">
+        <table class="table" border="0">
+            <thead>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th width="40">ID</th>
+                <th>施工需求ID</th>
+                <th>施工状态</th>
+                <th>备注说明</th>
+                <th>添加时间</th>
+                <th>是否需要对方同意</th>
+                <th>状态</th>
+                <th>是否支付下阶段费用</th>
+                <th>阶段ID</th>
+                <th>是否需要支付</th>
+                <th>验收说明</th>
+            </tr>
+            </thead>
+            <tbody>
+            <volist name="constructionflow_info" id="info">
+                <tr>
+                    <td>
+                        <input class="va_m" type="checkbox" name="ids[]" value="{$info.cf_id}" onclick="checkBoxOp(this)" />
+                    </td>
+                    <td>{$info.cf_id}</td>
+                    <td>{$info.cf_cid}</td>
+                    <td>{$info.cf_state}</td>
+                    <td><input type="hidden" class="cfcontent" value="{$info.cf_content}"><input type="button"  value="点击查看" onclick="test1(this)">
+                    </td>
+                    <td>{$info.cf_time}</td>
+                    <td>{$info.cf_needconsent}</td>
+                    <td><eq name="info.cf_agree" value="0">新数据</eq><eq name="info.cf_agree" value="1">同意</eq><eq name="info.cf_agree" value="2">拒绝</eq></td>
+                    <td>{$info.cf_pay}</td>
+                    <td>{$info.cf_stageid}</td>
+                    <td>{$info.cf_ispay}</td>
+                    <td><input type="hidden" class="cfyanshoucontent" value="{$info.cf_yanshoucontent}"><input type="button" value="点击查看" onclick="test2(this)">
+                    </td>
+                  </tr>
+            </volist>
+            </tbody>
+        </table>
+    </form>
+</div>
+<div class="pageCon">
+    {$page_bar}       每页 20 条，共 {$count} 条
+</div>
+
+<script>
+    /*弹出备注说明*/
+    function test1(obj) {
+        $(".search-form-div1"). find(".content1").html(" ");
+        var cfcontent = $(obj).parent("td").find(".cfcontent").val();
+        $(".search-form-div1"). find(".content1").html(cfcontent);
+        layerDiv('备注说明',$('.search-form-div1').html(),'500px','300px');
+    }
+    /*弹出验收说明*/
+    function test2(objs) {
+        $(".search-form-div2").find(".yanshoucontent").text(" ");
+        var cfyanshoucontent = $(objs).parent("td").find(".cfyanshoucontent").val();
+        $(".search-form-div2").find(".yanshoucontent").text(cfyanshoucontent);
+        layerDiv('用户验收说明',$('.search-form-div2').html(),'500px','300px');
+    }
+
+    $(function () {
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+
+    });
+    /* 重载页面 */
+    function reloadPage(win) {
+        var location = win.location;
+        location.href = location.pathname + location.search;
+    }
+</script>
+</body>
+</html>

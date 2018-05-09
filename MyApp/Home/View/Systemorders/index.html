@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>维修需求系统承接列表</title>
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+    <script src="__JS__/jquery2-1-4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__LAYER__/layer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/htglxt.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/iframe.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/ajax-submit.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/My97DatePicker/WdatePicker.js"></script>
+</head>
+<body>
+<h4>维修需求---->系统承接列表</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li onclick="reloadPage(window)">
+            <img src="__IMG__/arrow_refresh.png"/>
+            重置
+        </li>
+        <li class="fgf" onclick="layerDiv('查询',$('#search-form-div').html(),'500px','330px')">
+            <img src="__IMG__/page_white_magnify.png"/>
+            查询
+        </li>
+        <form action="{:U('servicedemand/excel_order')}" method="post">
+            <input type="hidden" name="ids" id="ids1" value=""><li class="fgf" style="padding-bottom: 0">
+            <button  type="submit"  style="border:none;background-color: inherit;" onclick="exceldaochu(&#39;all&#39;)">
+                <img src="__PUBLIC__/img/excel_exports.png"/>Excel导出</button></li>
+        </form>
+    </ul>
+</div>
+<div class="tableCon">
+    <div style="visibility: hidden;display: none;">
+        <div id="search-form-div">
+            <form action="__ACTION__" method="post" id="search-form" class="layui-form">
+                <div class="layerCon bg_f">
+                    <table class="layerTable" border="0">
+                        <tr class="h50">
+                            <td><label for="sd_onlyid">订单号：</label></td>
+                            <td>
+                                <input id="sd_onlyid" type="text" name="sd_onlyid" value="{$sd_onlyid}" placeholder="请输入订单号"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="sc_uid">用户名称：</label></td>
+                            <td>
+                                <input id="sc_uid" type="text" name="uid_name" value="{$uidname}" placeholder="请输入用户名称"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="sd_phone">客户电话：</label></td>
+                            <td>
+                                <input id="sd_phone" type="text" name="sd_phone" value="{$sd_phone}" placeholder="请输入客户电话"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="sd_time">提交时间：</label></td>
+                            <td>
+                                开始时间： <input id="sd_time" type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"  name="sd_time1" value="{$sdtime1}"/>
+                                结束时间： <input id="sd_time1" type="text" class="Wdate" onFocus="WdatePicker({lang:'zh-cn'})"  name="sd_time2" value="{$sdtime2}"/>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="sd_wxtype">维修类型：</label></td>
+                            <td>
+                                <select  id="sd_wxtype"  name="sd_wxtype">
+                                    <option value="">=====无=====</option>
+                                    <option value="10000" <eq name="sdwxtype" value="10000">selected</eq>>=====维修=====</option>
+                                    <option value="20000" <eq name="sdwxtype" value="20000">selected</eq>>=====装修=====</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="sd_state">需求进度：</label></td>
+                            <td>
+                                <select  id="sd_state"  name="sd_state">
+                                    <option value="">=====无=====</option>
+                                    <option value="-1" <eq name="sd_state" value="-1">selected</eq>>=====取消订单=====</option>
+                                    <option value="0" <eq name="sd_state" value="0">selected</eq>>=====新的需求=====</option>
+                                    <option value="1" <eq name="sd_state" value="1">selected</eq>>=====已支付押金=====</option>
+                                    <option value="9" <eq name="sd_state" value="9">selected</eq>>=====施工中=====</option>
+                                    <option value="10" <eq name="sd_state" value="10">selected</eq>>=====暂停中=====</option>
+                                    <option value="17" <eq name="sd_state" value="17">selected</eq>>=====申请完工=====</option>
+                                    <option value="18" <eq name="sd_state" value="18">selected</eq>>=====验收不合格=====</option>
+                                    <option value="20" <eq name="sd_state" value="20">selected</eq>>=====已完成=====</option>
+                                    <option value="21" <eq name="sd_state" value="21">selected</eq>>=====拒绝=====</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="sd_tjtype">提交类型：</label></td>
+                            <td>
+                                <select  id="sd_tjtype"  name="sd_tjtype">
+                                    <option value="">=====无=====</option>
+                                    <option value="10000" <eq name="sdtjtype" value="10000">selected</eq>>====直接购买====</option>
+                                    <option value="20000" <eq name="sdtjtype" value="20000">selected</eq>>====提交需求====</option>
+                                    <option value="30000" <eq name="sdtjtype" value="30000">selected</eq>>====上门评估====</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="layerBtns1">
+                        <button class="btn" type="submit">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <em class="xian"></em>
+    <form action="{:U('sort')}" method="post" class="js-ajax-form" id="js-ajax-form">
+        <table class="table" border="0">
+            <thead>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th width="40">ID</th>
+                <th>订单号</th>
+                <th>用户名称</th>
+                <th>需维修名称</th>
+                <th>客户电话</th>
+                <th>客户姓名</th>
+                <th>省 市 县</th>
+                <th>客户地址</th>
+                <th>提交时间</th>
+                <th>需求进度</th>
+                <th>是否自备材料</th>
+                <th>维修大小</th>
+                <th>单位价格</th>
+                <th>维修总价</th>
+                <th>维修类型</th>
+                <th>提交类型</th>
+                <th>查看详情</th>
+            </tr>
+            </thead>
+            <tbody>
+            <volist name="servicedemand_info" id="info">
+                <tr>
+                    <td>
+                        <input class="va_m" type="checkbox" name="ids[]" value="{$info.sd_id}" onclick="checkBoxOp(this)" />
+                    </td>
+                    <td>{$info.sd_id}</td>
+                    <td>{$info.sd_onlyid}</td>
+                    <td>{$info.uid_name}</td>
+                    <td>{$info.sd_weixiuname}</td>
+                    <td>{$info.sd_phone}</td>
+                    <td>{$info.sd_name}</td>
+                    <td>{$info.sd_province}{$info.sd_city}{$info.sd_county}</td>
+                    <td>{$info.sd_address}</td>
+                    <td>{$info.sd_time|strtotime|date='Y-m-d H:i',###}</td>
+                    <td><eq name="info.sd_state" value="-2">已删除</eq><eq name="info.sd_state" value="-1">订单已取消</eq><eq name="info.sd_state" value="0">新的需求</eq><eq name="info.sd_state" value="1">已支付押金</eq><eq name="info.sd_state" value="2">已接单/等待客户签字</eq><eq name="info.sd_state" value="3">赶赴工地/等待客户支付</eq><eq name="info.sd_state" value="4">已支付</eq><eq name="info.sd_state" value="5">等待支付下一阶段</eq><eq name="info.sd_state" value="9">施工中</eq><eq name="info.sd_state" value="10">暂停中</eq><eq name="info.sd_state" value="17">申请完工</eq><eq name="info.sd_state" value="18">验收不合格</eq><eq name="info.sd_state" value="19">等待评论</eq><eq name="info.sd_state" value="20">完成</eq><eq name="info.sd_state" value="21">拒绝</eq></td>
+                    <td><eq name="info.sd_material" value="1">用户自备材料<else/>师傅带材料</eq></td>
+                    <td>{$info.sd_count}</td>
+                    <td>{$info.sd_price|number_format=2}</td>
+                    <td>{$info.sd_repairtotal|number_format=2}</td>
+                    <td><eq name="info.sd_wxtype" value="10000">维修<else/>装修</eq></td>
+                    <td><eq name="info.sd_tjtype" value="10000">直接购买</eq>
+                        <eq name="info.sd_tjtype" value="20000">提交需求</eq>
+                        <eq name="info.sd_tjtype" value="30000">上门评估</eq></td>
+                    <td><eq name="info.sd_tjtype" value="10000">
+                        <a class="table_btn button1" style="background-color: #00a0e9 !important;" title="详细" onclick="layerPage('施工需求详情','{:U('modify',array('sd_id'=>$info['sd_id'],))}','700px','580px')">施工需求详情</a> </eq>
+                        <eq name="info.sd_tjtype" value="20000">
+                            <if condition="$info['sd_pguid'] neq 0">
+                                    <if condition="in_array($info['sd_id'],$csdids) || $info['sd_pguid'] neq 0">
+                                         <a class="table_btn button1" style="background-color: #00a0e9 !important;" title="详细" onclick="layerPage('施工需求详情','{:U('detail',array('sd_id'=>$info['sd_id']))}','700px','580px')">施工需求详情</a>
+                                    <else/>
+                                         <a class="table_btn button1" style="background-color: #fd2b37 !important;"  title="添加" onclick="layerPage('添加施工需求','{:U('servicedemand/insert',array('sd_id'=>$info['sd_id']))}','800px','575px')"><span>添加施工需求</span></a>
+                                    </if>
+                                <else/>
+                                     <a class="table_btn button1" style="background-color: #0a6999 !important;"  title="添加" onclick="layerPage('添加上门评估','{:U('modifys_insert',array('sd_id'=>$info['sd_id']))}','750px','480px')"><span>添加上门评估</span></a>
+                            </if>
+                        </eq>
+                        <eq name="info.sd_tjtype" value="30000">
+                            <if condition="$info['sd_pguid'] neq 0">
+                                <if condition="in_array($info['sd_id'],$csdids)">
+                                    <a class="table_btn button1" style="background-color: #00a0e9 !important;" title="详细" onclick="layerPage('施工需求详情','{:U('servicedemand/detail',array('sd_id'=>$info['sd_id']))}','700px','580px')">施工需求详情</a>
+                                    <else/>
+                                    <a class="table_btn button1" style="background-color: #fd2b37 !important;"  title="添加" onclick="layerPage('添加施工需求','{:U('servicedemand/insert',array('sd_id'=>$info['sd_id']))}','800px','575px')"><span>添加施工需求</span></a>
+                                </if>
+                                <else/>
+                                <a class="table_btn button1" style="background-color: #0a6999 !important;"  title="添加" onclick="layerPage('添加上门评估','{:U('modifys_insert',array('sd_id'=>$info['sd_id']))}','750px','480px')"><span>添加上门评估</span></a>
+                            </if>
+                        </eq>
+                    </td>
+                </tr>
+            </volist>
+            </tbody>
+        </table>
+    </form>
+</div>
+<div class="pageCon">
+    {$page_bar}       每页 20 条，共 {$count} 条
+</div>
+
+<script>
+    /*excel导出*/
+    function exceldaochu(rs) {
+        var ids = "";
+        if (rs == "all") {
+            var checkedlist = $("input[name=\"ids[]\"]:checked");
+            for (var i = 0; i < checkedlist.length; i++) {
+                ids += $(checkedlist[i]).val();
+                if (i < checkedlist.length - 1) ids += ",";
+            }
+        } else {
+            ids = rs;
+        }
+        if (ids == "") {
+            layer.msg('请选择要导出的数据!', { icon: 1, time: 1000 });
+            return;
+        }
+        $("#ids1").val(ids);
+    }
+
+
+    $(function () {
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+
+    });
+
+    /* 重载页面 */
+    function reloadPage(win) {
+        var location = win.location;
+        location.href = location.pathname + location.search;
+    }
+
+
+
+</script>
+</body>
+</html>
