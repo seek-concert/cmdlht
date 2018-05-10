@@ -281,4 +281,4 @@ border-radius:100px;
 .inum1{width:16px;  color:#fff; text-align:center; font-size:10px; line-height:16px; overflow:hidden; background:url(../img/orange_yuan.png) no-repeat;position:absolute;right: 80px;top: 0;}
 .inum2{width:16px;  color:#fff; text-align:center; font-size:10px; line-height:16px; overflow:hidden; background:url(../img/orange_yuan.png) no-repeat;position:absolute;right: 38px;top: 0;}
 .inum3{width:16px;  color:#fff; text-align:center; font-size:10px; line-height:16px; overflow:hidden; background:url(../img/orange_yuan.png) no-repeat;position:absolute;right: 3px;top: 0;}
-
+.none{display: none;}

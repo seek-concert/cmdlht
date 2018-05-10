@@ -370,14 +370,12 @@
     }
     notice();
 
-    /*用户闪动效果*/
-    function notices() {
-        $(".inum1").fadeToggle( 500, function(){
-            $(".inum1").show();
-        });
-        window.setTimeout("notices()", 500);
-    }
-    notices();
+    /*消息闪动效果*/
+    setInterval(function(){
+        $(".inum1").toggleClass("none");
+        $(".inum2").toggleClass("none");
+        $(".inum3").toggleClass("none");
+	},500);
 
     /*产品消息提示*/
     function productnotice() {
@@ -402,15 +400,6 @@
     }
     productnotice();
 
-    /*产品闪动效果*/
-    function productnotices() {
-        $(".inum2").fadeToggle( 500, function(){
-            $(".inum2").show();
-        });
-        window.setTimeout("productnotices()", 500);
-    }
-    productnotices();
-
     /*系统接单提示*/
     function systemordersnotice() {
         $.ajax({
@@ -434,14 +423,6 @@
     }
     systemordersnotice();
 
-    /*系统接单闪动效果*/
-    function systemordersnotices() {
-        $(".inum3").fadeToggle( 500, function(){
-            $(".inum3").show();
-        });
-        window.setTimeout("systemordersnotices()", 500);
-    }
-    systemordersnotices();
 </script>
 </body>
 </html>

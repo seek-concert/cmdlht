@@ -342,22 +342,22 @@ class IndexController extends Controller
 
     /*查询新添加的产品*/
     public function productnotices(){
-        $product_model = M('product');
+        $product_model = D('ProductView');
         $where['p_noticestate'] = 0;
         /* 区域条件 */
         $user_info = session('p_loginname');
         $level = $user_info['p_level'];
         if($level==1){
-            $where['u_sheng'] = $user_info['p_sheng'];
+            $where['uid_sheng'] = $user_info['p_sheng'];
         }
         if($level==2){
-            $where['u_sheng'] = $user_info['p_sheng'];
-            $where['u_shi'] = $user_info['p_shi'];
+            $where['uid_sheng'] = $user_info['p_sheng'];
+            $where['uid_shi'] = $user_info['p_shi'];
         }
         if($level==3){
-            $where['u_sheng'] = $user_info['p_sheng'];
-            $where['u_shi'] = $user_info['p_shi'];
-            $where['u_xian'] = $user_info['p_xian'];
+            $where['uid_sheng'] = $user_info['p_sheng'];
+            $where['uid_shi'] = $user_info['p_shi'];
+            $where['uid_xian'] = $user_info['p_xian'];
         }
         $noticecount = $product_model->where($where)->count();
         $this->success('','',array('datas'=>$noticecount));
@@ -369,16 +369,16 @@ class IndexController extends Controller
         $user_info = session('p_loginname');
         $level = $user_info['p_level'];
         if($level==1){
-            $where['u_sheng'] = $user_info['p_sheng'];
+            $where['uid_sheng'] = $user_info['p_sheng'];
         }
         if($level==2){
-            $where['u_sheng'] = $user_info['p_sheng'];
-            $where['u_shi'] = $user_info['p_shi'];
+            $where['uid_sheng'] = $user_info['p_sheng'];
+            $where['uid_shi'] = $user_info['p_shi'];
         }
         if($level==3){
-            $where['u_sheng'] = $user_info['p_sheng'];
-            $where['u_shi'] = $user_info['p_shi'];
-            $where['u_xian'] = $user_info['p_xian'];
+            $where['uid_sheng'] = $user_info['p_sheng'];
+            $where['uid_shi'] = $user_info['p_shi'];
+            $where['uid_xian'] = $user_info['p_xian'];
         }
         /* 每页显示条数 */
         $num = 20;
@@ -444,16 +444,16 @@ class IndexController extends Controller
         $user_info = session('p_loginname');
         $level = $user_info['p_level'];
         if($level==1){
-            $where['u_sheng'] = $user_info['p_sheng'];
+            $where['uid_sheng'] = $user_info['p_sheng'];
         }
         if($level==2){
-            $where['u_sheng'] = $user_info['p_sheng'];
-            $where['u_shi'] = $user_info['p_shi'];
+            $where['uiduid_sheng'] = $user_info['p_sheng'];
+            $where['uiduid_shi'] = $user_info['p_shi'];
         }
         if($level==3){
-            $where['u_sheng'] = $user_info['p_sheng'];
-            $where['u_shi'] = $user_info['p_shi'];
-            $where['u_xian'] = $user_info['p_xian'];
+            $where['uid_sheng'] = $user_info['p_sheng'];
+            $where['uid_shi'] = $user_info['p_shi'];
+            $where['uid_xian'] = $user_info['p_xian'];
         }
         $noticecount = $servicedemand_model->where($where)->count();
         $this->success('','',array('datas'=>$noticecount));
