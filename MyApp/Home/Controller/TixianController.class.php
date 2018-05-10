@@ -18,20 +18,20 @@ class TixianController extends AuthController
         /* 用户 */
         $uid_name = I('uid_name');
         if($uid_name){
-            $where['uid_name'] = array('LIKE','%'.$uid_name.'%');
+            $where['tixian.uid_name'] = array('LIKE','%'.$uid_name.'%');
             $this->assign('uid_name',$uid_name);
         }
         /*用户类型*/
         $ttype = I('ttype');
         if (is_numeric($ttype)) {
-            $where['ttype'] = "$ttype";
+            $where['tixian.ttype'] = "$ttype";
             $this->assign('ttype',$ttype);
         }
         /*申请时间*/
         $t_time1 = I('t_time1');
         $t_time2 = I('t_time2');
         if ($t_time1 && $t_time2) {
-            $where['t_time'] = array(
+            $where['tixian.t_time'] = array(
                 ['lt', date('Y-m-d H:i:s', strtotime($t_time2) + 24 * 60 * 60)],
                 ['gt', date('Y-m-d H:i:s', strtotime($t_time1))]
             );
@@ -41,9 +41,28 @@ class TixianController extends AuthController
         /*提现状态*/
         $t_state = I('t_state');
         if (is_numeric($t_state)) {
-            $where['t_state'] = "$t_state";
+            $where['tixian.t_state'] = "$t_state";
             $this->assign('t_state',$t_state);
         }
+        /*用户*/
+        $where['u.u_type'] = "1";
+        /* 用户区域条件 */
+        $user_info = $this->user_info;
+        $level = $user_info['p_level'];
+        if($level==1){
+            $where['ud.ua_province'] = $user_info['p_sheng'];
+        }
+        if($level==2){
+            $where['ud.ua_province'] = $user_info['p_sheng'];
+            $where['ud.ua_city'] = $user_info['p_shi'];
+        }
+        if($level==3){
+            $where['ud.ua_province'] = $user_info['p_sheng'];
+            $where['ud.ua_city'] = $user_info['p_shi'];
+            $where['ud.ua_county'] = $user_info['p_xian'];
+        }
+        /*默认地址*/
+        $where['ud.ua_moren'] = 1;
         /* 每页显示条数 */
         $num =  20;
         /* 页码 */
@@ -51,13 +70,19 @@ class TixianController extends AuthController
 
         /* 获取分页列表  */
         $tixian_info = $tixian_model
+            ->join('userinfo as u ON u.u_id = tixian.t_uid','left')
+            ->join('useraddress as ud ON ud.ua_uid = u.u_id','left')
             ->where($where)
             ->page($p . ',' . $num)
             ->order('thinkphp.t_id desc')
             ->select();
 
         /* 获取分页条 */
-        $count = $tixian_model->where($where)->count();
+        $count = $tixian_model
+            ->join('userinfo as u ON u.u_id = tixian.t_uid','left')
+            ->join('useraddress as ud ON ud.ua_uid = u.u_id','left')
+            ->where($where)
+            ->count();
         $page_model = new \Think\Page($count, $num);
         $page_bar = $page_model->show();
 

@@ -10,6 +10,7 @@ class AuthController extends Controller {
         /* 代理信息 */
          $user_info = session('p_loginname');
          if(!$user_info){
+             session(null);
              if(IS_AJAX){
                  $priv = array(
                      'status'=> 1,
@@ -17,7 +18,6 @@ class AuthController extends Controller {
                  );
                  $this->ajaxReturn($priv); die;
              }else{
-                 session(null);
                  $this->redirect('index/index');
              }
          }

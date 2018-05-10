@@ -19,14 +19,14 @@ class FeedbackController extends AuthController
         /* 用户id */
         $fbuid = I('uid_name');
         if($fbuid){
-            $where['uid_name'] = $fbuid;
+            $where['feedback.uid_name'] = $fbuid;
             $this->assign('uid_name',$fbuid);
         }
         /* 反馈时间 */
         $fbtime1 = I('fb_time1');
         $fbtime2 = I('fb_time2');
         if($fbtime1&&$fbtime2){
-            $where['fb_time'] = array(
+            $where['feedback.fb_time'] = array(
                 ['lt',date('Y-m-d H:i:s',strtotime($fbtime2)+24*60*60)],
                 ['gt',date('Y-m-d H:i:s',strtotime($fbtime1))]
             );
@@ -37,7 +37,7 @@ class FeedbackController extends AuthController
         $fbsystemtime1 = I('fb_systemtime1');
         $fbsystemtime2 = I('fb_systemtime2');
         if($fbsystemtime1&&$fbsystemtime2){
-            $where['fb_systemtime'] = array(
+            $where['feedback.fb_systemtime'] = array(
                 ['lt',date('Y-m-d H:i:s',strtotime($fbsystemtime2)+24*60*60)],
                 ['gt',date('Y-m-d H:i:s',strtotime($fbsystemtime1))]
             );
@@ -47,9 +47,28 @@ class FeedbackController extends AuthController
         /* 状态 */
         $fbstate = I('fb_state');
         if($fbstate){
-            $where['fb_state'] = $fbstate;
+            $where['feedback.fb_state'] = $fbstate;
             $this->assign('fbstate',$fbstate);
         }
+        /*用户*/
+        $where['u.u_type'] = "1";
+        /* 用户区域条件 */
+        $user_info = $this->user_info;
+        $level = $user_info['p_level'];
+        if($level==1){
+            $where['ud.ua_province'] = $user_info['p_sheng'];
+        }
+        if($level==2){
+            $where['ud.ua_province'] = $user_info['p_sheng'];
+            $where['ud.ua_city'] = $user_info['p_shi'];
+        }
+        if($level==3){
+            $where['ud.ua_province'] = $user_info['p_sheng'];
+            $where['ud.ua_city'] = $user_info['p_shi'];
+            $where['ud.ua_county'] = $user_info['p_xian'];
+        }
+        /*默认地址*/
+        $where['ud.ua_moren'] = 1;
         /* 每页显示条数 */
         $num =  20;
         /* 页码 */
@@ -57,13 +76,19 @@ class FeedbackController extends AuthController
 
         /* 获取分页列表  */
         $feedback_info = $feedback_model
+            ->join('userinfo as u ON u.u_id = feedback.fb_uid','left')
+            ->join('useraddress as ud ON ud.ua_uid = u.u_id','left')
             ->where($where)
             ->page($p . ',' . $num)
             ->select();
 
 
         /* 获取分页条 */
-        $count = $feedback_model->where($where)->count();
+        $count = $feedback_model
+            ->join('userinfo as u ON u.u_id = feedback.fb_uid','left')
+            ->join('useraddress as ud ON ud.ua_uid = u.u_id','left')
+            ->where($where)
+            ->count();
         $page_model = new \Think\Page($count, $num);
         $page_bar = $page_model->show();
 

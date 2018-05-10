@@ -18,20 +18,20 @@ class ProductevaluationController extends AuthController
         /* 订单ID*/
         $pepdid = I('pe_pdid');
         if($pepdid){
-            $where['pe_pdid'] = $pepdid;
+            $where['productevaluation.pe_pdid'] = $pepdid;
             $this->assign('pepdid',$pepdid);
         }
         /* 用户ID*/
         $peuid = I('uid_name');
         if($peuid){
-            $where['uid_name'] = array('LIKE',"%$peuid%");
+            $where['productevaluation.uid_name'] = array('LIKE',"%$peuid%");
             $this->assign('uid_name',$peuid);
         }
         /* 评价时间 */
         $petime1 = I('pe_time1');
         $petime2 = I('pe_time2');
         if($petime1&&$petime2){
-            $where['pe_time'] = array(
+            $where['productevaluation.pe_time'] = array(
                 ['lt',date('Y-m-d H:i:s',strtotime($petime2)+24*60*60)],
                 ['gt',date('Y-m-d H:i:s',strtotime($petime1))]
             );
@@ -42,7 +42,7 @@ class ProductevaluationController extends AuthController
         $pectime1 = I('pe_ctime1');
         $pectime2 = I('pe_ctime2');
         if($pectime1&&$pectime2){
-            $where['pe_ctime'] = array(
+            $where['productevaluation.pe_ctime'] = array(
                 ['lt',date('Y-m-d H:i:s',strtotime($pectime2)+24*60*60)],
                 ['gt',date('Y-m-d H:i:s',strtotime($pectime1))]
             );
@@ -52,15 +52,34 @@ class ProductevaluationController extends AuthController
         /*订单详情ID*/
         $peodid = I('pe_odid');
         if($peodid){
-            $where['pe_odid'] = $peodid;
+            $where['productevaluation.pe_odid'] = $peodid;
             $this->assign('peodid',$peodid);
         }
         /*是否显示*/
         $pestate = I('pe_state');
         if(is_numeric($pestate)){
-            $where['pe_state'] = "$pestate";
+            $where['productevaluation.pe_state'] = "$pestate";
             $this->assign('pestate',$pestate);
         }
+        /*用户*/
+        $where['u.u_type'] = "1";
+        /* 用户区域条件 */
+        $user_info = $this->user_info;
+        $level = $user_info['p_level'];
+        if($level==1){
+            $where['ud.ua_province'] = $user_info['p_sheng'];
+        }
+        if($level==2){
+            $where['ud.ua_province'] = $user_info['p_sheng'];
+            $where['ud.ua_city'] = $user_info['p_shi'];
+        }
+        if($level==3){
+            $where['ud.ua_province'] = $user_info['p_sheng'];
+            $where['ud.ua_city'] = $user_info['p_shi'];
+            $where['ud.ua_county'] = $user_info['p_xian'];
+        }
+        /*默认地址*/
+        $where['ud.ua_moren'] = 1;
         /* 每页显示条数 */
         $num =  20;
         /* 页码 */
@@ -68,13 +87,19 @@ class ProductevaluationController extends AuthController
 
         /* 获取分页列表  */
         $productevaluation_info = $productevaluation_model
+            ->join('userinfo as u ON u.u_id = productevaluation.pe_uid','left')
+            ->join('useraddress as ud ON ud.ua_uid = u.u_id','left')
             ->where($where)
             ->page($p . ',' . $num)
             ->order('thinkphp.pe_id desc')
             ->select();
 
         /* 获取分页条 */
-        $count = $productevaluation_model->where($where)->count();
+        $count = $productevaluation_model
+            ->join('userinfo as u ON u.u_id = productevaluation.pe_uid','left')
+            ->join('useraddress as ud ON ud.ua_uid = u.u_id','left')
+            ->where($where)
+            ->count();
         $page_model = new \Think\Page($count, $num);
         $page_bar = $page_model->show();
 

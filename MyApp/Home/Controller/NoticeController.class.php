@@ -18,14 +18,14 @@ class NoticeController extends AuthController
         /*用户*/
         $uidname = I('uid_name');
         if($uidname){
-            $where['uid_name'] = array('LIKE','%'.$uidname.'%');
+            $where['notice.uid_name'] = array('LIKE','%'.$uidname.'%');
             $this->assign('uid_name',$uidname);
         }
         /*添加时间*/
         $n_time1 = I('n_time1');
         $n_time2 = I('n_time2');
         if($n_time1&&$n_time2){
-            $where['n_time'] = array(
+            $where['notice.n_time'] = array(
                 ['lt',date('Y-m-d H:i:s',strtotime($n_time2)+24*60*60)],
                 ['gt',date('Y-m-d H:i:s',strtotime($n_time1))]
             );
@@ -35,9 +35,28 @@ class NoticeController extends AuthController
         /*标题*/
         $n_title = I('n_title');
         if($n_title){
-            $where['n_title'] = array('LIKE','%'.$n_title.'%');
+            $where['notice.n_title'] = array('LIKE','%'.$n_title.'%');
             $this->assign('n_title',$n_title);
         }
+        /*用户*/
+        $where['u.u_type'] = "1";
+        /* 用户区域条件 */
+        $user_info = $this->user_info;
+        $level = $user_info['p_level'];
+        if($level==1){
+            $where['ud.ua_province'] = $user_info['p_sheng'];
+        }
+        if($level==2){
+            $where['ud.ua_province'] = $user_info['p_sheng'];
+            $where['ud.ua_city'] = $user_info['p_shi'];
+        }
+        if($level==3){
+            $where['ud.ua_province'] = $user_info['p_sheng'];
+            $where['ud.ua_city'] = $user_info['p_shi'];
+            $where['ud.ua_county'] = $user_info['p_xian'];
+        }
+        /*默认地址*/
+        $where['ud.ua_moren'] = 1;
         /* 每页显示条数 */
         $num =  20;
         /* 页码 */
@@ -45,6 +64,8 @@ class NoticeController extends AuthController
 
         /* 获取分页列表  */
         $notice_info = $notice_model
+            ->join('userinfo as u ON u.u_id = notice.n_uid','left')
+            ->join('useraddress as ud ON ud.ua_uid = u.u_id','left')
             ->where($where)
             ->page($p . ',' . $num)
             ->order('thinkphp.n_id desc')
@@ -52,7 +73,11 @@ class NoticeController extends AuthController
 
 
         /* 获取分页条 */
-        $count = $notice_model->where($where)->count();
+        $count = $notice_model
+            ->join('userinfo as u ON u.u_id = notice.n_uid','left')
+            ->join('useraddress as ud ON ud.ua_uid = u.u_id','left')
+            ->where($where)
+            ->count();
         $page_model = new \Think\Page($count, $num);
         $page_bar = $page_model->show();
 

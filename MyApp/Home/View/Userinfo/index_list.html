@@ -126,7 +126,7 @@
                                onclick="checkBoxOp(this)"/>
                     </td>
                     <td>{$info.u_id}</td>
-                    <td>{$info.u_sheng}{$info.u_shi}{$info.u_xian}</td>
+                    <td>{$info.ua_province}{$info.ua_city}{$info.ua_county}</td>
                     <td>{$info.u_number}</td>
                     <td>
                         <eq name="info.u_type" value="1">用户</eq>
@@ -170,7 +170,7 @@
     </form>
 </div>
 <div class="pageCon">
-    {$page_bar}       每页 20 条，共 {$count} 条   每页 20 条，共 {$count} 条
+    {$page_bar}       每页 20 条，共 {$count} 条
 </div>
 
 <script>

@@ -67,7 +67,6 @@
                 <th>类型名称</th>
                 <th>上级名称</th>
                 <th>排序</th>
-                <th width="70">操作</th>
             </tr>
             </thead>
             <tbody>
@@ -82,9 +81,6 @@
                         <eq name="infos.rt_id" value="$info.rt_pid">{$infos.rt_name}</eq>
                     </volist> <eq name="info.rt_pid" value="0">无上级</eq></td>
                     <td>{$info.rt_order}</td>
-                    <td>
-                        <a class="table_btn" title="详细" onclick="layerPage('案例类型信息','{:U('detail',array('rt_id'=>$info['rt_id']))}','700px','240px')"><img src="__IMG__/edit.png" alt="详细" title="详细"></a>
-                    </td>
                 </tr>
             </volist>
             </tbody>

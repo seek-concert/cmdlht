@@ -53,12 +53,13 @@ class ConstructionController extends AuthController
         /* 获取分页列表  */
         $userinfo_info = $userinfo_model
             ->where($where)
+            ->where($this->level_where)
             ->order('thinkphp.u_time desc')
             ->page($p . ',' . $num)
             ->select();
 
         /* 获取分页条 */
-        $count = $userinfo_model->where($where)->count();
+        $count = $userinfo_model->where($where)->where($this->level_where)->count();
         $page_model = new \Think\Page($count, $num);
         $page_bar = $page_model->show();
 

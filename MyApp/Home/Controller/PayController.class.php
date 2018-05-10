@@ -18,14 +18,14 @@ class PayController extends AuthController
         /* 用户 */
         $uid_name = I('uid_name');
         if($uid_name){
-            $where['uid_name'] = array('LIKE','%'.$uid_name.'%');
+            $where['pay.uid_name'] = array('LIKE','%'.$uid_name.'%');
             $this->assign('uid_name',$uid_name);
         }
         /*创建时间*/
         $p_time1 = I('p_time1');
         $p_time2 = I('p_time2');
         if ($p_time1 && $p_time2) {
-            $where['p_time'] = array(
+            $where['pay.p_time'] = array(
                 ['lt', date('Y-m-d H:i:s', strtotime($p_time2) + 24 * 60 * 60)],
                 ['gt', date('Y-m-d H:i:s', strtotime($p_time1))]
             );
@@ -35,21 +35,40 @@ class PayController extends AuthController
         /*支付种类*/
         $p_type = I('p_type');
         if (is_numeric($p_type)) {
-            $where['p_type'] = "$p_type";
+            $where['pay.p_type'] = "$p_type";
             $this->assign('p_type',$p_type);
         }
         /*支付状态*/
         $p_state = I('p_state');
         if (is_numeric($p_state)) {
-            $where['p_state'] = "$p_state";
+            $where['pay.p_state'] = "$p_state";
             $this->assign('p_state',$p_state);
         }
         /*结账状态*/
         $p_jiezhang = I('p_jiezhang');
         if (is_numeric($p_jiezhang)) {
-            $where['p_jiezhang'] = "$p_jiezhang";
+            $where['pay.p_jiezhang'] = "$p_jiezhang";
             $this->assign('p_jiezhang',$p_jiezhang);
         }
+        /*用户*/
+        $where['u.u_type'] = "1";
+        /* 用户区域条件 */
+        $user_info = $this->user_info;
+        $level = $user_info['p_level'];
+        if($level==1){
+            $where['ud.ua_province'] = $user_info['p_sheng'];
+        }
+        if($level==2){
+            $where['ud.ua_province'] = $user_info['p_sheng'];
+            $where['ud.ua_city'] = $user_info['p_shi'];
+        }
+        if($level==3){
+            $where['ud.ua_province'] = $user_info['p_sheng'];
+            $where['ud.ua_city'] = $user_info['p_shi'];
+            $where['ud.ua_county'] = $user_info['p_xian'];
+        }
+        /*默认地址*/
+        $where['ud.ua_moren'] = 1;
         /* 每页显示条数 */
         $num =  20;
         /* 页码 */
@@ -57,12 +76,18 @@ class PayController extends AuthController
 
         /* 获取分页列表  */
         $pay_info = $pay_model
+            ->join('userinfo as u ON u.u_id = pay.p_uid','left')
+            ->join('useraddress as ud ON ud.ua_uid = u.u_id','left')
             ->where($where)
             ->page($p . ',' . $num)
             ->order('thinkphp.p_id desc')
             ->select();
         /* 获取分页条 */
-        $count = $pay_model->where($where)->count();
+        $count = $pay_model
+            ->join('userinfo as u ON u.u_id = pay.p_uid','left')
+            ->join('useraddress as ud ON ud.ua_uid = u.u_id','left')
+            ->where($where)
+            ->count();
         $page_model = new \Think\Page($count, $num);
         $page_bar = $page_model->show();
 

@@ -856,7 +856,21 @@ class ProductController extends AuthController
             $where['uid_name'] = array('LIKE','%'.$uidname.'%');
             $this->assign('uidname',$uidname);
         }
-
+        /* 用户区域条件 */
+        $user_info = $this->user_info;
+        $level = $user_info['p_level'];
+        if($level==1){
+            $level_wheres['uid_sheng'] = $user_info['p_sheng'];
+        }
+        if($level==2){
+            $level_wheres['uid_sheng'] = $user_info['p_sheng'];
+            $level_wheres['uid_shi'] = $user_info['p_shi'];
+        }
+        if($level==3){
+            $level_wheres['uid_sheng'] = $user_info['p_sheng'];
+            $level_wheres['uid_shi'] = $user_info['p_shi'];
+            $level_wheres['uid_xian'] = $user_info['p_xian'];
+        }
 
         $where['p_del'] = 0;
         /* 每页显示条数 */
@@ -867,12 +881,13 @@ class ProductController extends AuthController
         /* 获取分页列表  */
         $product_info = $product_model
             ->where($where)
+            ->where($level_wheres)
             ->page($p . ',' . $num)
             ->order('thinkphp.p_id desc')
             ->select();
 
         /* 获取分页条 */
-        $count = $product_model->where($where)->count();
+        $count = $product_model->where($where)->where($level_wheres)->count();
         $page_model = new \Think\Page($count, $num);
         $page_bar = $page_model->show();
 

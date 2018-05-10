@@ -86,48 +86,5 @@ class RenovationtypeController extends AuthController
         }
     }
 
-    /*修改详情模板*/
-    public function detail()
-    {
-        /*获取当前值*/
-        $renovationtype_model = D('renovationtype');
-        $rtid = I('rt_id');
-        $find['rt_id'] = array('eq',$rtid);
-        $info = $renovationtype_model->where($find)->find();
-        $this->assign('info',$info);
-        /*获取全部名称*/
-        $finds['rt_pid'] = "0";
-        $renovationtype_father = $renovationtype_model->where($finds)->select();
-        $this->assign('renovationtype_father',$renovationtype_father);
-
-        $this->display('modify');
-    }
-    /*执行修改*/
-    public function modify()
-    {
-            $renovationtype_model = D('renovationtype');
-            $rtid = I('rt_id');
-            $find['rt_id'] = array('neq',$rtid);
-            $find['rt_name'] = I('rt_name');
-            $Inquire = $renovationtype_model->where($find)->getField('rt_id');
-            if($Inquire){
-                $this->error("修改失败,名称重复",'',1);
-            }
-            /*执行修改*/
-            $data = array(
-                'rt_name' =>  I('rt_name'),
-                'rt_pid' => I('rt_pid'),
-                'rt_order' => I('rt_order')
-            );
-            $where = array(
-                'rt_id' => I('rt_id')
-            );
-            $rs = $renovationtype_model->where($where)->save($data);
-            if ($rs) {
-                $this->success("修改成功",U('index_list'),1);
-            } else {
-                $this->error("修改失败",'',1);
-            }
-    }
 
 }

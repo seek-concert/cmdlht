@@ -20,26 +20,26 @@ class UserinfoController extends AuthController
         /* 账号类型*/
         $utype = I('u_type');
         if ($utype) {
-            $where['u_type'] = $utype;
+            $where['userinfo.u_type'] = $utype;
             $this->assign('utype',$utype);
         }
         /* 登陆账号（手机号码） */
         $uloginname = I('u_loginname');
         if ($uloginname) {
-            $where['u_loginname'] = $uloginname;
+            $where['userinfo.u_loginname'] = $uloginname;
             $this->assign('uloginname',$uloginname);
         }
         /*昵称*/
         $unickname = trim(I('u_nickname'));
         if ($unickname) {
-            $where['u_nickname'] = array('LIKE','%'.$unickname.'%');
+            $where['userinfo.u_nickname'] = array('LIKE','%'.$unickname.'%');
             $this->assign('unickname',$unickname);
         }
         /*注册时间*/
         $utime1 = I('u_time1');
         $utime2 = I('u_time2');
         if ($utime1 && $utime2) {
-            $where['u_time'] = array(
+            $where['userinfo.u_time'] = array(
                 ['lt', date('Y-m-d H:i:s', strtotime($utime2) + 24 * 60 * 60)],
                 ['gt', date('Y-m-d H:i:s', strtotime($utime1))]
             );
@@ -49,9 +49,28 @@ class UserinfoController extends AuthController
         /*账号状态*/
         $ustate = I('u_state');
         if (is_numeric($ustate)) {
-            $where['u_state'] = "$ustate";
+            $where['userinfo.u_state'] = "$ustate";
             $this->assign('ustate',$ustate);
         }
+        /*用户*/
+        $where['userinfo.u_type'] = "1";
+        /* 用户区域条件 */
+        $user_info = $this->user_info;
+        $level = $user_info['p_level'];
+        if($level==1){
+            $where['ud.ua_province'] = $user_info['p_sheng'];
+        }
+        if($level==2){
+            $where['ud.ua_province'] = $user_info['p_sheng'];
+            $where['ud.ua_city'] = $user_info['p_shi'];
+        }
+        if($level==3){
+            $where['ud.ua_province'] = $user_info['p_sheng'];
+            $where['ud.ua_city'] = $user_info['p_shi'];
+            $where['ud.ua_county'] = $user_info['p_xian'];
+        }
+        /*默认地址*/
+        $where['ud.ua_moren'] = 1;
         /* 每页显示条数 */
         $num = 20;
         /* 页码 */
@@ -59,14 +78,18 @@ class UserinfoController extends AuthController
 
         /* 获取分页列表  */
         $userinfo_info = $userinfo_model
-            ->where($where)
-            ->where($this->level_where)
+            ->join('useraddress as ud ON ud.ua_uid = userinfo.u_id','left')
             ->page($p . ',' . $num)
+            ->where($where)
             ->order('thinkphp.u_id desc')
             ->select();
 
         /* 获取分页条 */
-        $count = $userinfo_model->where($where)->where($this->level_where)->count();
+        $count = $userinfo_model
+            ->join('useraddress as ud ON ud.ua_uid = userinfo.u_id','left')
+            ->where($where)
+            ->count();
+
         $page_model = new \Think\Page($count, $num);
         $page_bar = $page_model->show();
 

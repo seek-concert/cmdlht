@@ -18,7 +18,7 @@ class ConstructionevaluationController extends AuthController
         /* 师傅 */
         $cuidname = I('cuid_name');
         if($cuidname){
-            $where['cuid_name'] = array('LIKE','%'.$cuidname.'%');
+            $where['constructionevaluation.cuid_name'] = array('LIKE','%'.$cuidname.'%');
             $this->assign('cuidname',$cuidname);
         }
 //        /* 用户 */
@@ -31,7 +31,7 @@ class ConstructionevaluationController extends AuthController
         $cetime1 = I('ce_time1');
         $cetime2 = I('ce_time2');
         if($cetime1&&$cetime2){
-            $where['ce_time'] = array(
+            $where['constructionevaluation.ce_time'] = array(
                 ['lt',date('Y-m-d H:i:s',strtotime($cetime2)+24*60*60)],
                 ['gt',date('Y-m-d H:i:s',strtotime($cetime1))]
             );
@@ -41,9 +41,28 @@ class ConstructionevaluationController extends AuthController
         /* 状态 */
         $cestate = I('ce_state');
         if(is_numeric($cestate)){
-            $where['ce_state'] = "$cestate";
+            $where['constructionevaluation.ce_state'] = "$cestate";
             $this->assign('cestate',$cestate);
         }
+        /*用户*/
+        $where['u.u_type'] = "1";
+        /* 用户区域条件 */
+        $user_info = $this->user_info;
+        $level = $user_info['p_level'];
+        if($level==1){
+            $where['ud.ua_province'] = $user_info['p_sheng'];
+        }
+        if($level==2){
+            $where['ud.ua_province'] = $user_info['p_sheng'];
+            $where['ud.ua_city'] = $user_info['p_shi'];
+        }
+        if($level==3){
+            $where['ud.ua_province'] = $user_info['p_sheng'];
+            $where['ud.ua_city'] = $user_info['p_shi'];
+            $where['ud.ua_county'] = $user_info['p_xian'];
+        }
+        /*默认地址*/
+        $where['ud.ua_moren'] = 1;
         /* 每页显示条数 */
         $num =  20;
         /* 页码 */
@@ -51,14 +70,20 @@ class ConstructionevaluationController extends AuthController
 
         /* 获取分页列表  */
         $constructionevaluation_info = $constructionevaluation_model
+            ->join('userinfo as u ON u.u_id = constructionevaluation.ce_uid','left')
+            ->join('useraddress as ud ON ud.ua_uid = u.u_id','left')
             ->where($where)
-            ->order('thinkphp.ce_time desc')
             ->page($p . ',' . $num)
+            ->order('thinkphp.ce_time desc')
             ->select();
 
 
         /* 获取分页条 */
-        $count = $constructionevaluation_model->where($where)->count();
+        $count = $constructionevaluation_model
+            ->join('userinfo as u ON u.u_id = constructionevaluation.ce_uid','left')
+            ->join('useraddress as ud ON ud.ua_uid = u.u_id','left')
+            ->where($where)
+            ->count();
         $page_model = new \Think\Page($count, $num);
         $page_bar = $page_model->show();
 
